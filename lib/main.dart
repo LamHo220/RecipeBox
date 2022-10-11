@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:recipe_sum/constants/theme_data.dart';
 import 'package:recipe_sum/home.dart';
 
 void main() async {
-  await Hive.initFlutter();
+  // await Hive.initFlutter();
   // ..registerAdapter(PersonAdapter());
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -19,7 +20,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'GetX Store',
       // initialBinding: StoreBinding(),
-      // theme: Themes.lightTheme,
+      // theme: themeData,
       // darkTheme: Themes.darkTheme,
       // themeMode: themeController.theme,
       initialRoute: '/',
