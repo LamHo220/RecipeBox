@@ -6,11 +6,11 @@ import 'package:recipe_sum/home.dart';
 void main() async {
   await Hive.initFlutter();
   // ..registerAdapter(PersonAdapter());
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  MyApp({Key? key}) : super(key: key);
+  const MyApp({Key? key}) : super(key: key);
   // final themeController = Get.put(ThemeController());
 
   @override
