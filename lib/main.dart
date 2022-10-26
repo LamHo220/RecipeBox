@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:recipe_box/app/app.dart';
-import 'package:recipe_box/pages/home.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'firebase_options.dart';
 
