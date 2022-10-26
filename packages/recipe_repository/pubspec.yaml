@@ -1,0 +1,16 @@
+name: recipe_repository
+description: A repository that handles recipe related requests.
+version: 1.0.0+1
+publish_to: none
+
+environment:
+  sdk: ">=2.17.5 <3.0.0"
+
+dependencies:
+  recipe_api:
+    path: ../recipe_api
+
+dev_dependencies:
+  # mocktail: ^0.3.0
+  test: ^1.21.4
+  very_good_analysis: ^3.0.2
