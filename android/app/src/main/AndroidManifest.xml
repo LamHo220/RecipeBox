@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.recipe_sum">
+    package="com.example.recipe_box">
    <application
-        android:label="recipe_sum"
+        android:label="recipe_box"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

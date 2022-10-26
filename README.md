@@ -1,4 +1,4 @@
-# recipe_sum
+# recipe_box
 
 A new Flutter project.
 

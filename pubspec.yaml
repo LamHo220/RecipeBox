@@ -1,4 +1,4 @@
-name: recipe_sum
+name: recipe_box
 description: A new Flutter project.
 
 # The following line prevents the package from being accidentally published to
@@ -41,6 +41,9 @@ dependencies:
   hive_flutter: ^1.1.0
   hive_generator: ^1.1.3
   persistent_bottom_nav_bar: ^5.0.2
+  font_awesome_flutter: ^10.2.1
+  carousel_slider: ^4.1.1
+  sliding_up_panel: ^2.0.0+1
 
 dev_dependencies:
   flutter_test:

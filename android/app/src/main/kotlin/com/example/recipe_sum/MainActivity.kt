@@ -1,4 +1,4 @@
-package com.example.recipe_sum
+package com.example.recipe_box
 
 import io.flutter.embedding.android.FlutterActivity
 

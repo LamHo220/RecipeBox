@@ -1,6 +1,6 @@
 {
-    "name": "recipe_sum",
-    "short_name": "recipe_sum",
+    "name": "recipe_box",
+    "short_name": "recipe_box",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
