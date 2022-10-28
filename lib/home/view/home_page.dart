@@ -8,13 +8,13 @@ import 'package:recipe_box/common/components/texts.dart';
 import 'package:recipe_box/common/constants/colors.dart';
 import 'package:recipe_box/common/constants/paddings.dart';
 import 'package:recipe_box/common/constants/style.dart';
+import 'package:recipe_box/home/cubit/home_cubit.dart';
 import 'package:recipe_box/home/home.dart';
 
-class HomePage extends StatelessWidget {
-  HomePage({super.key});
+class HomeView extends StatelessWidget {
+  HomeView({super.key});
 
   static Page<void> page() => MaterialPage<void>(child: HomePage());
-
   final TextEditingController _searchController = TextEditingController();
 
   final FloatingActionButtonLocation _fabLocation =
@@ -22,19 +22,22 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Tabs selectedTab =
+        context.select((HomeCubit cubit) => cubit.state.selectedTab);
+    final bool isShow = context.select((HomeCubit cubit) => cubit.state.isShow);
     // final textTheme = Theme.of(context).textTheme;
     final user = context.select((AppBloc bloc) => bloc.state.user);
     return Scaffold(
         extendBody: true,
         floatingActionButtonLocation: _fabLocation,
-        floatingActionButton: true
+        floatingActionButton: isShow
             ? FloatingActionButton(
                 backgroundColor: ThemeColors.primaryLight,
-                onPressed: () {},
+                onPressed: () => context.read<HomeCubit>().setTab(Tabs.add),
                 child: const Icon(Icons.add),
               )
             : null,
-        bottomNavigationBar: true
+        bottomNavigationBar: isShow
             ? BottomAppBar(
                 shape: const CircularNotchedRectangle(),
                 elevation: 0,
@@ -46,9 +49,9 @@ class HomePage extends StatelessWidget {
                           style: _viewStepsStyle(
                               ModalRoute.of(context)!.settings.name ==
                                   k['path']),
-                          onPressed: () {
-                            // Get.toNamed(k['path']);
-                          },
+                          onPressed: () => k['value'] == Tabs.add
+                              ? null
+                              : context.read<HomeCubit>().setTab(k['value']),
                           child: Wrap(
                             crossAxisAlignment: WrapCrossAlignment.center,
                             direction: Axis.vertical,
@@ -70,7 +73,16 @@ class HomePage extends StatelessWidget {
         //     )
         //   ],
         // ),
-        body: _body(user)
+        body: IndexedStack(
+          index: selectedTab.index,
+          children: [
+            _body(user),
+            Container(),
+            Container(),
+            Container(),
+            Container(),
+          ],
+        )
         // Align(
         //   alignment: const Alignment(0, -1 / 3),
         //   child: Column(
@@ -114,23 +126,23 @@ class HomePage extends StatelessWidget {
         Icons.home_outlined,
       ),
       'text': 'Home',
-      'path': '/'
+      'value': Tabs.home
     },
     {
       'icon': Icon(Icons.favorite_outline),
       'text': 'Favorite',
-      'path': '/favorite'
+      'value': Tabs.favorite
     },
-    {'icon': Icon(Icons.abc), 'text': ' ', 'path': ''},
+    {'icon': Icon(Icons.abc), 'text': ' ', 'value': Tabs.add},
     {
       'icon': Icon(FontAwesomeIcons.compass),
       'text': 'Explore',
-      'path': '/explore'
+      'value': Tabs.explore
     },
     {
       'icon': Icon(FontAwesomeIcons.user),
       'text': 'Profile',
-      'path': '/profile'
+      'value': Tabs.profile
     },
   ];
   Widget _body(User user) {
@@ -257,4 +269,16 @@ class HomePage extends StatelessWidget {
     'What do you want to cook today?',
     style: Style.question,
   );
+}
+
+class HomePage extends StatelessWidget {
+  const HomePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => HomeCubit(),
+      child: HomeView(),
+    );
+  }
 }
