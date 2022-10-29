@@ -66,7 +66,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '317620086799',
     projectId: 'recipe-sum',
     storageBucket: 'recipe-sum.appspot.com',
-    iosClientId: '317620086799-9ac00597cbsp3tj8vhqmbd8e0g8u13os.apps.googleusercontent.com',
+    iosClientId:
+        '317620086799-9ac00597cbsp3tj8vhqmbd8e0g8u13os.apps.googleusercontent.com',
     iosBundleId: 'com.example.recipeBox',
   );
 
@@ -76,7 +77,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '317620086799',
     projectId: 'recipe-sum',
     storageBucket: 'recipe-sum.appspot.com',
-    iosClientId: '317620086799-9ac00597cbsp3tj8vhqmbd8e0g8u13os.apps.googleusercontent.com',
+    iosClientId:
+        '317620086799-9ac00597cbsp3tj8vhqmbd8e0g8u13os.apps.googleusercontent.com',
     iosBundleId: 'com.example.recipeBox',
   );
 }

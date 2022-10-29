@@ -7,9 +7,12 @@ class RecipeRepository {
 
   final RecipeApi _RecipeApi;
 
-  Stream<List<Recipe>> getRecipe() => _RecipeApi.getRecipe();
+  // Stream<List<Recipe>> getRecipe() => _RecipeApi.getRecipe();
 
-  Future<void> saveRecipe(Recipe recipe) => _RecipeApi.saveRecipe(recipe);
+  Future<void> createRecipe(Recipe recipe) => _RecipeApi.createRecipe(recipe);
 
   Future<void> deleteRecipe(String id) => _RecipeApi.deleteRecipe(id);
+
+  Future<void> updateRecipe(String id, Recipe recipe) =>
+      _RecipeApi.updateRecipe(id, recipe);
 }

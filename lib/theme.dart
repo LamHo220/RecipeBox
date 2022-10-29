@@ -6,7 +6,7 @@ final theme = ThemeData(
   // textTheme: GoogleFonts.openSansTextTheme(),
   primaryColorDark: ThemeColors.primaryDark,
   primaryColorLight: ThemeColors.primaryLight,
-  // primaryColor: const Color(0xFF00BCD4),
+  // primaryColor: ThemeColors.primaryLight,
   // colorScheme: const ColorScheme.light(secondary: Color(0xFF009688)),
   scaffoldBackgroundColor: ThemeColors.white,
   inputDecorationTheme: InputDecorationTheme(

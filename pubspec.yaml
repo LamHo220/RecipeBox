@@ -48,7 +48,7 @@ dependencies:
   equatable: ^2.0.5
   firebase_auth: 
   google_sign_in: ^5.4.2
-  firebase_core: 
+  # firebase_core: 
   authentication_repository:
     path: packages/authentication_repository
   flow_builder: 
@@ -59,6 +59,7 @@ dependencies:
     path: packages/recipe_api
   recipe_repository:
     path: packages/recipe_repository
+  cloud_firestore: 
 
 dev_dependencies:
   flutter_test:

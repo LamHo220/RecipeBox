@@ -7,6 +7,7 @@ import 'package:firebase_auth_platform_interface/firebase_auth_platform_interfac
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:meta/meta.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 /// {@template sign_up_with_email_and_password_failure}
 /// Thrown if during the sign up process if a failure occurs.
@@ -194,6 +195,22 @@ class AuthenticationRepository {
     return _cache.read<User>(key: userCacheKey) ?? User.empty;
   }
 
+  /// Sign in with temporary account
+  Future<void> signUpAnonymously() async {
+    try {
+      final userCredential = await _firebaseAuth.signInAnonymously();
+      print("Signed in with temporary account.");
+    } on FirebaseAuthException catch (e) {
+      switch (e.code) {
+        case "operation-not-allowed":
+          print("Anonymous auth hasn't been enabled for this project.");
+          break;
+        default:
+          print("Unknown error.");
+      }
+    }
+  }
+
   /// Creates a new user with the provided [email] and [password].
   ///
   /// Throws a [SignUpWithEmailAndPasswordFailure] if an exception occurs.
@@ -208,6 +225,7 @@ class AuthenticationRepository {
     } catch (_) {
       throw const SignUpWithEmailAndPasswordFailure();
     }
+    // FirebaseFirestore.instance;
   }
 
   /// Starts the Sign In with Google Flow.

@@ -1,10 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:recipe_api/recipe_api.dart';
 import 'package:recipe_box/app/app.dart';
 import 'package:authentication_repository/authentication_repository.dart';
+import 'package:recipe_repository/recipe_repository.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
@@ -20,6 +23,7 @@ Future<void> main() async {
   final authenticationRepository = AuthenticationRepository();
   await authenticationRepository.user.first;
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
+
   // SystemChrome.setEnabledSystemUIMode(SystemUiMode.);
   runApp(App(authenticationRepository: authenticationRepository));
 }
