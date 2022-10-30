@@ -7,8 +7,12 @@ environment:
   sdk: ">=2.17.5 <3.0.0"
 
 dependencies:
-  recipe_api:
-    path: ../recipe_api
+  uuid: ^3.0.6
+  cloud_firestore: ^4.0.3
+  equatable: ^2.0.3
+  firebase_storage: ^11.0.3
+  json_annotation: ^4.6.0
+
 
 dev_dependencies:
   # mocktail: ^0.3.0

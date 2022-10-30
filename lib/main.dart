@@ -4,10 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:recipe_api/recipe_api.dart';
 import 'package:recipe_box/app/app.dart';
 import 'package:authentication_repository/authentication_repository.dart';
-import 'package:recipe_repository/recipe_repository.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {

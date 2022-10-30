@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:recipe_api/recipe_api.dart';
 import 'package:recipe_box/app/app.dart';
 import 'package:recipe_box/common/components/texts.dart';
 import 'package:recipe_box/common/constants/colors.dart';
@@ -12,6 +11,7 @@ import 'package:recipe_box/common/constants/paddings.dart';
 import 'package:recipe_box/common/constants/style.dart';
 import 'package:recipe_box/home/cubit/home_cubit.dart';
 import 'package:recipe_box/home/home.dart';
+import 'package:recipe_box/recipe/widgets/recipe_card.dart';
 import 'package:recipe_repository/recipe_repository.dart';
 
 class HomeView extends StatelessWidget {
@@ -29,6 +29,7 @@ class HomeView extends StatelessWidget {
     final bool isShow = context.select((HomeCubit cubit) => cubit.state.isShow);
     // final textTheme = Theme.of(context).textTheme;
     final user = context.select((AppBloc bloc) => bloc.state.user);
+
     return Scaffold(
         extendBody: true,
         floatingActionButtonLocation: _fabLocation,
@@ -69,13 +70,13 @@ class HomeView extends StatelessWidget {
           index: selectedTab.index,
           children: [
             SingleChildScrollView(
-              child: Container(
-                padding: Pad.pa24,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    padding: Pad.pa24,
+                    child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Column(
@@ -90,31 +91,34 @@ class HomeView extends StatelessWidget {
                           ],
                         ),
                         GestureDetector(
-                          onTap: () {
-                            RecipeApi _api = RecipeApi();
-                            RecipeRepository _repo =
-                                RecipeRepository(RecipeApi: _api);
-                            _repo.createRecipe(Recipe(
-                                name: 'name',
-                                description: 'description',
-                                bookmarked: 0,
-                                cal: 0,
-                                gram: 0,
-                                forked: 0,
-                                ingredients: [],
-                                isPublic: false,
-                                note: 'note',
-                                steps: [],
-                                categories: [],
-                                timestamp: Timestamp.now()));
-                          },
-                          // context.read<AppBloc>().add(AppLogoutRequested()),
+                          onTap: () =>
+                              // {
+                              //   RecipeApi _api = RecipeApi();
+                              //   RecipeRepository _repo =
+                              //       RecipeRepository(RecipeApi: _api);
+                              //   _repo.createRecipe(Recipe(
+                              //       name: 'name',
+                              //       description: 'description',
+                              //       bookmarked: 0,
+                              //       cal: 0,
+                              //       gram: 0,
+                              //       forked: 0,
+                              //       ingredients: [],
+                              //       isPublic: false,
+                              //       note: 'note',
+                              //       steps: [],
+                              //       categories: [],
+                              //       timestamp: Timestamp.now()));
+                              // },
+                              context.read<AppBloc>().add(AppLogoutRequested()),
                           child: Avatar(photo: user.photo),
                         )
                       ],
                     ),
-                    Pad.h24,
-                    CupertinoSearchTextField(
+                  ),
+                  Container(
+                    padding: Pad.plr24,
+                    child: CupertinoSearchTextField(
                         controller: _searchController,
                         padding: Pad.pa12,
                         borderRadius: BorderRadius.circular(16),
@@ -123,32 +127,40 @@ class HomeView extends StatelessWidget {
                         backgroundColor: ThemeColors.card,
                         prefixInsets:
                             const EdgeInsetsDirectional.fromSTEB(18, 4, 0, 4)),
-                    Pad.h24,
-                    Row(
+                  ),
+                  Pad.h24,
+                  Container(
+                    padding: Pad.plr24,
+                    child: Row(
                       crossAxisAlignment: CrossAxisAlignment.baseline,
                       textBaseline: TextBaseline.ideographic,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [heading('Categories'), seeAll(() => {})],
                     ),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: const [
-                          Chip(label: Text('Vegetable')),
-                          Pad.w24,
-                          Chip(label: Text('Dinner')),
-                          Pad.w24,
-                          Chip(label: Text('Lunch')),
-                          Pad.w24,
-                          Chip(label: Text('Breakfast')),
-                          Pad.w24,
-                          Chip(label: Text('Meat')),
-                          Pad.w24,
-                          Chip(label: Text('Bread')),
-                        ],
-                      ),
+                  ),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: const [
+                        Pad.w24,
+                        Chip(label: Text('Vegetable')),
+                        Pad.w24,
+                        Chip(label: Text('Dinner')),
+                        Pad.w24,
+                        Chip(label: Text('Lunch')),
+                        Pad.w24,
+                        Chip(label: Text('Breakfast')),
+                        Pad.w24,
+                        Chip(label: Text('Meat')),
+                        Pad.w24,
+                        Chip(label: Text('Bread')),
+                        Pad.w24,
+                      ],
                     ),
-                    Row(
+                  ),
+                  Container(
+                    padding: Pad.plr24,
+                    child: Row(
                       crossAxisAlignment: CrossAxisAlignment.baseline,
                       textBaseline: TextBaseline.ideographic,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -157,56 +169,96 @@ class HomeView extends StatelessWidget {
                         seeAll(() => {})
                       ],
                     ),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(children: [
-                        for (var i = 0; i < 10; ++i)
-                          Row(
-                            children: [
-                              // RecipeCard(),
-                              Pad.w8,
-                            ],
-                          )
-                      ]),
-                    ),
-                    Row(
+                  ),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(children: [
+                      Pad.w24,
+                      FutureBuilder<QuerySnapshot<Recipe>>(
+                        future: context.read<HomeCubit>().test(),
+                        builder: (context, snapshot) {
+                          final data = snapshot.data;
+                          return data != null && data.docs.isNotEmpty
+                              ? RecipeCard(recipe: data.docs[0].data())
+
+                              // ListView.builder(
+                              //   scrollDirection: Axis.horizontal,
+                              //     itemCount: snapshot.data!.docs.length,
+                              //     itemBuilder: (_, int position) {
+                              //       final _test = snapshot.data!.docs[0].data();
+                              //       print(_test);
+                              //       return Wrap(
+                              //         children: [
+                              //           RecipeCard(
+                              //             recipe: _test,
+                              //           ),
+                              //           Pad.w8,
+                              //         ],
+                              //       );
+                              //     })
+                              : Text('gdghdhgjdgh');
+                        },
+                      ),
+                      Pad.w16
+                    ]),
+                  ),
+                  Container(
+                    padding: Pad.plr24,
+                    child: Row(
                       crossAxisAlignment: CrossAxisAlignment.baseline,
                       textBaseline: TextBaseline.ideographic,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [heading('Your Recipes'), seeAll(() => {})],
                     ),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(children: [
-                        for (var i = 0; i < 10; ++i)
-                          Row(
-                            children: [
-                              // RecipeCard(),
-                              Pad.w8,
-                            ],
-                          )
-                      ]),
-                    ),
-                    Row(
+                  ),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(children: [
+                      Pad.w24,
+                      for (var i = 0; i < 10; ++i)
+                        Row(
+                          children: [
+                            // RecipeCard(
+                            //   recipe: _test,
+                            // ),
+                            Text('data'),
+                            Pad.w8,
+                          ],
+                        ),
+                      Pad.w16
+                    ]),
+                  ),
+                  Container(
+                    padding: Pad.plr24,
+                    child: Row(
                       crossAxisAlignment: CrossAxisAlignment.baseline,
                       textBaseline: TextBaseline.ideographic,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [heading('Popular'), seeAll(() => {})],
                     ),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(children: [
-                        for (var i = 0; i < 10; ++i)
-                          Row(
-                            children: [
-                              // RecipeCard(),
-                              Pad.w8,
-                            ],
-                          )
-                      ]),
-                    ),
-                  ],
-                ),
+                  ),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(children: [
+                      Pad.w24,
+                      for (var i = 0; i < 10; ++i)
+                        Row(
+                          children: [
+                            // RecipeCard(
+                            //   recipe: _test,
+                            // ),
+                            Text('data'),
+                            Pad.w8,
+                          ],
+                        ),
+                      Pad.w16
+                    ]),
+                  ),
+                  Pad.h24,
+                  Pad.h24,
+                  Pad.h24,
+                  Pad.h24,
+                ],
               ),
             ),
             Container(
