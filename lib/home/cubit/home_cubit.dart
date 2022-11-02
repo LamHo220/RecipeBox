@@ -7,12 +7,12 @@ part 'home_state.dart';
 
 class HomeCubit extends Cubit<HomeState> {
   HomeCubit() : super(const HomeState());
+  RecipeRepository repo = RecipeRepository();
 
   void setTab(Tabs tab) => emit(HomeState(tab: tab));
   void setShow(bool flag) => emit(HomeState(isShow: flag));
 
   Future<QuerySnapshot<Recipe>> test() async {
-    RecipeRepository repo = RecipeRepository();
     return repo.getRecipe('user', isNotEqualTo: '');
   }
 }
