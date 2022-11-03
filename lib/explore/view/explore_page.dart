@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:recipe_box/common/components/searcher/widget/searcher.dart';
 import 'package:recipe_box/common/constants/colors.dart';
 import 'package:recipe_box/common/constants/paddings.dart';
 import 'package:recipe_box/common/constants/style.dart';
@@ -12,42 +13,36 @@ class ExploreView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          padding: Pad.pa24,
-          child: Text(
-            'Explore',
-            style: Style.welcome,
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: ThemeColors.white,
+        title: Text('Explore'),
+        titleTextStyle: Style.welcome,
+      ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Container(
+          //   padding: Pad.plr12,
+          //   child: Searcher(placeholder: 'Search Recipes'),
+          // ),
+          Container(
+            padding: Pad.pa12,
+            child: Text(
+              'Discover',
+              style: Style.heading,
+            ),
           ),
-        ),
-        Container(
-          padding: Pad.plr24,
-          child: CupertinoSearchTextField(
-              controller: _searchController,
-              padding: Pad.pa12,
-              borderRadius: BorderRadius.circular(16),
-              placeholder: 'Search by recipes',
-              style: Style.search,
-              backgroundColor: ThemeColors.card,
-              prefixInsets: const EdgeInsetsDirectional.fromSTEB(18, 4, 0, 4)),
-        ),
-        Container(
-          padding: Pad.pa24,
-          child: Text(
-            'Discover',
-            style: Style.heading,
-          ),
-        ),
-        Container(
-          padding: Pad.pa24,
-          child: Text(
-            'Categories',
-            style: Style.heading,
-          ),
-        )
-      ],
+          Container(
+            padding: Pad.pa12,
+            child: Text(
+              'Categories',
+              style: Style.heading,
+            ),
+          )
+        ],
+      ),
     );
   }
 }

@@ -63,6 +63,8 @@ class Recipe extends Equatable {
 
   final Map<String, dynamic> time;
 
+  // TODO: rating and comments
+
   factory Recipe.fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> snapshot,
     SnapshotOptions? options,

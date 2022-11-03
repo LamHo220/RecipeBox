@@ -12,6 +12,7 @@ class User extends Equatable {
     this.email,
     this.username,
     this.photo,
+    this.description,
   });
 
   /// The current user's email address.
@@ -35,6 +36,9 @@ class User extends Equatable {
   /// Convenience getter to determine whether the current user is not empty.
   bool get isNotEmpty => this != User.empty;
 
+  /// The description of the user.
+  final String? description;
+
   @override
-  List<Object?> get props => [email, id, username, photo];
+  List<Object?> get props => [email, id, username, photo, description];
 }

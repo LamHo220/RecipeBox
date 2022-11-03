@@ -9,9 +9,11 @@ import 'package:recipe_box/common/constants/colors.dart';
 import 'package:recipe_box/common/constants/paddings.dart';
 import 'package:recipe_box/common/constants/style.dart';
 import 'package:recipe_box/explore/view/explore_page.dart';
+import 'package:recipe_box/recipe/view/recipe_list_page.dart';
 import 'package:recipe_box/home/cubit/home_cubit.dart';
 import 'package:recipe_box/home/home.dart';
 import 'package:recipe_box/home/view/home.dart';
+import 'package:recipe_box/profile/view/profile_page.dart';
 import 'package:recipe_box/recipe/widgets/recipe_card.dart';
 import 'package:recipe_repository/recipe_repository.dart';
 
@@ -25,7 +27,6 @@ class HomeView extends StatelessWidget {
   Widget build(BuildContext context) {
     final Tabs selectedTab =
         context.select((HomeCubit cubit) => cubit.state.tab);
-    final bool isShow = context.select((HomeCubit cubit) => cubit.state.isShow);
     final user = context.select((AppBloc bloc) => bloc.state.user);
 
     Widget fab() {
@@ -56,34 +57,20 @@ class HomeView extends StatelessWidget {
     return Scaffold(
         extendBody: true,
         floatingActionButtonLocation: _fabLocation,
-        floatingActionButton: isShow ? fab() : null,
-        bottomNavigationBar: isShow ? bab() : null,
+        floatingActionButton: fab(),
+        bottomNavigationBar: bab(),
         body: IndexedStack(
           index: selectedTab.index,
           children: [
             Home(),
-            Container(
-              child: Text('123'),
+            RecipeListPage(
+              title: 'Favorite',
             ),
             Container(
               child: Text('456'),
             ),
             ExplorePage(),
-            Align(
-              alignment: const Alignment(0, -1 / 3),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Avatar(photo: user.photo),
-                  const SizedBox(height: 4),
-                  Text(
-                    user.email ?? '',
-                  ),
-                  const SizedBox(height: 4),
-                  // Text(user.name ?? '', ),
-                ],
-              ),
-            ),
+            ProfilePage(),
           ],
         ));
   }
@@ -117,7 +104,7 @@ class HomeView extends StatelessWidget {
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
-  static Page<void> page() => MaterialPage<void>(child: HomePage());
+  static Page<void> page() => const MaterialPage<void>(child: HomePage());
 
   @override
   Widget build(BuildContext context) {

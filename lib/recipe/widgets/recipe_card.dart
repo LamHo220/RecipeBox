@@ -1,7 +1,7 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
-import 'package:recipe_box/recipe/widgets/card_after.dart';
-import 'package:recipe_box/recipe/widgets/card_before.dart';
+import 'package:recipe_box/recipe/view/recipe_detail_page.dart';
+import 'package:recipe_box/recipe/widgets/recipe_card_before.dart';
 import 'package:recipe_repository/recipe_repository.dart';
 
 class RecipeCard extends StatelessWidget {
@@ -18,7 +18,8 @@ class RecipeCard extends StatelessWidget {
           return Before(recipe: recipe, openContainer: openContainer);
         },
         openBuilder: (context, closedContainer) {
-          return After(recipe: recipe, closedContainer: closedContainer);
+          return RecipeDetails(
+              recipe: recipe, closedContainer: closedContainer);
         });
   }
 }

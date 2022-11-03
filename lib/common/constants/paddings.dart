@@ -18,6 +18,10 @@ class Pad {
   static const EdgeInsetsDirectional pa24 = EdgeInsetsDirectional.all(24);
   static const EdgeInsetsDirectional plr24 =
       EdgeInsetsDirectional.only(start: 24, end: 24);
+  static const EdgeInsetsDirectional plr12 =
+      EdgeInsetsDirectional.only(start: 12, end: 12);
   static const EdgeInsetsDirectional ptb24 =
       EdgeInsetsDirectional.only(top: 24, bottom: 24);
+  static const EdgeInsetsDirectional ptb12 =
+      EdgeInsetsDirectional.only(top: 12, bottom: 12);
 }

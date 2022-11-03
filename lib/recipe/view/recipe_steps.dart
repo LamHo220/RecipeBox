@@ -35,6 +35,11 @@ class _StepsState extends State<Steps> {
           backgroundColor: Colors.transparent,
           elevation: 0,
         ),
+        bottomNavigationBar: BottomAppBar(
+            child: LottieBuilder.asset(
+          'assets/95531-chef.json',
+          height: 64,
+        )),
         body: Column(
           children: [
             Text(widget.name,
@@ -106,7 +111,6 @@ class _StepsState extends State<Steps> {
                           alignment: Alignment.centerLeft, child: Text(step)),
                     )
                 ]),
-            Flexible(child: LottieBuilder.asset('assets/95531-chef.json'))
           ],
         ));
   }

@@ -20,31 +20,8 @@ Future<void> main() async {
 
   final authenticationRepository = AuthenticationRepository();
   await authenticationRepository.user.first;
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+      overlays: [SystemUiOverlay.top]);
 
-  // SystemChrome.setEnabledSystemUIMode(SystemUiMode.);
   runApp(App(authenticationRepository: authenticationRepository));
 }
-
-// class MyApp extends StatelessWidget {
-//   const MyApp({Key? key}) : super(key: key);
-//   // final themeController = Get.put(ThemeController());
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       debugShowCheckedModeBanner: false,
-//       title: 'Recipe Sum',
-//       // initialBinding: StoreBinding(),
-//       // darkTheme: Themes.darkTheme,
-//       // themeMode: themeController.theme,
-//       initialRoute: '/',
-//       routes: {
-//         '/': (context) => Home(),
-//         '/favorite': (context) => Scaffold(),
-//         '/explore': (context) => Scaffold(),
-//         '/profile': (context) => Scaffold(),
-//       },
-//     );
-//   }
-// }
