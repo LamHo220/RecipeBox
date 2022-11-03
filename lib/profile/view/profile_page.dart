@@ -1,9 +1,11 @@
+import 'package:animations/animations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:recipe_box/app/app.dart';
+import 'package:recipe_box/app/view/setting_page.dart';
 import 'package:recipe_box/common/constants/colors.dart';
 import 'package:recipe_box/common/constants/paddings.dart';
 import 'package:recipe_box/common/constants/style.dart';
@@ -27,7 +29,11 @@ class ProfileView extends StatelessWidget {
           backgroundColor: ThemeColors.white,
           actions: [
             IconButton(onPressed: () => {}, icon: const Icon(Icons.share)),
-            IconButton(onPressed: () => {}, icon: const Icon(Icons.settings)),
+            OpenContainer(
+                closedBuilder: (context, action) => IconButton(
+                    onPressed: () => action(),
+                    icon: const Icon(Icons.settings)),
+                openBuilder: (context, action) => SettingPage(action:action)),
           ]),
       body: Container(
         child: Column(
