@@ -28,26 +28,26 @@ class Before extends StatelessWidget {
                   image: Image.network('https://picsum.photos/1024').image,
                   fit: BoxFit.cover)),
           child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                  Container(
-                    margin: Pad.pa8,
-                    padding: Pad.pa4,
-                    decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(8)),
-                      color: ThemeColors.halfGray,
-                    ),
-                    child: GestureDetector(
-                      onTap: () => print(123),
-                      child: Icon(
-                        Icons.favorite_border,
-                        color: ThemeColors.white,
-                      ),
-                    ),
-                  ),
-                ]),
+                // Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                //   Container(
+                //     margin: Pad.pa8,
+                //     padding: Pad.pa4,
+                //     decoration: const BoxDecoration(
+                //       borderRadius: BorderRadius.all(Radius.circular(8)),
+                //       color: ThemeColors.halfGray,
+                //     ),
+                //     child: GestureDetector(
+                //       onTap: () => print(123),
+                //       child: Icon(
+                //         Icons.favorite_border,
+                //         color: ThemeColors.white,
+                //       ),
+                //     ),
+                //   ),
+                // ]),
                 Container(
                   padding: Pad.pa8,
                   width: double.infinity,

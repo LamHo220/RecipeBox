@@ -1,3 +1,4 @@
+import 'package:animations/animations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,6 +7,7 @@ import 'package:recipe_box/app/app.dart';
 import 'package:recipe_box/common/constants/colors.dart';
 import 'package:recipe_box/common/constants/paddings.dart';
 import 'package:recipe_box/explore/view/explore_page.dart';
+import 'package:recipe_box/recipe/view/recipe_add_page.dart';
 import 'package:recipe_box/recipe/view/recipe_list_page.dart';
 import 'package:recipe_box/home/cubit/home_cubit.dart';
 import 'package:recipe_box/home/view/home.dart';
@@ -24,17 +26,48 @@ class HomeView extends StatelessWidget {
     final user = context.select((AppBloc bloc) => bloc.state.user);
 
     Widget fab() {
-      return FloatingActionButton(
-        backgroundColor: ThemeColors.primaryLight,
-        onPressed: () => context.read<HomeCubit>().setTab(Tabs.add),
-        child: const Icon(Icons.add),
+      return OpenContainer(
+        openElevation: 0,
+        closedShape: CircleBorder(),
+        closedElevation: 6,
+        closedBuilder: (context, action) => FloatingActionButton(
+          backgroundColor: ThemeColors.primaryLight,
+          onPressed: () => action(),
+          child: const Icon(Icons.add),
+        ),
+        openBuilder: (context, action) => WillPopScope(
+            child: RecipeAddPage(),
+            onWillPop: () async {
+              return showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: Text('Do you really want to leave?'),
+                      content: Text('Your draft will not be saved.'),
+                      actions: [
+                        TextButton(
+                          style: TextButton.styleFrom(
+                              foregroundColor: ThemeColors.primaryDark),
+                          child: Text("Cancel"),
+                          onPressed: () => Navigator.pop(context, false),
+                        ),
+                        TextButton(
+                          style: TextButton.styleFrom(
+                              foregroundColor: ThemeColors.primaryDark),
+                          child: Text("Confirm"),
+                          onPressed: () => Navigator.pop(context, true),
+                        )
+                      ],
+                    );
+                  }).then((x) => x ?? false);
+            }),
       );
     }
 
     BottomAppBar bab() {
       return BottomAppBar(
           shape: const CircularNotchedRectangle(),
-          elevation: 0,
+          elevation: 24,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -53,16 +86,14 @@ class HomeView extends StatelessWidget {
         floatingActionButtonLocation: _fabLocation,
         floatingActionButton: fab(),
         bottomNavigationBar: bab(),
-        body: FadeIndexedStack(
+        body: _FadeIndexedStack(
           index: selectedTab.index,
           children: [
             Home(),
             RecipeListPage(
               title: 'Favorite',
             ),
-            Container(
-              child: Text('456'),
-            ),
+            Container(),
             ExplorePage(),
             ProfilePage(),
           ],
@@ -144,17 +175,17 @@ class _TabButton extends StatelessWidget {
   }
 }
 
-class FadeIndexedStack extends StatefulWidget {
+class _FadeIndexedStack extends StatefulWidget {
   final int index;
   final List<Widget> children;
   final Duration duration;
 
-  const FadeIndexedStack({
+  const _FadeIndexedStack({
     Key? key,
     required this.index,
     required this.children,
     this.duration = const Duration(
-      milliseconds: 300,
+      milliseconds: 200,
     ),
   }) : super(key: key);
 
@@ -162,12 +193,12 @@ class FadeIndexedStack extends StatefulWidget {
   _FadeIndexedStackState createState() => _FadeIndexedStackState();
 }
 
-class _FadeIndexedStackState extends State<FadeIndexedStack>
+class _FadeIndexedStackState extends State<_FadeIndexedStack>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
 
   @override
-  void didUpdateWidget(FadeIndexedStack oldWidget) {
+  void didUpdateWidget(_FadeIndexedStack oldWidget) {
     if (widget.index != oldWidget.index) {
       _controller.forward(from: 0.0);
     }
