@@ -55,7 +55,7 @@ class ProfileView extends StatelessWidget {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          user.username == ''
+                          user.username == '' || user.username == null
                               ? Text(
                                   'You don\'t have user name',
                                   style: Style.heading

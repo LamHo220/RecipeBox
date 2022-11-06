@@ -1,21 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:recipe_box/app/app.dart';
-import 'package:recipe_box/common/components/texts.dart';
 import 'package:recipe_box/common/constants/colors.dart';
 import 'package:recipe_box/common/constants/paddings.dart';
-import 'package:recipe_box/common/constants/style.dart';
 import 'package:recipe_box/explore/view/explore_page.dart';
 import 'package:recipe_box/recipe/view/recipe_list_page.dart';
 import 'package:recipe_box/home/cubit/home_cubit.dart';
-import 'package:recipe_box/home/home.dart';
 import 'package:recipe_box/home/view/home.dart';
 import 'package:recipe_box/profile/view/profile_page.dart';
-import 'package:recipe_box/recipe/widgets/recipe_card.dart';
-import 'package:recipe_repository/recipe_repository.dart';
 
 class HomeView extends StatelessWidget {
   HomeView({super.key});
@@ -59,7 +53,7 @@ class HomeView extends StatelessWidget {
         floatingActionButtonLocation: _fabLocation,
         floatingActionButton: fab(),
         bottomNavigationBar: bab(),
-        body: IndexedStack(
+        body: FadeIndexedStack(
           index: selectedTab.index,
           children: [
             Home(),
@@ -147,5 +141,60 @@ class _TabButton extends StatelessWidget {
             Text(k['text']),
           ],
         ));
+  }
+}
+
+class FadeIndexedStack extends StatefulWidget {
+  final int index;
+  final List<Widget> children;
+  final Duration duration;
+
+  const FadeIndexedStack({
+    Key? key,
+    required this.index,
+    required this.children,
+    this.duration = const Duration(
+      milliseconds: 300,
+    ),
+  }) : super(key: key);
+
+  @override
+  _FadeIndexedStackState createState() => _FadeIndexedStackState();
+}
+
+class _FadeIndexedStackState extends State<FadeIndexedStack>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void didUpdateWidget(FadeIndexedStack oldWidget) {
+    if (widget.index != oldWidget.index) {
+      _controller.forward(from: 0.0);
+    }
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  void initState() {
+    _controller = AnimationController(vsync: this, duration: widget.duration);
+    _controller.forward();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: _controller,
+      child: IndexedStack(
+        index: widget.index,
+        children: widget.children,
+      ),
+    );
   }
 }

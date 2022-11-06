@@ -80,7 +80,10 @@ class Home extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.baseline,
                 textBaseline: TextBaseline.ideographic,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [heading('Your Favorite Recipes'), seeAll(() => {})],
+                children: [
+                  heading('Your Favorite Recipes'),
+                  seeAll(() => context.read<HomeCubit>().setTab(Tabs.favorite))
+                ],
               ),
             ),
             SingleChildScrollView(
