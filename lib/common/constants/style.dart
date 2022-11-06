@@ -8,8 +8,8 @@ class Style {
   static const TextStyle welcome = TextStyle(
       color: ThemeColors.primaryLight,
       fontSize: 22,
-      height: 1.5,
-      fontWeight: FontWeight.bold);
+      // height: 1.5,
+      fontWeight: FontWeight.w800);
 
   static const TextStyle question =
       TextStyle(color: ThemeColors.gray, fontSize: 16, height: 1.5);

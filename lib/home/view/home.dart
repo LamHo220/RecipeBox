@@ -30,18 +30,14 @@ class Home extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
+        foregroundColor: ThemeColors.text,
         backgroundColor: ThemeColors.white,
         title: Text(
-          "Hello, ${user.username} 👋",
+          "Hello, ${(user.username == '' ? null : user.username) ?? (user.email == null ? '' : user.email!.split('@')[0])} 👋",
         ),
         titleTextStyle: Style.welcome,
+        actions: [Searcher()],
       ),
-      // actions: [
-      //   GestureDetector(
-      //     onTap: () => context.read<AppBloc>().add(AppLogoutRequested()),
-      //     child: Avatar(photo: user.photo),
-      //   )
-      // ],
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -50,11 +46,7 @@ class Home extends StatelessWidget {
             _question,
             Pad.h12,
             Container(
-                padding: Pad.plr12,
-                child: Searcher(placeholder: 'Search Recipes')),
-            Pad.h24,
-            Container(
-              padding: Pad.plr24,
+              padding: Pad.plr16,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.baseline,
                 textBaseline: TextBaseline.ideographic,
@@ -83,7 +75,7 @@ class Home extends StatelessWidget {
               ),
             ),
             Container(
-              padding: Pad.plr24,
+              padding: Pad.plr16,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.baseline,
                 textBaseline: TextBaseline.ideographic,
@@ -109,7 +101,7 @@ class Home extends StatelessWidget {
               ]),
             ),
             Container(
-              padding: Pad.plr24,
+              padding: Pad.plr16,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.baseline,
                 textBaseline: TextBaseline.ideographic,
@@ -135,7 +127,7 @@ class Home extends StatelessWidget {
               ]),
             ),
             Container(
-              padding: Pad.plr24,
+              padding: Pad.plr16,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.baseline,
                 textBaseline: TextBaseline.ideographic,
@@ -171,7 +163,7 @@ class Home extends StatelessWidget {
   }
 
   final Widget _question = Container(
-    padding: Pad.plr12,
+    padding: Pad.plr16,
     child: Text(
       'What do you want to cook today?',
       style: Style.question,

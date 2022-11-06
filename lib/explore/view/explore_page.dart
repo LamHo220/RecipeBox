@@ -19,6 +19,8 @@ class ExploreView extends StatelessWidget {
         backgroundColor: ThemeColors.white,
         title: Text('Explore'),
         titleTextStyle: Style.welcome,
+        foregroundColor: ThemeColors.text,
+        actions: [Searcher()],
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

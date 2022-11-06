@@ -21,9 +21,9 @@ class RecipeItem extends StatelessWidget {
         closedElevation: 0,
         closedBuilder: (context, openContainer) => ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: ThemeColors.white,
-                foregroundColor: ThemeColors.gray,
-              ),
+                  backgroundColor: ThemeColors.white,
+                  foregroundColor: ThemeColors.card,
+                  padding: EdgeInsets.all(16)),
               onPressed: () => openContainer(),
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -56,19 +56,28 @@ class RecipeItem extends StatelessWidget {
                       children: [
                         Icon(Icons.favorite, color: Colors.red[400]),
                         Pad.w4,
-                        Text(recipe.bookmarked.toString()),
+                        Text(
+                          recipe.bookmarked.toString(),
+                          style: Style.search,
+                        ),
                         Pad.w8,
                         Icon(FontAwesomeIcons.codeFork,
                             color: ThemeColors.gray, size: 20),
                         Pad.w4,
-                        Text(recipe.forked.toString()),
+                        Text(
+                          recipe.forked.toString(),
+                          style: Style.search,
+                        ),
                         Pad.w8,
                         Icon(
                           Icons.comment,
                           color: Colors.blue[400],
                         ),
                         Pad.w4,
-                        Text('4.5/5')
+                        Text(
+                          '4.5/5',
+                          style: Style.search,
+                        )
                       ],
                     )
                   ]),

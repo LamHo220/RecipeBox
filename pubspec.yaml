@@ -46,22 +46,22 @@ dependencies:
   sliding_up_panel: ^2.0.0+1
   flutter_bloc: ^8.1.1
   equatable: ^2.0.5
-  firebase_auth: 
+  firebase_auth:
   google_sign_in: ^5.4.2
-  # firebase_core: 
+  # firebase_core:
   authentication_repository:
     path: packages/authentication_repository
-  flow_builder: 
+  flow_builder:
   formz:
   form_inputs:
     path: packages/form_inputs
   recipe_repository:
     path: packages/recipe_repository
-  cloud_firestore: 
+  cloud_firestore:
   lottie: ^1.4.3
   introduction_screen: ^3.0.2
-  settings_ui: ^2.0.2
-
+  awesome_select: ^6.0.0
+  material_floating_search_bar: ^0.3.7
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:recipe_box/common/constants/colors.dart';
 import 'package:recipe_box/common/constants/style.dart';
 
 Widget heading(text) {
@@ -10,5 +11,7 @@ Widget heading(text) {
 
 Widget seeAll(void Function()? f) {
   return TextButton(
-      onPressed: f, child: const Text('see all', style: Style.labelButton));
+      style: TextButton.styleFrom(foregroundColor: ThemeColors.primaryDark),
+      onPressed: f,
+      child: const Text('see all', style: Style.labelButton));
 }

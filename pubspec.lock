@@ -57,6 +57,13 @@ packages:
       relative: true
     source: path
     version: "1.0.0"
+  awesome_select:
+    dependency: "direct main"
+    description:
+      name: awesome_select
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "6.0.0"
   bloc:
     dependency: transitive
     description:
@@ -506,6 +513,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.5"
+  material_floating_search_bar:
+    dependency: "direct main"
+    description:
+      name: material_floating_search_bar
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.3.7"
   meta:
     dependency: transitive
     description:
@@ -639,13 +653,6 @@ packages:
       relative: true
     source: path
     version: "1.0.0+1"
-  settings_ui:
-    dependency: "direct main"
-    description:
-      name: settings_ui
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.2"
   sky_engine:
     dependency: transitive
     description: flutter

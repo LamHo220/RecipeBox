@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:recipe_box/common/components/searcher/widget/searcher.dart';
 import 'package:recipe_box/common/constants/colors.dart';
 import 'package:recipe_box/common/constants/paddings.dart';
 import 'package:recipe_box/common/constants/style.dart';
@@ -10,7 +11,6 @@ import 'package:recipe_repository/recipe_repository.dart';
 
 class RecipeListView extends StatelessWidget {
   RecipeListView({super.key, required this.title});
-  final TextEditingController _searchController = TextEditingController();
   final String title;
   @override
   Widget build(BuildContext context) {
@@ -21,7 +21,7 @@ class RecipeListView extends StatelessWidget {
         title: Text(title),
         titleTextStyle: Style.welcome,
         foregroundColor: ThemeColors.text,
-        actions: [IconButton(onPressed: () => {}, icon: Icon(Icons.search))],
+        actions: [Searcher()],
       ),
       body: FutureBuilder<QuerySnapshot<Recipe>>(
         future: context.read<HomeCubit>().test(),

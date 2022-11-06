@@ -30,10 +30,12 @@ class ProfileView extends StatelessWidget {
           actions: [
             IconButton(onPressed: () => {}, icon: const Icon(Icons.share)),
             OpenContainer(
+                openElevation: 0,
+                closedElevation: 0,
                 closedBuilder: (context, action) => IconButton(
                     onPressed: () => action(),
                     icon: const Icon(Icons.settings)),
-                openBuilder: (context, action) => SettingPage(action:action)),
+                openBuilder: (context, action) => SettingPage(action: action)),
           ]),
       body: Container(
         child: Column(
@@ -49,15 +51,20 @@ class ProfileView extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Avatar(photo: user.photo),
-                      Pad.w8,
+                      Pad.w12,
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            // user.username ?? '',
-                            'Username',
-                            style: Style.heading,
-                          ),
+                          user.username == ''
+                              ? Text(
+                                  'You don\'t have user name',
+                                  style: Style.heading
+                                      .copyWith(color: ThemeColors.card),
+                                )
+                              : Text(
+                                  user.username!,
+                                  style: Style.heading,
+                                ),
                           // Pad.h4,
                           Text(user.email ?? ''),
                         ],
