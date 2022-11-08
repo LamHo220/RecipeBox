@@ -3,6 +3,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:form_inputs/form_inputs.dart';
 import 'package:formz/formz.dart';
+import 'package:recipe_repository/recipe_repository.dart';
 
 part 'sign_up_state.dart';
 
@@ -11,12 +12,30 @@ class SignUpCubit extends Cubit<SignUpState> {
 
   final AuthenticationRepository _authenticationRepository;
 
+  RecipeRepository _recipeRepo = RecipeRepository();
+
+  void usernameChanged(String value) {
+    final username = StringInput.dirty(value: value);
+    emit(
+      state.copyWith(
+        username: username,
+        status: Formz.validate([
+          username,
+          state.email,
+          state.password,
+          state.confirmedPassword,
+        ]),
+      ),
+    );
+  }
+
   void emailChanged(String value) {
     final email = Email.dirty(value);
     emit(
       state.copyWith(
         email: email,
         status: Formz.validate([
+          state.username,
           email,
           state.password,
           state.confirmedPassword,
@@ -36,6 +55,7 @@ class SignUpCubit extends Cubit<SignUpState> {
         password: password,
         confirmedPassword: confirmedPassword,
         status: Formz.validate([
+          state.username,
           state.email,
           password,
           confirmedPassword,
@@ -53,6 +73,7 @@ class SignUpCubit extends Cubit<SignUpState> {
       state.copyWith(
         confirmedPassword: confirmedPassword,
         status: Formz.validate([
+          state.username,
           state.email,
           state.password,
           confirmedPassword,
@@ -68,6 +89,7 @@ class SignUpCubit extends Cubit<SignUpState> {
       await _authenticationRepository.signUp(
         email: state.email.value,
         password: state.password.value,
+        username: state.username.value,
       );
       emit(state.copyWith(status: FormzStatus.submissionSuccess));
     } on SignUpWithEmailAndPasswordFailure catch (e) {
@@ -79,6 +101,19 @@ class SignUpCubit extends Cubit<SignUpState> {
       );
     } catch (_) {
       emit(state.copyWith(status: FormzStatus.submissionFailure));
+    }
+    try {
+      await _recipeRepo.createUserDetails(UserDetails(
+          _authenticationRepository.currentUser.id,
+          description: '',
+          favorites: [],
+          privateRecipes: [],
+          publicRecipes: [],
+          level: 0,
+          points: 0,
+          exp: 0));
+    } catch (_) {
+      print(_);
     }
   }
 }

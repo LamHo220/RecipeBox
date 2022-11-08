@@ -1,3 +1,4 @@
+import 'package:authentication_repository/authentication_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
@@ -7,25 +8,29 @@ part 'home_state.dart';
 
 class HomeCubit extends Cubit<HomeState> {
   HomeCubit() : super(const HomeState());
-  RecipeRepository repo = RecipeRepository();
+  RecipeRepository recipeRepo = RecipeRepository();
 
   void setTab(Tabs tab) => emit(HomeState(tab: tab));
   void setShow(bool flag) => emit(HomeState(isShow: flag));
 
   Future<QuerySnapshot<Recipe>> test() async {
-    return repo.getRecipe('user', isNotEqualTo: '');
+    return recipeRepo.getRecipe('user', isNotEqualTo: '');
   }
 
-  Future<QuerySnapshot<Recipe>> userFavorite() async {
+  // Future<QuerySnapshot<Recipe>> userFavorite(User user) async {
     // Step 1: get user favorite list
-
+    // List<String>? favorites = user.favorites;
+    // if (favorites ==null ){
+    //   return recipeRepo.getRecipe('user', isEqualTo: '');
+    // }
     // Step 2: get the recipes
-
     // Step 3: get the user info of the recipe
-
+    // Future<QuerySnapshot<Recipe>> recipes = recipeRepo.getRecipe('user', isEqualTo: user.id);
+    // Future<QuerySnapshot<User>> users = 
     // return the recipes
-    return repo.getRecipe('user', isNotEqualTo: '');
-  }
+    // return recipes;
+    // return;
+  // }
 
   Future<QuerySnapshot<Recipe>> userRecipes() async {
     // Step 1: get user created list
@@ -33,7 +38,7 @@ class HomeCubit extends Cubit<HomeState> {
     // Step 2: get the recipes
 
     // return the recipes
-    return repo.getRecipe('user', isNotEqualTo: '');
+    return recipeRepo.getRecipe('user', isNotEqualTo: '');
   }
 
   Future<QuerySnapshot<Recipe>> popularRecipes() async {
@@ -42,6 +47,6 @@ class HomeCubit extends Cubit<HomeState> {
     // Step 2: get the user info of the recipe
 
     // return the recipes
-    return repo.getRecipe('user', isNotEqualTo: '');
+    return recipeRepo.getRecipe('user', isNotEqualTo: '');
   }
 }

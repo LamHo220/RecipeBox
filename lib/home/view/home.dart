@@ -26,14 +26,14 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = context.select((AppBloc bloc) => bloc.state.user);
-
+    print(user);
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
         foregroundColor: ThemeColors.text,
         backgroundColor: ThemeColors.white,
         title: Text(
-          "Hello, ${(user.username == '' ? null : user.username) ?? (user.email == null ? '' : user.email!.split('@')[0])} 👋",
+          "Hello, ${(user.username == '' ? null : user.username) ?? (user.email == null ? '' : user.email!.split('@')[1])} 👋",
         ),
         titleTextStyle: Style.welcome,
         actions: [Searcher()],

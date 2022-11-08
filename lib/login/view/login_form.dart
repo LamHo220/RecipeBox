@@ -43,8 +43,6 @@ class LoginForm extends StatelessWidget {
               const SizedBox(height: 4),
               _SignUpButton(),
               const SizedBox(height: 12),
-
-              Text('Continue without account')
             ],
           ),
         ),
@@ -145,21 +143,6 @@ class _GoogleLoginButton extends StatelessWidget {
 }
 
 class _SignUpButton extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return TextButton(
-      key: const Key('loginForm_createAccount_flatButton'),
-      onPressed: () => Navigator.of(context).push<void>(SignUpPage.route()),
-      child: Text(
-        'CREATE ACCOUNT',
-        style: TextStyle(color: theme.primaryColor),
-      ),
-    );
-  }
-}
-
-class _ContinueWithoutAccount extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);

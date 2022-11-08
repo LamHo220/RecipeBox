@@ -20,11 +20,13 @@ class SignUpForm extends StatelessWidget {
             );
         }
       },
-      child: Align(
-        alignment: const Alignment(0, -1 / 3),
+      child: SingleChildScrollView(
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            _UsernameInput(),
+            const SizedBox(height: 8),
             _EmailInput(),
             const SizedBox(height: 8),
             _PasswordInput(),
@@ -35,6 +37,29 @@ class SignUpForm extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _UsernameInput extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<SignUpCubit, SignUpState>(
+      buildWhen: (previous, current) => previous.username != current.username,
+      builder: (context, state) {
+        return TextField(
+          key: const Key('signUpForm_usernameInput_textField'),
+          onChanged: (username) =>
+              context.read<SignUpCubit>().usernameChanged(username),
+          keyboardType: TextInputType.emailAddress,
+          decoration: InputDecoration(
+            labelText: 'username',
+            helperText: '',
+            errorText:
+                state.username.invalid ? 'username should not be empty.' : null,
+          ),
+        );
+      },
     );
   }
 }
