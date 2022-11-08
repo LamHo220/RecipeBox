@@ -1,16 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
-import 'package:uuid/uuid.dart';
 
 class UserDetails extends Equatable {
-  UserDetails(this.id,
-      {required this.description,
+  const UserDetails(
+      {required this.id,
+      required this.description,
       required this.favorites,
       required this.privateRecipes,
       required this.publicRecipes,
       required this.level,
       required this.points,
-      required this.exp});
+      required this.exp,
+      required this.follows});
 
   final String id;
 
@@ -28,13 +29,26 @@ class UserDetails extends Equatable {
 
   final int points;
 
+  final List<String> follows;
+
+  static const empty = UserDetails(
+      id: '',
+      description: '',
+      favorites: [],
+      privateRecipes: [],
+      publicRecipes: [],
+      level: 0,
+      points: 0,
+      exp: 0,
+      follows: []);
+
   factory UserDetails.fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> snapshot,
     SnapshotOptions? options,
   ) {
     final data = snapshot.data();
     return UserDetails(
-      data?['id'] as String,
+      id: data?['id'] as String,
       description: data?['description'] as String,
       favorites: data?['favorites'] is Iterable
           ? List<String>.from(data?['favorites'])
@@ -48,6 +62,9 @@ class UserDetails extends Equatable {
       exp: int.parse(data?['exp']),
       level: int.parse(data?['level']),
       points: int.parse(data?['points']),
+      follows: data?['follows'] is Iterable
+          ? List<String>.from(data?['follows'])
+          : [],
     );
   }
 

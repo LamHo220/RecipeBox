@@ -63,6 +63,7 @@ dependencies:
   awesome_select: ^6.0.0
   material_floating_search_bar: ^0.3.7
   infinite_scroll_pagination: ^3.2.0
+  numberpicker: ^2.1.1
 dev_dependencies:
   flutter_test:
     sdk: flutter

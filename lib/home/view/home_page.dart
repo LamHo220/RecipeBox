@@ -90,7 +90,7 @@ class HomeView extends StatelessWidget {
           index: selectedTab.index,
           children: [
             Home(),
-            RecipeListPage(
+            FavoriteRecipePage(
               title: 'Favorite',
             ),
             Container(),

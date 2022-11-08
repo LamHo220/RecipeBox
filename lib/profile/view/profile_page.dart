@@ -22,6 +22,8 @@ class ProfileView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = context.select((AppBloc bloc) => bloc.state.user);
+    final userDetails =
+        context.select((AppBloc bloc) => bloc.state.userDetails);
     return Scaffold(
       appBar: AppBar(
           elevation: 0,
@@ -73,7 +75,7 @@ class ProfileView extends StatelessWidget {
                   ),
                   Pad.h24,
                   Text(
-                    user.description ?? 'The user does not have bio.',
+                    userDetails.description ?? 'The user does not have bio.',
                     style: Style.search,
                   ),
                   Row(

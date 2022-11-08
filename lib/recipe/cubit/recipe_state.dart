@@ -2,42 +2,57 @@ part of 'recipe_cubit.dart';
 
 class RecipeState extends Equatable {
   RecipeState({
-    this.title = const StringInput.pure(),
+    this.name = const StringInput.pure(),
     this.description = const StringInput.pure(),
-    this.step = const StringInput.pure(),
-    this.ingredient = const StringInput.pure(),
-    this.steps = const [],
-    this.ingredients = const [],
-    this.errorMessage,
+    this.cal = 0,
+    this.gram = 0,
+    this.time = const {'hr': 0, 'min': 0},
+    required this.steps,
+    required this.ingredients,
+    required this.categories,
+    // this.errorMessage,
   });
 
-  StringInput title;
+  StringInput name;
 
   StringInput description;
 
-  StringInput step;
+  double cal;
+  double gram;
+  Map<String, int> time;
 
-  StringInput ingredient;
+  List<String> categories;
 
-  List<StringInput> steps;
-  List<StringInput> ingredients;
+  List<TextEditingController> steps;
 
-  final String? errorMessage;
+  List<Map<String, TextEditingController>> ingredients;
+
+  // final String? errorMessage;
 
   @override
-  List<Object> get props => [title];
+  List<Object> get props =>
+      [name, description, cal, gram, time, categories, steps, ingredients];
 
   RecipeState copyWith({
-    StringInput? title,
+    StringInput? name,
     StringInput? description,
-    List<StringInput>? steps,
-    List<StringInput>? ingredients,
-    String? errorMessage,
+    List<TextEditingController>? steps,
+    List<Map<String, TextEditingController>>? ingredients,
+    double? cal,
+    double? gram,
+    Map<String, int>? time,
+    List<String>? categories,
   }) {
     return RecipeState(
-      title: title ?? this.title,
+      name: name ?? this.name,
       description: description ?? this.description,
-      errorMessage: errorMessage ?? this.errorMessage,
+      cal: cal ?? this.cal,
+      gram: gram ?? this.gram,
+      time: time ?? this.time,
+      steps: steps ?? this.steps,
+      ingredients: ingredients ?? this.ingredients,
+      categories: categories ?? this.categories,
+      // errorMessage: errorMessage ?? this.errorMessage,
     );
   }
 }

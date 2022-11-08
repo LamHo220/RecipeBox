@@ -7,7 +7,5 @@ part 'searcher_state.dart';
 class SearcherCubit extends Cubit<SearcherState> {
   SearcherCubit() : super(SearcherState());
 
-  void controllerChanged(String x) {
-    print(x);
-  }
+  void controllerChanged(String x) {}
 }

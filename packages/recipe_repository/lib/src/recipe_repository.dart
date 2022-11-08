@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:recipe_repository/recipe_repository.dart';
-import 'package:recipe_repository/src/models/recipe.dart';
 
 class RecipeRepository {
   RecipeRepository() {}
@@ -8,20 +7,6 @@ class RecipeRepository {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   // Stream<List<Recipe>> getRecipe() => _RecipeApi.getRecipe();
-
-  Future<void> createUserDetails(UserDetails userDetails) async {
-    // store to firebase
-    firestore
-        .collection('users')
-        .doc(userDetails.id)
-        .withConverter(
-          fromFirestore: UserDetails.fromFirestore,
-          toFirestore: (UserDetails userDetails, _) => userDetails.toFirestore(),
-        )
-        .set(userDetails)
-        .then((value) => print('DocumentSnapshot added with ID: ${userDetails.id}'),
-            onError: (e) => print("Error creating document $e"));
-  }
 
   Future<void> createRecipe(Recipe recipe) async {
     // store to firebase

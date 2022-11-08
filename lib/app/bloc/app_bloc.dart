@@ -4,6 +4,7 @@ import 'package:authentication_repository/authentication_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
+import 'package:recipe_repository/recipe_repository.dart';
 
 part 'app_event.dart';
 part 'app_state.dart';
@@ -13,13 +14,15 @@ class AppBloc extends Bloc<AppEvent, AppState> {
       : _authenticationRepository = authenticationRepository,
         super(
           authenticationRepository.currentUser.isNotEmpty
-              ? AppState.authenticated(authenticationRepository.currentUser)
+              ? AppState.authenticated(authenticationRepository.currentUser,
+                  authenticationRepository.currentUserDetails)
               : const AppState.unauthenticated(),
         ) {
     on<AppUserChanged>(_onUserChanged);
     on<AppLogoutRequested>(_onLogoutRequested);
     _userSubscription = _authenticationRepository.user.listen(
-      (user) => add(AppUserChanged(user)),
+      (user) => add(
+          AppUserChanged(user, _authenticationRepository.currentUserDetails)),
     );
   }
 
@@ -29,7 +32,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   void _onUserChanged(AppUserChanged event, Emitter<AppState> emit) {
     emit(
       event.user.isNotEmpty
-          ? AppState.authenticated(event.user)
+          ? AppState.authenticated(event.user, event.userDetails)
           : const AppState.unauthenticated(),
     );
   }

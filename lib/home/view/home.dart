@@ -26,7 +26,6 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = context.select((AppBloc bloc) => bloc.state.user);
-    print(user);
     return Scaffold(
       appBar: AppBar(
         elevation: 0,

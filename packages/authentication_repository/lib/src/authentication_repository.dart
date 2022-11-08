@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:authentication_repository/authentication_repository.dart';
+import 'package:authentication_repository/src/models/user_details.dart';
 import 'package:cache/cache.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:firebase_auth_platform_interface/firebase_auth_platform_interface.dart';
@@ -135,6 +136,7 @@ class AuthenticationRepository {
   final CacheClient _cache;
   final firebase_auth.FirebaseAuth _firebaseAuth;
   final GoogleSignIn _googleSignIn;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   @visibleForTesting
   bool isWeb = kIsWeb;
@@ -150,8 +152,28 @@ class AuthenticationRepository {
     });
   }
 
+  Stream<UserDetails> get userDetails {
+    final ref = firestore
+        .collection('users')
+        .withConverter(
+          fromFirestore: UserDetails.fromFirestore,
+          toFirestore: (UserDetails userDetails, _) =>
+              userDetails.toFirestore(),
+        )
+        .where('id', isEqualTo: _firebaseAuth.currentUser!.uid)
+        .get();
+    final x = ref.then((value) {
+      return value.docs.first.data();
+    }, onError: (_) => print('error on getting user details'));
+    return x.asStream();
+  }
+
   User get currentUser {
     return _cache.read<User>(key: userCacheKey) ?? User.empty;
+  }
+
+  UserDetails get currentUserDetails {
+    return _cache.read<UserDetails>(key: userCacheKey) ?? UserDetails.empty;
   }
 
   Future<void> signUp(
@@ -227,6 +249,22 @@ class AuthenticationRepository {
     }
   }
 
+  Future<void> createUserDetails(UserDetails userDetails) async {
+    // store to firebase
+    firestore
+        .collection('users')
+        .doc(userDetails.id)
+        .withConverter(
+          fromFirestore: UserDetails.fromFirestore,
+          toFirestore: (UserDetails userDetails, _) =>
+              userDetails.toFirestore(),
+        )
+        .set(userDetails)
+        .then(
+            (value) =>
+                print('DocumentSnapshot added with ID: ${userDetails.id}'),
+            onError: (e) => print("Error creating document $e"));
+  }
 }
 
 extension on firebase_auth.User {

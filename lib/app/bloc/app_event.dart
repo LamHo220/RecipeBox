@@ -11,10 +11,12 @@ class AppLogoutRequested extends AppEvent {}
 
 class AppUserChanged extends AppEvent {
   @visibleForTesting
-  const AppUserChanged(this.user);
+  const AppUserChanged(this.user, this.userDetails);
 
   final User user;
 
+  final UserDetails userDetails;
+
   @override
-  List<Object> get props => [user];
+  List<Object> get props => [user, userDetails];
 }

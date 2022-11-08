@@ -3,7 +3,6 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:form_inputs/form_inputs.dart';
 import 'package:formz/formz.dart';
-import 'package:recipe_repository/recipe_repository.dart';
 
 part 'sign_up_state.dart';
 
@@ -11,8 +10,6 @@ class SignUpCubit extends Cubit<SignUpState> {
   SignUpCubit(this._authenticationRepository) : super(const SignUpState());
 
   final AuthenticationRepository _authenticationRepository;
-
-  RecipeRepository _recipeRepo = RecipeRepository();
 
   void usernameChanged(String value) {
     final username = StringInput.dirty(value: value);
@@ -103,15 +100,16 @@ class SignUpCubit extends Cubit<SignUpState> {
       emit(state.copyWith(status: FormzStatus.submissionFailure));
     }
     try {
-      await _recipeRepo.createUserDetails(UserDetails(
-          _authenticationRepository.currentUser.id,
+      await _authenticationRepository.createUserDetails(UserDetails(
+          id: _authenticationRepository.currentUser.id,
           description: '',
           favorites: [],
           privateRecipes: [],
           publicRecipes: [],
           level: 0,
           points: 0,
-          exp: 0));
+          exp: 0,
+          follows: []));
     } catch (_) {
       print(_);
     }
