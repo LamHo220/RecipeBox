@@ -7,6 +7,8 @@ class RecipeState extends Equatable {
     this.cal = 0,
     this.gram = 0,
     this.time = const {'hr': 0, 'min': 0},
+    this.isPublic = false,
+    this.note = '',
     required this.steps,
     required this.ingredients,
     required this.categories,
@@ -17,9 +19,11 @@ class RecipeState extends Equatable {
 
   StringInput description;
 
-  double cal;
-  double gram;
+  int cal;
+  int gram;
   Map<String, int> time;
+  bool isPublic;
+  String note;
 
   List<String> categories;
 
@@ -38,22 +42,26 @@ class RecipeState extends Equatable {
     StringInput? description,
     List<TextEditingController>? steps,
     List<Map<String, TextEditingController>>? ingredients,
-    double? cal,
-    double? gram,
+    int? cal,
+    int? gram,
     Map<String, int>? time,
     List<String>? categories,
+    String? note,
+    bool? isPublic,
   }) {
     return RecipeState(
-      name: name ?? this.name,
-      description: description ?? this.description,
-      cal: cal ?? this.cal,
-      gram: gram ?? this.gram,
-      time: time ?? this.time,
-      steps: steps ?? this.steps,
-      ingredients: ingredients ?? this.ingredients,
-      categories: categories ?? this.categories,
-      // errorMessage: errorMessage ?? this.errorMessage,
-    );
+        name: name ?? this.name,
+        description: description ?? this.description,
+        cal: cal ?? this.cal,
+        gram: gram ?? this.gram,
+        time: time ?? this.time,
+        steps: steps ?? this.steps,
+        ingredients: ingredients ?? this.ingredients,
+        categories: categories ?? this.categories,
+        note: note ?? this.note,
+        isPublic: isPublic ?? this.isPublic
+        // errorMessage: errorMessage ?? this.errorMessage,
+        );
   }
 }
 

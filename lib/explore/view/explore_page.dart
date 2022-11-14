@@ -24,6 +24,7 @@ class ExploreView extends StatelessWidget {
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           // Container(
           //   padding: Pad.plr12,
@@ -42,7 +43,19 @@ class ExploreView extends StatelessWidget {
               'Categories',
               style: Style.heading,
             ),
-          )
+          ),
+          ListView.builder(
+              physics: NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: Categories.values.length,
+              itemBuilder: (context, index) => TextButton(
+                    style: TextButton.styleFrom(
+                        foregroundColor: ThemeColors.text, padding: Pad.pa12),
+                    onPressed: () => {},
+                    child: Row(
+                      children: [Text(Categories.values[index].name)],
+                    ),
+                  ))
         ],
       ),
     );
@@ -60,4 +73,12 @@ class ExplorePage extends StatelessWidget {
       child: ExploreView(),
     );
   }
+}
+
+enum Categories {
+  Breakfast,
+  Lunch,
+  Dinner,
+  Dessert,
+  Vegetable,
 }

@@ -1,4 +1,6 @@
+import 'package:authentication_repository/authentication_repository.dart';
 import 'package:bloc/bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:formz/formz.dart';
@@ -9,6 +11,8 @@ part 'recipe_state.dart';
 class RecipeCubit extends Cubit<RecipeState> {
   RecipeCubit()
       : super(RecipeState(steps: [], ingredients: [], categories: []));
+
+  RecipeRepository recipeRepo = RecipeRepository();
 
   void nameChanged(String value) {
     final name = StringInput.dirty(value: value);
@@ -28,20 +32,12 @@ class RecipeCubit extends Cubit<RecipeState> {
     );
   }
 
-  void calChanged(double? value) {
-    emit(
-      state.copyWith(
-        cal: value,
-      ),
-    );
+  void calChanged(int value) {
+    emit(state.copyWith(cal: value));
   }
 
-  void gramChanged(double? value) {
-    emit(
-      state.copyWith(
-        gram: value,
-      ),
-    );
+  void gramChanged(int value) {
+    emit(state.copyWith(gram: value));
   }
 
   void setHour(int value) {
@@ -80,5 +76,23 @@ class RecipeCubit extends Cubit<RecipeState> {
       x.removeAt(i);
     } catch (_) {}
     emit(state.copyWith(ingredients: x));
+  }
+
+  void submit(User user) {
+    recipeRepo.createRecipe(Recipe(
+        name: state.name.value,
+        description: state.description.value,
+        bookmarked: 0,
+        cal: state.cal,
+        gram: state.gram,
+        forked: 0,
+        ingredients: state.ingredients,
+        isPublic: state.isPublic,
+        note: state.note,
+        steps: state.steps.map((e) => e.text).toList(),
+        categories: state.categories,
+        timestamp: Timestamp.now(),
+        user: user.id,
+        time: state.time));
   }
 }

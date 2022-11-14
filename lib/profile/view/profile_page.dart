@@ -65,7 +65,7 @@ class ProfileView extends StatelessWidget {
                                 )
                               : Text(
                                   user.username!,
-                                  style: Style.heading,
+                                  style: Style.heading.copyWith(height: 1),
                                 ),
                           // Pad.h4,
                           Text(user.email ?? ''),
@@ -73,9 +73,11 @@ class ProfileView extends StatelessWidget {
                       )
                     ],
                   ),
-                  Pad.h24,
+                  Pad.h4,
                   Text(
-                    userDetails.description ?? 'The user does not have bio.',
+                    userDetails.description == ''
+                        ? 'The user does not have bio.'
+                        : userDetails.description,
                     style: Style.search,
                   ),
                   Row(

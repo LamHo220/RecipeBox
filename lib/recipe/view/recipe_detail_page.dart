@@ -1,16 +1,19 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:recipe_box/app/app.dart';
 import 'package:recipe_box/common/constants/colors.dart';
 import 'package:recipe_box/common/constants/paddings.dart';
 import 'package:recipe_box/common/constants/style.dart';
+import 'package:recipe_box/recipe/cubit/recipe_cubit.dart';
 import 'package:recipe_box/recipe/view/recipe_steps.dart';
 import 'package:recipe_repository/recipe_repository.dart';
 
 // TODO: Add function to the bottom buttons
-class RecipeDetails extends StatelessWidget {
-  const RecipeDetails(
+class RecipeDetailsView extends StatelessWidget {
+  const RecipeDetailsView(
       {Key? key, required this.recipe, required this.closedContainer})
       : super(key: key);
 
@@ -19,6 +22,7 @@ class RecipeDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final user = context.select((AppBloc bloc) => bloc.state.user);
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
@@ -27,6 +31,48 @@ class RecipeDetails extends StatelessWidget {
           icon: Icon(Icons.arrow_back_ios_new),
         ),
         backgroundColor: Colors.transparent,
+        actions: user.id == recipe.user
+            ? [
+                PopupMenuButton(onSelected: (value) {
+                  if (value == 0) {
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return CupertinoAlertDialog(
+                            title: Text('Warning'),
+                            content: Text(
+                                'Are you really want to delete the recipe?'),
+                            actions: [
+                              TextButton(
+                                style: TextButton.styleFrom(
+                                    foregroundColor: ThemeColors.primaryDark),
+                                child: Text("No"),
+                                onPressed: () => Navigator.pop(context, false),
+                              ),
+                              TextButton(
+                                style: TextButton.styleFrom(
+                                    foregroundColor: ThemeColors.primaryDark),
+                                child: Text("Yes"),
+                                onPressed: () => Navigator.pop(context, true),
+                              )
+                            ],
+                          );
+                        }).then((value) {
+                      if (value) {
+                        // TODO: delete Recipe
+                      }
+                    });
+                  }
+                }, itemBuilder: (context) {
+                  return [
+                    PopupMenuItem<int>(
+                      value: 0,
+                      child: Text("Delete Recipe"),
+                    ),
+                  ];
+                })
+              ]
+            : null,
         elevation: 0,
       ),
       bottomNavigationBar: BottomAppBar(
@@ -209,11 +255,11 @@ class RecipeDetails extends StatelessWidget {
                             Column(
                               children: [
                                 Text(
-                                  recipe.forked.toString(),
+                                  recipe.gram.toString(),
                                   style: Style.highlightText,
                                 ),
                                 Text(
-                                  'saved',
+                                  'gram',
                                   style: Style.label.copyWith(fontSize: 12),
                                 )
                               ],
@@ -323,4 +369,24 @@ ButtonStyle _viewStepsStyle() {
       return ThemeColors.primaryLight;
     },
   ));
+}
+
+class RecipeDetails extends StatelessWidget {
+  const RecipeDetails(
+      {super.key, required this.recipe, required this.closedContainer});
+
+  final Recipe recipe;
+
+  final Function closedContainer;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => RecipeCubit(),
+      child: RecipeDetailsView(
+        recipe: recipe,
+        closedContainer: closedContainer,
+      ),
+    );
+  }
 }
