@@ -13,6 +13,7 @@ class Before extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(recipe);
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12.0),
@@ -71,7 +72,7 @@ class Before extends StatelessWidget {
                               size: 16,
                             ),
                             Text(
-                              ' ${recipe.time['hours'] != '0' ? ('${recipe.time['hours']!}hr') : ''} ${recipe.time['minutes'] != '0' ? ('${recipe.time['minutes']!}mins') : ''}',
+                              ' ${recipe.time['hr'] != '0' ? ('${recipe.time['hr']!}hr') : ''} ${recipe.time['min'] != '0' ? ('${recipe.time['min']!}mins') : ''}',
                               style: Style.cardSubTitle,
                             )
                           ],

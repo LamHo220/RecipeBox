@@ -1,6 +1,7 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_switch/flutter_switch.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:recipe_box/app/app.dart';
@@ -23,224 +24,275 @@ class RecipeAddView extends StatelessWidget {
     final recipe = context.select((RecipeCubit value) => value.state);
 
     return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        title: const Text('Draft'),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        foregroundColor: ThemeColors.text,
-      ),
-      body: SingleChildScrollView(
-        child: Column(children: [
-          Container(
-            alignment: Alignment.bottomLeft,
-            width: double.infinity,
-            height: MediaQuery.of(context).size.height * 0.3,
-            decoration: BoxDecoration(
-                image: DecorationImage(
-                    // TODO: iamge picker
-                    image: Image.network('https://picsum.photos/1024').image,
-                    fit: BoxFit.cover)),
-            child: Container(
-              color: ThemeColors.halfGray,
-              padding:
-                  const EdgeInsets.only(left: 24, right: 24, top: 8, bottom: 8),
-              child: Row(
-                children: [
-                  const Icon(
-                    Icons.account_circle,
-                    color: ThemeColors.white,
-                  ),
-                  Pad.w8,
-                  Wrap(
-                    crossAxisAlignment: WrapCrossAlignment.start,
-                    direction: Axis.vertical,
+        extendBodyBehindAppBar: true,
+        appBar: AppBar(
+          title: const Text('Add Recipe'),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          foregroundColor: ThemeColors.text,
+        ),
+        body: SafeArea(
+          bottom: true,
+          child: SingleChildScrollView(
+            child: Column(children: [
+              Container(
+                alignment: Alignment.bottomLeft,
+                width: double.infinity,
+                height: MediaQuery.of(context).size.height * 0.3,
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                        // TODO: iamge picker
+                        image:
+                            Image.network('https://picsum.photos/1024').image,
+                        fit: BoxFit.cover)),
+                child: Container(
+                  color: ThemeColors.halfGray,
+                  padding: const EdgeInsets.only(
+                      left: 24, right: 24, top: 8, bottom: 8),
+                  child: Row(
                     children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.baseline,
-                        textBaseline: TextBaseline.ideographic,
-                        children: [
-                          Text(
-                            user.username ?? user.email ?? '',
-                            style: Style.cardTitle,
-                          ),
-                          Pad.w4,
-                          Text(
-                            'lv${userDetails.level}',
-                            style: Style.cardSubTitle.copyWith(fontSize: 12),
-                          )
-                        ],
+                      const Icon(
+                        Icons.account_circle,
+                        color: ThemeColors.white,
                       ),
-                      Text(
-                        "${userDetails.publicRecipes.length} recipes shared",
-                        style: Style.cardSubTitle,
-                      )
-                    ],
-                  )
-                ],
-              ),
-            ),
-          ),
-          Container(
-            padding: EdgeInsetsDirectional.only(start: 12, end: 12),
-            child: Column(
-              children: [
-                Container(
-                  padding: Pad.pa12,
-                  child: Column(
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.baseline,
-                        textBaseline: TextBaseline.ideographic,
+                      Pad.w8,
+                      Wrap(
+                        crossAxisAlignment: WrapCrossAlignment.start,
+                        direction: Axis.vertical,
                         children: [
-                          Expanded(child: _NameInput()),
-                          Pad.w8,
-                          Expanded(
-                            flex: 2,
-                            child: Row(children: [
-                              Wrap(
-                                alignment: WrapAlignment.center,
-                                crossAxisAlignment: WrapCrossAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.favorite,
-                                    color: Colors.red[600],
-                                    size: 16,
-                                  ),
-                                  Text('0')
-                                ],
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.baseline,
+                            textBaseline: TextBaseline.ideographic,
+                            children: [
+                              Text(
+                                user.username ?? user.email ?? '',
+                                style: Style.cardTitle,
                               ),
-                              Pad.w8,
-                              Wrap(
-                                alignment: WrapAlignment.center,
-                                crossAxisAlignment: WrapCrossAlignment.center,
-                                children: const [
-                                  Icon(
-                                    FontAwesomeIcons.codeFork,
-                                    color: ThemeColors.gray,
-                                    size: 16,
-                                  ),
-                                  Text('0')
-                                ],
+                              Pad.w4,
+                              Text(
+                                'lv${userDetails.level}',
+                                style:
+                                    Style.cardSubTitle.copyWith(fontSize: 12),
                               )
-                            ]),
+                            ],
+                          ),
+                          Text(
+                            "${userDetails.publicRecipes.length} recipes shared",
+                            style: Style.cardSubTitle,
                           )
                         ],
-                      ),
-                      Pad.h8,
-                      Container(
-                        padding: Pad.pa12,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadiusDirectional.circular(12),
-                            border: Border.all(
-                              color: ThemeColors.inactive,
-                            )),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              children: [
-                                // TODO
-                                _CalInput(),
-                                Text(
-                                  'cal',
-                                  style: Style.label.copyWith(fontSize: 12),
-                                )
-                              ],
-                            ),
-                            Column(
-                              children: [
-                                _GramInput(),
-                                Text(
-                                  'gram',
-                                  style: Style.label.copyWith(fontSize: 12),
-                                )
-                              ],
-                            ),
-                            Column(
-                              children: [
-                                Text(
-                                  '0',
-                                  style: Style.highlightText,
-                                ),
-                                Text(
-                                  'rating',
-                                  style: Style.label.copyWith(fontSize: 12),
-                                )
-                              ],
-                            ),
-                            Column(
-                              children: [
-                                _TimeInput(),
-                                Text(
-                                  'is needed',
-                                  style: Style.label.copyWith(fontSize: 12),
-                                )
-                              ],
-                            ),
-                            Column(
-                              children: [
-                                Text(
-                                  recipe.steps.length.toString(),
-                                  style: Style.highlightText,
-                                ),
-                                Text(
-                                  'steps',
-                                  style: Style.label.copyWith(fontSize: 12),
-                                )
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      Pad.h12,
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.baseline,
-                        textBaseline: TextBaseline.ideographic,
-                        children: [
-                          const Text(
-                            'Ingredients',
-                            style: Style.heading,
-                          ),
-                          Text('${recipe.ingredients.length} items',
-                              style: Style.label
-                                  .copyWith(color: ThemeColors.inactive))
-                        ],
-                      ),
-                      // Pad.h24,
-                      // for (int i = 0; i < recipe.ingredients.length; ++i)
-                      //   Container(
-                      //     padding: EdgeInsetsDirectional.only(bottom: 24),
-                      //     child: Row(
-                      //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      //       crossAxisAlignment: CrossAxisAlignment.baseline,
-                      //       textBaseline: TextBaseline.ideographic,
-                      //       children: [
-                      //         Text("${(i + 1)}.", style: Style.label),
-                      //         Pad.w8,
-                      //         Expanded(
-                      //           child: Text(recipe.ingredients[i]['name']!,
-                      //               style: Style.label),
-                      //         ),
-                      //         Text(
-                      //           recipe.ingredients[i]['value']!,
-                      //           style: Style.label.copyWith(
-                      //             color: ThemeColors.gray,
-                      //           ),
-                      //         )
-                      //       ],
-                      //     ),
-                      //   )
+                      )
                     ],
                   ),
                 ),
-              ],
-            ),
+              ),
+              Container(
+                padding: EdgeInsetsDirectional.only(start: 12, end: 12),
+                child: Column(
+                  children: [
+                    Container(
+                      padding: Pad.pa12,
+                      child: Column(
+                        children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.baseline,
+                            textBaseline: TextBaseline.ideographic,
+                            children: [
+                              Expanded(child: _NameInput()),
+                              Pad.w8,
+                              Expanded(
+                                flex: 2,
+                                child: Row(children: [
+                                  Wrap(
+                                    alignment: WrapAlignment.center,
+                                    crossAxisAlignment:
+                                        WrapCrossAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.favorite,
+                                        color: Colors.red[600],
+                                        size: 16,
+                                      ),
+                                      Text('0')
+                                    ],
+                                  ),
+                                  Pad.w8,
+                                  Wrap(
+                                    alignment: WrapAlignment.center,
+                                    crossAxisAlignment:
+                                        WrapCrossAlignment.center,
+                                    children: const [
+                                      Icon(
+                                        FontAwesomeIcons.codeFork,
+                                        color: ThemeColors.gray,
+                                        size: 16,
+                                      ),
+                                      Text('0')
+                                    ],
+                                  )
+                                ]),
+                              )
+                            ],
+                          ),
+                          Pad.h8,
+                          Container(
+                            padding: Pad.pa12,
+                            decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadiusDirectional.circular(12),
+                                border: Border.all(
+                                  color: ThemeColors.inactive,
+                                )),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  children: [
+                                    // TODO
+                                    _CalInput(),
+                                    Text(
+                                      'cal',
+                                      style: Style.label.copyWith(fontSize: 12),
+                                    )
+                                  ],
+                                ),
+                                Column(
+                                  children: [
+                                    _GramInput(),
+                                    Text(
+                                      'gram',
+                                      style: Style.label.copyWith(fontSize: 12),
+                                    )
+                                  ],
+                                ),
+                                Column(
+                                  children: [
+                                    Text(
+                                      '0',
+                                      style: Style.highlightText,
+                                    ),
+                                    Text(
+                                      'rating',
+                                      style: Style.label.copyWith(fontSize: 12),
+                                    )
+                                  ],
+                                ),
+                                Column(
+                                  children: [
+                                    _TimeInput(),
+                                    Text(
+                                      'is needed',
+                                      style: Style.label.copyWith(fontSize: 12),
+                                    )
+                                  ],
+                                ),
+                                Column(
+                                  children: [
+                                    Text(
+                                      recipe.steps.length.toString(),
+                                      style: Style.highlightText,
+                                    ),
+                                    Text(
+                                      'steps',
+                                      style: Style.label.copyWith(fontSize: 12),
+                                    )
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                          Pad.h12,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.baseline,
+                            textBaseline: TextBaseline.ideographic,
+                            children: [
+                              const Text(
+                                'Ingredients',
+                                style: Style.heading,
+                              ),
+                              Text('${recipe.ingredients.length} items',
+                                  style: Style.label
+                                      .copyWith(color: ThemeColors.inactive))
+                            ],
+                          ),
+                          Pad.h24,
+                          _IngredientInput(),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              IconButton(
+                                  onPressed: () {
+                                    context.read<RecipeCubit>().addIngredient();
+                                  },
+                                  icon: Icon(Icons.add_circle_outline_outlined))
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.baseline,
+                            textBaseline: TextBaseline.ideographic,
+                            children: [
+                              const Text(
+                                'Steps',
+                                style: Style.heading,
+                              ),
+                              Text('${recipe.ingredients.length} steps',
+                                  style: Style.label
+                                      .copyWith(color: ThemeColors.inactive))
+                            ],
+                          ),
+                          Pad.h24,
+                          _StepInput(),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              IconButton(
+                                  onPressed: () {
+                                    context.read<RecipeCubit>().addSteps();
+                                  },
+                                  icon: Icon(Icons.add_circle_outline_outlined))
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.baseline,
+                            textBaseline: TextBaseline.ideographic,
+                            children: [
+                              const Text(
+                                'Notes from you',
+                                style: Style.heading,
+                              ),
+                            ],
+                          ),
+                          _NoteInput(),
+                          Pad.h24,
+                          Row(
+                            children: [
+                              Text(
+                                'Is Public?',
+                                style: Style.heading,
+                              ),
+                              _SetIsPublic()
+                            ],
+                          ),
+                          Pad.h24,
+                          ElevatedButton(
+                            onPressed: () =>
+                                context.read<RecipeCubit>().submit(user),
+                            child: Text('Post'),
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: ThemeColors.primaryLight),
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ]),
           ),
-        ]),
-      ),
-    );
+        ));
   }
 }
 
@@ -310,28 +362,31 @@ class _StepInput extends StatelessWidget {
     return BlocBuilder<RecipeCubit, RecipeState>(
         buildWhen: (previous, current) =>
             previous.steps.length != current.steps.length,
-        builder: (context, state) => ListView.separated(
-              itemCount: state.steps.length,
-              physics: NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              separatorBuilder: (context, index) => Divider(
-                color: ThemeColors.white,
-              ),
-              key: Key('steps'),
-              itemBuilder: (context, index) => TextField(
-                controller: state.steps[index],
-                // onChanged: (value) =>
-                //     context.read<RecipeCubit>().stepChanged(index, value),
-                decoration: InputDecoration(
-                    labelText: 'step ${(index + 1)}*',
-                    errorText:
-                        state.steps[index].text.isEmpty ? 'required' : null,
-                    suffixIcon: IconButton(
-                        onPressed: () =>
-                            context.read<RecipeCubit>().deleteStep(index),
-                        icon: Icon(Icons.close))),
-              ),
-            ));
+        builder: (context, state) => state.steps.isNotEmpty
+            ? ListView.separated(
+                padding: EdgeInsets.zero,
+                itemCount: state.steps.length,
+                physics: NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                separatorBuilder: (context, index) => Divider(
+                  color: ThemeColors.white,
+                ),
+                key: Key('steps'),
+                itemBuilder: (context, index) => TextField(
+                  controller: state.steps[index],
+                  // onChanged: (value) =>
+                  //     context.read<RecipeCubit>().stepChanged(index, value),
+                  decoration: InputDecoration(
+                      labelText: 'step ${(index + 1)}*',
+                      errorText:
+                          state.steps[index].text.isEmpty ? 'required' : null,
+                      suffixIcon: IconButton(
+                          onPressed: () =>
+                              context.read<RecipeCubit>().deleteStep(index),
+                          icon: Icon(Icons.close))),
+                ),
+              )
+            : Container());
   }
 }
 
@@ -341,54 +396,57 @@ class _IngredientInput extends StatelessWidget {
     return BlocBuilder<RecipeCubit, RecipeState>(
         buildWhen: (previous, current) =>
             previous.ingredients != current.ingredients,
-        builder: (context, state) => ListView.separated(
-              itemCount: state.ingredients.length,
-              physics: NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              separatorBuilder: (context, index) => Divider(
-                color: ThemeColors.white,
-              ),
-              key: Key('ingredients'),
-              itemBuilder: (context, index) => Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: state.ingredients[index]['item'],
+        builder: (context, state) => state.ingredients.isNotEmpty
+            ? ListView.separated(
+                padding: EdgeInsets.zero,
+                itemCount: state.ingredients.length,
+                physics: NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                separatorBuilder: (context, index) => Divider(
+                  color: ThemeColors.white,
+                ),
+                key: Key('ingredients'),
+                itemBuilder: (context, index) => Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: state.ingredients[index]['item'],
 
+                        // onChanged: (value) =>
+                        //     context.read<RecipeCubit>().stepChanged(index, value),
+                        decoration: InputDecoration(
+                          labelText: 'item ${(index + 1)}*',
+                          helperText: 'required',
+                          errorText:
+                              state.ingredients[index]['item']!.text.isEmpty
+                                  ? 'required'
+                                  : null,
+                        ),
+                      ),
+                    ),
+                    Pad.w4,
+                    Expanded(
+                        child: TextField(
+                      controller: state.ingredients[index]['value'],
                       // onChanged: (value) =>
                       //     context.read<RecipeCubit>().stepChanged(index, value),
                       decoration: InputDecoration(
-                        labelText: 'item ${(index + 1)}*',
-                        helperText: 'required',
-                        errorText:
-                            state.ingredients[index]['item']!.text.isEmpty
-                                ? 'required'
-                                : null,
-                      ),
-                    ),
-                  ),
-                  Pad.w4,
-                  Expanded(
-                      child: TextField(
-                    controller: state.ingredients[index]['value'],
-                    // onChanged: (value) =>
-                    //     context.read<RecipeCubit>().stepChanged(index, value),
-                    decoration: InputDecoration(
-                        labelText: 'serving size ${(index + 1)}*',
-                        helperText: 'required',
-                        errorText:
-                            state.ingredients[index]['value']!.text.isEmpty
-                                ? 'required'
-                                : null,
-                        suffixIcon: IconButton(
-                            onPressed: () => context
-                                .read<RecipeCubit>()
-                                .deleteIngredient(index),
-                            icon: Icon(Icons.close))),
-                  ))
-                ],
-              ),
-            ));
+                          labelText: 'serving size ${(index + 1)}*',
+                          helperText: 'required',
+                          errorText:
+                              state.ingredients[index]['value']!.text.isEmpty
+                                  ? 'required'
+                                  : null,
+                          suffixIcon: IconButton(
+                              onPressed: () => context
+                                  .read<RecipeCubit>()
+                                  .deleteIngredient(index),
+                              icon: Icon(Icons.close))),
+                    ))
+                  ],
+                ),
+              )
+            : Container());
   }
 }
 
@@ -501,5 +559,45 @@ class _TimeInput extends StatelessWidget {
         ),
       ],
     );
+  }
+}
+
+class _NoteInput extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<RecipeCubit, RecipeState>(
+      buildWhen: (previous, current) => previous.note != current.note,
+      builder: (context, state) {
+        return TextFormField(
+          key: const Key('note_input_textField'),
+          minLines: 1,
+          maxLines: 100,
+          keyboardType: TextInputType.text,
+          onChanged: (value) => context.read<RecipeCubit>().noteChanged(value),
+          style: Style.heading,
+          decoration: InputDecoration(
+            contentPadding: EdgeInsets.all(0),
+            border: UnderlineInputBorder(),
+            labelText: 'note*',
+            // errorText: state.note ? 'required' : null,
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _SetIsPublic extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<RecipeCubit, RecipeState>(
+        buildWhen: (previous, current) => previous.isPublic != current.isPublic,
+        builder: (context, state) {
+          return Switch(
+              value: state.isPublic,
+              activeColor: ThemeColors.primaryLight,
+              onChanged: (val) =>
+                  context.read<RecipeCubit>().changeIsPublic(val));
+        });
   }
 }

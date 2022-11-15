@@ -18,27 +18,28 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   // Future<QuerySnapshot<Recipe>> userFavorite(User user) async {
-    // Step 1: get user favorite list
-    // List<String>? favorites = user.favorites;
-    // if (favorites ==null ){
-    //   return recipeRepo.getRecipe('user', isEqualTo: '');
-    // }
-    // Step 2: get the recipes
-    // Step 3: get the user info of the recipe
-    // Future<QuerySnapshot<Recipe>> recipes = recipeRepo.getRecipe('user', isEqualTo: user.id);
-    // Future<QuerySnapshot<User>> users = 
-    // return the recipes
-    // return recipes;
-    // return;
+  // Step 1: get user favorite list
+  // List<String>? favorites = user.favorites;
+  // if (favorites ==null ){
+  //   return recipeRepo.getRecipe('user', isEqualTo: '');
+  // }
+  // Step 2: get the recipes
+  // Step 3: get the user info of the recipe
+  // Future<QuerySnapshot<Recipe>> recipes = recipeRepo.getRecipe('user', isEqualTo: user.id);
+  // Future<QuerySnapshot<User>> users =
+  // return the recipes
+  // return recipes;
+  // return;
   // }
 
-  Future<QuerySnapshot<Recipe>> userRecipes() async {
+  Future<QuerySnapshot<Recipe>> userRecipes(user) async {
     // Step 1: get user created list
 
     // Step 2: get the recipes
 
     // return the recipes
-    return recipeRepo.getRecipe('user', isNotEqualTo: '');
+    print(user.id.toString());
+    return recipeRepo.getRecipe('user', isEqualTo: user.id.toString());
   }
 
   Future<QuerySnapshot<Recipe>> popularRecipes() async {

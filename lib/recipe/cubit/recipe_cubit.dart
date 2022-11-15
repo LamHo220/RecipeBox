@@ -56,7 +56,7 @@ class RecipeCubit extends Cubit<RecipeState> {
     emit(state.copyWith(ingredients: [
       ...state.ingredients,
       {
-        'item': TextEditingController(),
+        'name': TextEditingController(),
         'value': TextEditingController(),
       }
     ]));
@@ -86,13 +86,24 @@ class RecipeCubit extends Cubit<RecipeState> {
         cal: state.cal,
         gram: state.gram,
         forked: 0,
-        ingredients: state.ingredients,
+        ingredients: state.ingredients
+            .map((e) =>
+                e.map((key, value) => MapEntry(key, value.text as dynamic)))
+            .toList(),
         isPublic: state.isPublic,
         note: state.note,
         steps: state.steps.map((e) => e.text).toList(),
-        categories: state.categories,
+        categories: state.categories.map((e) => e.text).toList(),
         timestamp: Timestamp.now(),
         user: user.id,
         time: state.time));
+  }
+
+  void noteChanged(String value) {
+    emit(state.copyWith(note: value));
+  }
+
+  void changeIsPublic(bool val) {
+    emit(state.copyWith(isPublic: val));
   }
 }

@@ -31,48 +31,58 @@ class RecipeDetailsView extends StatelessWidget {
           icon: Icon(Icons.arrow_back_ios_new),
         ),
         backgroundColor: Colors.transparent,
-        actions: user.id == recipe.user
-            ? [
-                PopupMenuButton(onSelected: (value) {
-                  if (value == 0) {
-                    showDialog(
-                        context: context,
-                        builder: (context) {
-                          return CupertinoAlertDialog(
-                            title: Text('Warning'),
-                            content: Text(
-                                'Are you really want to delete the recipe?'),
-                            actions: [
-                              TextButton(
-                                style: TextButton.styleFrom(
-                                    foregroundColor: ThemeColors.primaryDark),
-                                child: Text("No"),
-                                onPressed: () => Navigator.pop(context, false),
-                              ),
-                              TextButton(
-                                style: TextButton.styleFrom(
-                                    foregroundColor: ThemeColors.primaryDark),
-                                child: Text("Yes"),
-                                onPressed: () => Navigator.pop(context, true),
-                              )
-                            ],
-                          );
-                        }).then((value) {
-                      if (value) {
-                        // TODO: delete Recipe
-                      }
-                    });
-                  }
-                }, itemBuilder: (context) {
-                  return [
-                    PopupMenuItem<int>(
-                      value: 0,
-                      child: Text("Delete Recipe"),
-                    ),
-                  ];
-                })
-              ]
-            : null,
+        actions: [
+          PopupMenuButton(onSelected: (value) {
+            if (value == 0) {
+              showDialog(
+                  context: context,
+                  builder: (context) {
+                    return CupertinoAlertDialog(
+                      title: Text('Warning'),
+                      content:
+                          Text('Are you really want to delete the recipe?'),
+                      actions: [
+                        TextButton(
+                          style: TextButton.styleFrom(
+                              foregroundColor: ThemeColors.primaryDark),
+                          child: Text("No"),
+                          onPressed: () => Navigator.pop(context, false),
+                        ),
+                        TextButton(
+                          style: TextButton.styleFrom(
+                              foregroundColor: ThemeColors.primaryDark),
+                          child: Text("Yes"),
+                          onPressed: () => Navigator.pop(context, true),
+                        )
+                      ],
+                    );
+                  }).then((value) {
+                if (value) {
+                  // TODO: delete Recipe
+                }
+              });
+            } else if (value == 1) {
+              showDialog(
+                  context: context,
+                  builder: (context) {
+                    return Dialog(
+                      child: Card(
+                        child: Text(recipe.note),
+                      ),
+                    );
+                  });
+            }
+          }, itemBuilder: (context) {
+            return [
+              PopupMenuItem<int>(
+                enabled: user.id == recipe.user,
+                value: 0,
+                child: Text("Delete Recipe"),
+              ),
+              PopupMenuItem(value: 1, child: Text('Notes from creater'))
+            ];
+          })
+        ],
         elevation: 0,
       ),
       bottomNavigationBar: BottomAppBar(
@@ -280,7 +290,7 @@ class RecipeDetailsView extends StatelessWidget {
                             Column(
                               children: [
                                 Text(
-                                  ' ${recipe.time['hours'] != '0' ? ('${recipe.time['hours']!}hr') : ''} ${recipe.time['minutes'] != '0' ? ('${recipe.time['minutes']!}mins') : ''}',
+                                  ' ${recipe.time['hr'] != '0' ? ('${recipe.time['hr']!}hr') : ''} ${recipe.time['min'] != '0' ? ('${recipe.time['min']!}mins') : ''}',
                                   style: Style.highlightText,
                                 ),
                                 Text(

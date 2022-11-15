@@ -115,16 +115,21 @@ class Home extends StatelessWidget {
               scrollDirection: Axis.horizontal,
               child: Row(children: [
                 Pad.w24,
-                for (var i = 0; i < 10; ++i)
-                  Row(
-                    children: [
-                      // RecipeCard(
-                      //   recipe: _test,
-                      // ),
-                      Text('data'),
-                      Pad.w8,
-                    ],
-                  ),
+                FutureBuilder<QuerySnapshot<Recipe>>(
+                  future: context.read<HomeCubit>().userRecipes(user),
+                  builder: (context, snapshot) {
+                    final data = snapshot.data;
+                    return data != null && data.docs.isNotEmpty
+                        ? Row(
+                            children: [
+                              for (int i = 0; i < data.docs.length; ++i)
+                                RecipeCard(recipe: data.docs[i].data())
+                            ],
+                          )
+                        : const Text(
+                            'You currently haven\'t add any recipe to favorites.');
+                  },
+                ),
                 Pad.w16
               ]),
             ),

@@ -25,7 +25,7 @@ class RecipeState extends Equatable {
   bool isPublic;
   String note;
 
-  List<String> categories;
+  List<TextEditingController> categories;
 
   List<TextEditingController> steps;
 
@@ -34,8 +34,18 @@ class RecipeState extends Equatable {
   // final String? errorMessage;
 
   @override
-  List<Object> get props =>
-      [name, description, cal, gram, time, categories, steps, ingredients];
+  List<Object> get props => [
+        name,
+        description,
+        cal,
+        gram,
+        time,
+        categories,
+        steps,
+        ingredients,
+        isPublic,
+        note
+      ];
 
   RecipeState copyWith({
     StringInput? name,
@@ -45,7 +55,7 @@ class RecipeState extends Equatable {
     int? cal,
     int? gram,
     Map<String, int>? time,
-    List<String>? categories,
+    List<TextEditingController>? categories,
     String? note,
     bool? isPublic,
   }) {
@@ -59,9 +69,7 @@ class RecipeState extends Equatable {
         ingredients: ingredients ?? this.ingredients,
         categories: categories ?? this.categories,
         note: note ?? this.note,
-        isPublic: isPublic ?? this.isPublic
-        // errorMessage: errorMessage ?? this.errorMessage,
-        );
+        isPublic: isPublic != null ? isPublic : this.isPublic);
   }
 }
 
