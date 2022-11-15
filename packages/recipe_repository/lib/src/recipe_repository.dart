@@ -1,3 +1,4 @@
+import 'package:authentication_repository/authentication_repository.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:recipe_repository/recipe_repository.dart';
 
@@ -5,8 +6,6 @@ class RecipeRepository {
   RecipeRepository() {}
 
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
-
-  // Stream<List<Recipe>> getRecipe() => _RecipeApi.getRecipe();
 
   Future<void> createRecipe(Recipe recipe) async {
     // store to firebase
@@ -89,5 +88,19 @@ class RecipeRepository {
           whereNotIn: whereNotIn,
         )
         .get();
+  }
+
+  void addToFavorite(User user, Recipe recipe) {
+    final ref = firestore.collection('users').doc(user.id);
+    ref.update({
+      "favorites": FieldValue.arrayUnion([recipe.id]),
+    });
+  }
+
+  void removeFromFavorite(User user, Recipe recipe) {
+    final ref = firestore.collection('users').doc(user.id);
+    ref.update({
+      "favorites": FieldValue.arrayRemove([recipe.id]),
+    });
   }
 }

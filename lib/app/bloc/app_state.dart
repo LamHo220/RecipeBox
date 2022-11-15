@@ -25,4 +25,19 @@ class AppState extends Equatable {
 
   @override
   List<Object> get props => [status, user, userDetails];
+
+  AppState copyWith(List<String> x) => AppState._(
+      status: status,
+      userDetails: UserDetails(
+        description: userDetails.description,
+        exp: userDetails.exp,
+        favorites: x,
+        follows: userDetails.follows,
+        id: userDetails.id,
+        level: userDetails.level,
+        points: userDetails.points,
+      ));
+
+  AppState updteWith(UserDetails userDetails) =>
+      AppState._(status: status, userDetails: userDetails);
 }

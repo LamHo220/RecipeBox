@@ -13,7 +13,6 @@ class Before extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(recipe);
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12.0),

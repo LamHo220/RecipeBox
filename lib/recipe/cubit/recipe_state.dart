@@ -25,7 +25,7 @@ class RecipeState extends Equatable {
   bool isPublic;
   String note;
 
-  List<TextEditingController> categories;
+  List<Categories> categories;
 
   List<TextEditingController> steps;
 
@@ -55,7 +55,7 @@ class RecipeState extends Equatable {
     int? cal,
     int? gram,
     Map<String, int>? time,
-    List<TextEditingController>? categories,
+    List<Categories>? categories,
     String? note,
     bool? isPublic,
   }) {
@@ -69,7 +69,7 @@ class RecipeState extends Equatable {
         ingredients: ingredients ?? this.ingredients,
         categories: categories ?? this.categories,
         note: note ?? this.note,
-        isPublic: isPublic != null ? isPublic : this.isPublic);
+        isPublic: isPublic ?? this.isPublic);
   }
 }
 

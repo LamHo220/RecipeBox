@@ -265,6 +265,15 @@ class AuthenticationRepository {
                 print('DocumentSnapshot added with ID: ${userDetails.id}'),
             onError: (e) => print("Error creating document $e"));
   }
+
+  Future<QuerySnapshot<UserDetails>> getUserDetails(String id) async {
+    final ref = firestore.collection('users').withConverter(
+          fromFirestore: UserDetails.fromFirestore,
+          toFirestore: (UserDetails userDetails, _) =>
+              userDetails.toFirestore(),
+        );
+    return ref.where('id', isEqualTo: id).get();
+  }
 }
 
 extension on firebase_auth.User {

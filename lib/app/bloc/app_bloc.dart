@@ -28,6 +28,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
 
   final AuthenticationRepository _authenticationRepository;
   late final StreamSubscription<User> _userSubscription;
+  RecipeRepository recipeRepo = RecipeRepository();
 
   void _onUserChanged(AppUserChanged event, Emitter<AppState> emit) {
     emit(
@@ -45,5 +46,23 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   Future<void> close() {
     _userSubscription.cancel();
     return super.close();
+  }
+
+  void addToFavorite(User user, Recipe recipe) {
+    recipeRepo.addToFavorite(user, recipe);
+    final x = [...state.userDetails.favorites];
+    x.add(recipe.id);
+    emit(state.copyWith(x));
+  }
+
+  void removeFromFavorite(User user, Recipe recipe) {
+    recipeRepo.removeFromFavorite(user, recipe);
+    final x = [...state.userDetails.favorites];
+    x.remove(recipe.id);
+    emit(state.copyWith(x));
+  }
+
+  void updateUserDetails(UserDetails userDetails) {
+    emit(state.updteWith(userDetails));
   }
 }

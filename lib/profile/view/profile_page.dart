@@ -107,9 +107,8 @@ class ProfileView extends StatelessWidget {
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: FutureBuilder<QuerySnapshot<Recipe>>(
-                      future: context
-                          .read<ProfileCubit>()
-                          .popularRecipes(user.email!),
+                      future:
+                          context.read<ProfileCubit>().popularRecipes(user.id),
                       builder: (context, snapshot) {
                         final data = snapshot.data;
                         return data != null && data.docs.isNotEmpty

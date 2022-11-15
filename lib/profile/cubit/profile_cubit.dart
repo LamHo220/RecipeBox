@@ -9,7 +9,7 @@ class ProfileCubit extends Cubit<ProfileState> {
   ProfileCubit() : super(ProfileInitial());
   RecipeRepository repo = RecipeRepository();
 
-  Future<QuerySnapshot<Recipe>> popularRecipes(String email) async {
-    return repo.getRecipe('user', isEqualTo: email);
+  Future<QuerySnapshot<Recipe>> popularRecipes(String id) async {
+    return repo.getRecipe('user', isEqualTo: id);
   }
 }

@@ -1,9 +1,11 @@
 import 'package:authentication_repository/authentication_repository.dart';
+import 'package:awesome_select/awesome_select.dart';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:formz/formz.dart';
+import 'package:recipe_box/explore/view/explore_page.dart';
 import 'package:recipe_repository/recipe_repository.dart';
 
 part 'recipe_state.dart';
@@ -93,7 +95,7 @@ class RecipeCubit extends Cubit<RecipeState> {
         isPublic: state.isPublic,
         note: state.note,
         steps: state.steps.map((e) => e.text).toList(),
-        categories: state.categories.map((e) => e.text).toList(),
+        categories: state.categories.map((e) => e.name).toList(),
         timestamp: Timestamp.now(),
         user: user.id,
         time: state.time));
@@ -106,4 +108,15 @@ class RecipeCubit extends Cubit<RecipeState> {
   void changeIsPublic(bool val) {
     emit(state.copyWith(isPublic: val));
   }
+
+  void removeCategory(int i) {
+    final categories = [...state.categories];
+    categories.removeAt(i);
+    emit(state.copyWith(categories: categories));
+  }
+
+  void onCategoriesChange(S2MultiSelected<Object?> value) {
+    emit(state.copyWith(categories: value.value.cast()));
+  }
+  
 }

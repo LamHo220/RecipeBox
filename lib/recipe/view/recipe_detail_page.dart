@@ -11,7 +11,8 @@ import 'package:recipe_box/recipe/cubit/recipe_cubit.dart';
 import 'package:recipe_box/recipe/view/recipe_steps.dart';
 import 'package:recipe_repository/recipe_repository.dart';
 
-// TODO: Add function to the bottom buttons
+import '../../home/cubit/home_cubit.dart';
+
 class RecipeDetailsView extends StatelessWidget {
   const RecipeDetailsView(
       {Key? key, required this.recipe, required this.closedContainer})
@@ -23,6 +24,8 @@ class RecipeDetailsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = context.select((AppBloc bloc) => bloc.state.user);
+    final userDetails =
+        context.select((AppBloc bloc) => bloc.state.userDetails);
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
@@ -93,13 +96,20 @@ class RecipeDetailsView extends StatelessWidget {
           child: Row(
             children: [
               GestureDetector(
-                  onTap: () => {},
+                  onTap: () => userDetails.favorites.contains(recipe.id)
+                      ? null
+                      : context.read<AppBloc>().addToFavorite(user, recipe),
                   child: Container(
                     padding: Pad.pa12,
                     decoration: BoxDecoration(
                         color: ThemeColors.card,
                         borderRadius: BorderRadius.circular(12)),
-                    child: const Icon(FontAwesomeIcons.heart),
+                    child: userDetails.favorites.contains(recipe.id)
+                        ? Icon(
+                            FontAwesomeIcons.solidHeart,
+                            color: Colors.red,
+                          )
+                        : Icon(FontAwesomeIcons.heart),
                   )),
               Pad.w8,
               GestureDetector(

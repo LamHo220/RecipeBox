@@ -103,13 +103,11 @@ class SignUpCubit extends Cubit<SignUpState> {
       await _authenticationRepository.createUserDetails(UserDetails(
           id: _authenticationRepository.currentUser.id,
           description: '',
-          favorites: [],
-          privateRecipes: [],
-          publicRecipes: [],
           level: 0,
           points: 0,
           exp: 0,
-          follows: []));
+          follows: [],
+          favorites: []));
     } catch (_) {
       print(_);
     }

@@ -1,4 +1,5 @@
 import 'package:animations/animations.dart';
+import 'package:awesome_select/awesome_select.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_switch/flutter_switch.dart';
@@ -8,6 +9,7 @@ import 'package:recipe_box/app/app.dart';
 import 'package:recipe_box/common/constants/colors.dart';
 import 'package:recipe_box/common/constants/paddings.dart';
 import 'package:recipe_box/common/constants/style.dart';
+import 'package:recipe_box/explore/view/explore_page.dart';
 import 'package:recipe_box/recipe/cubit/recipe_cubit.dart';
 
 class RecipeAddView extends StatelessWidget {
@@ -76,10 +78,11 @@ class RecipeAddView extends StatelessWidget {
                               )
                             ],
                           ),
-                          Text(
-                            "${userDetails.publicRecipes.length} recipes shared",
-                            style: Style.cardSubTitle,
-                          )
+                          // TODO
+                          // Text(
+                          //   "${userDetails.publicRecipes.length} recipes shared",
+                          //   style: Style.cardSubTitle,
+                          // )
                         ],
                       )
                     ],
@@ -254,12 +257,25 @@ class RecipeAddView extends StatelessWidget {
                                   icon: Icon(Icons.add_circle_outline_outlined))
                             ],
                           ),
+                          _CategoriesChoice(),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.baseline,
                             textBaseline: TextBaseline.ideographic,
-                            children: [
-                              const Text(
+                            children: const [
+                              Text(
+                                'Description',
+                                style: Style.heading,
+                              ),
+                            ],
+                          ),
+                          _DescriptionInput(),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.baseline,
+                            textBaseline: TextBaseline.ideographic,
+                            children: const [
+                              Text(
                                 'Notes from you',
                                 style: Style.heading,
                               ),
@@ -341,14 +357,15 @@ class _DescriptionInput extends StatelessWidget {
         return TextFormField(
           key: const Key('description_input_textField'),
           minLines: 2,
-          maxLines: null,
-          keyboardType: TextInputType.multiline,
+          maxLines: 100,
+          keyboardType: TextInputType.text,
           onChanged: (value) =>
               context.read<RecipeCubit>().descriptionChanged(value),
           decoration: const InputDecoration(
             labelText: 'description',
+            contentPadding: EdgeInsets.all(0),
+            border: UnderlineInputBorder(),
             alignLabelWithHint: true,
-            // errorText: state.description.invalid ? 'required' : null,
           ),
         );
       },
@@ -418,7 +435,7 @@ class _IngredientInput extends StatelessWidget {
                           labelText: 'item ${(index + 1)}*',
                           helperText: 'required',
                           errorText:
-                              state.ingredients[index]['item']!.text.isEmpty
+                              state.ingredients[index]['name']!.text.isEmpty
                                   ? 'required'
                                   : null,
                         ),
@@ -491,16 +508,6 @@ class _GramInput extends StatelessWidget {
             value: state.gram,
             onChanged: (value) =>
                 context.read<RecipeCubit>().gramChanged(value));
-        // TextFormField(
-        //   key: const Key('gram_input_textField'),
-        //   keyboardType: TextInputType.number,
-        //   onChanged: (value) => context.read<RecipeCubit>().gramChanged(value),
-        //   decoration: InputDecoration(
-        //       errorText: state.gram == 0 ? 'required' : null,
-        //       labelText: 'gram',
-        //       alignLabelWithHint: true,
-        //       suffixText: 'gram'),
-        // );
       },
     );
   }
@@ -578,7 +585,7 @@ class _NoteInput extends StatelessWidget {
           decoration: InputDecoration(
             contentPadding: EdgeInsets.all(0),
             border: UnderlineInputBorder(),
-            labelText: 'note*',
+            labelText: 'note',
             // errorText: state.note ? 'required' : null,
           ),
         );
@@ -599,5 +606,46 @@ class _SetIsPublic extends StatelessWidget {
               onChanged: (val) =>
                   context.read<RecipeCubit>().changeIsPublic(val));
         });
+  }
+}
+
+class _CategoriesChoice extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<RecipeCubit, RecipeState>(
+      buildWhen: (previous, current) =>
+          previous.categories != current.categories,
+      builder: (context, state) => SmartSelect.multiple(
+          tileBuilder: (context, state2) {
+            return S2Tile.fromState(
+              state2,
+              hideValue: true,
+              body: S2TileChips(
+                chipLength: state.categories.length,
+                chipLabelBuilder: (context, i) {
+                  return Text(state.categories[i].name);
+                },
+                // chipAvatarBuilder: (context, i) {
+                //   return CircleAvatar(
+                //     backgroundImage: NetworkImage(state.valueObject[i].meta['picture']['thumbnail'])
+                //   );
+                // },
+                chipOnDelete: (i) =>
+                    context.read<RecipeCubit>().removeCategory(i),
+                chipColor: ThemeColors.primaryLight,
+              ),
+            );
+          },
+          onChange: (value) =>
+              context.read<RecipeCubit>().onCategoriesChange(value),
+          title: 'Categories',
+          choiceActiveStyle: S2ChoiceStyle(
+            color: ThemeColors.primaryLight,
+          ),
+          modalType: S2ModalType.popupDialog,
+          choiceItems: Categories.values
+              .map((e) => S2Choice(value: e, title: e.name))
+              .toList()),
+    );
   }
 }

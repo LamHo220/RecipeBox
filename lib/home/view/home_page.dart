@@ -1,4 +1,5 @@
 import 'package:animations/animations.dart';
+import 'package:authentication_repository/authentication_repository.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -133,9 +134,22 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => HomeCubit(),
-      child: HomeView(),
+    AuthenticationRepository repo = AuthenticationRepository();
+
+    return FutureBuilder<QuerySnapshot<UserDetails>>(
+      future: repo.getUserDetails(
+          context.select((AppBloc value) => value.state.user.id)),
+      builder: (context, snapshot) {
+        if (snapshot.data != null && snapshot.data!.docs.isNotEmpty) {
+          context
+              .read<AppBloc>()
+              .updateUserDetails(snapshot.data!.docs[0].data());
+        }
+        return BlocProvider(
+          create: (_) => HomeCubit(),
+          child: HomeView(),
+        );
+      },
     );
   }
 }

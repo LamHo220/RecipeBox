@@ -6,6 +6,7 @@ import 'package:recipe_box/common/constants/colors.dart';
 import 'package:recipe_box/common/constants/paddings.dart';
 import 'package:recipe_box/common/constants/style.dart';
 import 'package:recipe_box/explore/cubit/explore_cubit.dart';
+import 'package:recipe_box/recipe/view/recipe_list_page.dart';
 
 class ExploreView extends StatelessWidget {
   ExploreView({super.key});
@@ -51,7 +52,11 @@ class ExploreView extends StatelessWidget {
               itemBuilder: (context, index) => TextButton(
                     style: TextButton.styleFrom(
                         foregroundColor: ThemeColors.text, padding: Pad.pa12),
-                    onPressed: () => {},
+                    onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => RecipeListPage(
+                                title: Categories.values[index].name))),
                     child: Row(
                       children: [Text(Categories.values[index].name)],
                     ),
