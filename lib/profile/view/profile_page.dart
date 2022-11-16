@@ -23,7 +23,7 @@ class ProfileView extends StatelessWidget {
   Widget build(BuildContext context) {
     final user = context.select((AppBloc bloc) => bloc.state.user);
     final userDetails =
-        context.select((AppBloc bloc) => bloc.state.userDetails);
+        context.select((HomeCubit bloc) => bloc.state.userDetails);
     return Scaffold(
       appBar: AppBar(
           elevation: 0,

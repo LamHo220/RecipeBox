@@ -90,15 +90,15 @@ class RecipeRepository {
         .get();
   }
 
-  void addToFavorite(User user, Recipe recipe) {
-    final ref = firestore.collection('users').doc(user.id);
+  void addToFavorite(UserDetails userDetails, Recipe recipe) {
+    final ref = firestore.collection('users').doc(userDetails.id);
     ref.update({
       "favorites": FieldValue.arrayUnion([recipe.id]),
     });
   }
 
-  void removeFromFavorite(User user, Recipe recipe) {
-    final ref = firestore.collection('users').doc(user.id);
+  void removeFromFavorite(UserDetails userDetails, Recipe recipe) {
+    final ref = firestore.collection('users').doc(userDetails.id);
     ref.update({
       "favorites": FieldValue.arrayRemove([recipe.id]),
     });

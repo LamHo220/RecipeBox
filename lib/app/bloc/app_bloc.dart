@@ -14,15 +14,14 @@ class AppBloc extends Bloc<AppEvent, AppState> {
       : _authenticationRepository = authenticationRepository,
         super(
           authenticationRepository.currentUser.isNotEmpty
-              ? AppState.authenticated(authenticationRepository.currentUser,
-                  authenticationRepository.currentUserDetails)
+              ? AppState.authenticated(authenticationRepository.currentUser,)
               : const AppState.unauthenticated(),
         ) {
     on<AppUserChanged>(_onUserChanged);
     on<AppLogoutRequested>(_onLogoutRequested);
     _userSubscription = _authenticationRepository.user.listen(
       (user) => add(
-          AppUserChanged(user, _authenticationRepository.currentUserDetails)),
+          AppUserChanged(user)),
     );
   }
 
@@ -33,7 +32,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   void _onUserChanged(AppUserChanged event, Emitter<AppState> emit) {
     emit(
       event.user.isNotEmpty
-          ? AppState.authenticated(event.user, event.userDetails)
+          ? AppState.authenticated(event.user)
           : const AppState.unauthenticated(),
     );
   }
@@ -46,23 +45,5 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   Future<void> close() {
     _userSubscription.cancel();
     return super.close();
-  }
-
-  void addToFavorite(User user, Recipe recipe) {
-    recipeRepo.addToFavorite(user, recipe);
-    final x = [...state.userDetails.favorites];
-    x.add(recipe.id);
-    emit(state.copyWith(x));
-  }
-
-  void removeFromFavorite(User user, Recipe recipe) {
-    recipeRepo.removeFromFavorite(user, recipe);
-    final x = [...state.userDetails.favorites];
-    x.remove(recipe.id);
-    emit(state.copyWith(x));
-  }
-
-  void updateUserDetails(UserDetails userDetails) {
-    emit(state.updteWith(userDetails));
   }
 }

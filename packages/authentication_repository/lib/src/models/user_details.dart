@@ -65,5 +65,6 @@ class UserDetails extends Equatable {
   }
 
   @override
-  List<Object> get props => [id, description, exp, level, points];
+  List<Object> get props =>
+      [id, description, exp, level, points, favorites, follows];
 }

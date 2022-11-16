@@ -3,6 +3,7 @@ import 'package:flow_builder/flow_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:recipe_box/app/app.dart';
+import 'package:recipe_box/home/cubit/home_cubit.dart';
 import 'package:recipe_box/theme.dart';
 
 class App extends StatelessWidget {
@@ -32,13 +33,15 @@ class AppView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      themeMode: ThemeMode.light,
-      theme: theme,
-      home: FlowBuilder<AppStatus>(
-        state: context.select((AppBloc bloc) => bloc.state.status),
-        onGeneratePages: onGenerateAppViewPages,
-      ),
-    );
+    return BlocProvider(
+        create: (_) => HomeCubit(),
+        child: MaterialApp(
+          themeMode: ThemeMode.light,
+          theme: theme,
+          home: FlowBuilder<AppStatus>(
+            state: context.select((AppBloc bloc) => bloc.state.status),
+            onGeneratePages: onGenerateAppViewPages,
+          ),
+        ));
   }
 }

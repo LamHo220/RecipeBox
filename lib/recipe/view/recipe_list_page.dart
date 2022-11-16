@@ -16,7 +16,7 @@ class FavoriteRecipeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final userDetails =
-        context.select((AppBloc bloc) => bloc.state.userDetails);
+        context.select((HomeCubit bloc) => bloc.state.userDetails);
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -51,9 +51,10 @@ class FavoriteRecipePage extends StatelessWidget {
   final String title;
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => HomeCubit(),
-      child: FavoriteRecipeView(title: title),
+    return BlocBuilder<HomeCubit, HomeState>(
+      buildWhen: (previous, current) =>
+          previous.userDetails != current.userDetails,
+      builder: (context, state) => FavoriteRecipeView(title: title),
     );
   }
 }

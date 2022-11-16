@@ -10,6 +10,7 @@ import 'package:recipe_box/common/constants/colors.dart';
 import 'package:recipe_box/common/constants/paddings.dart';
 import 'package:recipe_box/common/constants/style.dart';
 import 'package:recipe_box/explore/view/explore_page.dart';
+import 'package:recipe_box/home/cubit/home_cubit.dart';
 import 'package:recipe_box/recipe/cubit/recipe_cubit.dart';
 
 class RecipeAddView extends StatelessWidget {
@@ -21,7 +22,7 @@ class RecipeAddView extends StatelessWidget {
   Widget build(BuildContext context) {
     final user = context.select((AppBloc value) => value.state.user);
     final userDetails =
-        context.select((AppBloc value) => value.state.userDetails);
+        context.select((HomeCubit value) => value.state.userDetails);
 
     final recipe = context.select((RecipeCubit value) => value.state);
 

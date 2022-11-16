@@ -15,7 +15,6 @@ class HomeCubit extends Cubit<HomeState> {
 
   Future<QuerySnapshot<Recipe>> userFavorite(UserDetails userDetails) async {
     List<String>? favorites = userDetails.favorites;
-    print(favorites);
     if (favorites.isEmpty) {
       return recipeRepo.getRecipe('id', isEqualTo: '');
     }
@@ -37,5 +36,39 @@ class HomeCubit extends Cubit<HomeState> {
       value.docs.removeWhere((e) => !e.data().isPublic);
       return value;
     });
+  }
+
+  void addToFavorite(Recipe recipe) {
+    recipeRepo.addToFavorite(state.userDetails, recipe);
+    final x = [...state.userDetails.favorites];
+    x.add(recipe.id);
+    emit(state.copyWith(
+        userDetails: UserDetails(
+            id: state.userDetails.id,
+            description: state.userDetails.description,
+            level: state.userDetails.level,
+            points: state.userDetails.points,
+            exp: state.userDetails.exp,
+            follows: state.userDetails.follows,
+            favorites: x)));
+  }
+
+  void removeFromFavorite(Recipe recipe) {
+    recipeRepo.removeFromFavorite(state.userDetails, recipe);
+    final x = [...state.userDetails.favorites];
+    x.remove(recipe.id);
+    emit(state.copyWith(
+        userDetails: UserDetails(
+            id: state.userDetails.id,
+            description: state.userDetails.description,
+            level: state.userDetails.level,
+            points: state.userDetails.points,
+            exp: state.userDetails.exp,
+            follows: state.userDetails.follows,
+            favorites: x)));
+  }
+
+  void updateUserDetails(UserDetails userDetails) {
+    emit(state.copyWith(userDetails: userDetails));
   }
 }

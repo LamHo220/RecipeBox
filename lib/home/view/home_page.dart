@@ -82,6 +82,8 @@ class HomeView extends StatelessWidget {
           ));
     }
 
+    AuthenticationRepository repo = AuthenticationRepository();
+
     return Scaffold(
         extendBody: true,
         floatingActionButtonLocation: _fabLocation,
@@ -90,7 +92,13 @@ class HomeView extends StatelessWidget {
         body: _FadeIndexedStack(
           index: selectedTab.index,
           children: [
-            Home(),
+            BlocBuilder<HomeCubit, HomeState>(
+                buildWhen: (previous, current) {
+                  print(previous);
+                  print(current);
+                  return previous.userDetails != current.userDetails;
+                },
+                builder: (context, state) => Home()),
             FavoriteRecipePage(
               title: 'Favorite',
             ),
@@ -134,23 +142,7 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AuthenticationRepository repo = AuthenticationRepository();
-
-    return FutureBuilder<QuerySnapshot<UserDetails>>(
-      future: repo.getUserDetails(
-          context.select((AppBloc value) => value.state.user.id)),
-      builder: (context, snapshot) {
-        if (snapshot.data != null && snapshot.data!.docs.isNotEmpty) {
-          context
-              .read<AppBloc>()
-              .updateUserDetails(snapshot.data!.docs[0].data());
-        }
-        return BlocProvider(
-          create: (_) => HomeCubit(),
-          child: HomeView(),
-        );
-      },
-    );
+    return HomeView();
   }
 }
 
