@@ -93,11 +93,7 @@ class HomeView extends StatelessWidget {
           index: selectedTab.index,
           children: [
             BlocBuilder<HomeCubit, HomeState>(
-                buildWhen: (previous, current) {
-                  print(previous);
-                  print(current);
-                  return previous.userDetails != current.userDetails;
-                },
+                buildWhen: (previous, current) => previous != current,
                 builder: (context, state) => Home()),
             FavoriteRecipePage(
               title: 'Favorite',

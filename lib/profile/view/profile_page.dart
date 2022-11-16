@@ -12,6 +12,7 @@ import 'package:recipe_box/common/constants/style.dart';
 import 'package:recipe_box/home/cubit/home_cubit.dart';
 import 'package:recipe_box/home/home.dart';
 import 'package:recipe_box/profile/cubit/profile_cubit.dart';
+import 'package:recipe_box/recipe/view/recipe_list_page.dart';
 import 'package:recipe_box/recipe/widgets/recipe_card.dart';
 import 'package:recipe_repository/recipe_repository.dart';
 
@@ -74,12 +75,12 @@ class ProfileView extends StatelessWidget {
                     ],
                   ),
                   Pad.h4,
-                  Text(
-                    userDetails.description == ''
-                        ? 'The user does not have bio.'
-                        : userDetails.description,
-                    style: Style.search,
-                  ),
+                  // Text(
+                  //   userDetails.description == ''
+                  //       ? 'The user does not have bio.'
+                  //       : userDetails.description,
+                  //   style: Style.search,
+                  // ),
                   Row(
                     children: [
                       Container(
@@ -139,13 +140,21 @@ class ProfileView extends StatelessWidget {
               text: 'Public Recipes',
               color: Colors.blue[400]!,
               icon: FontAwesomeIcons.userGroup,
-              func: () => {},
+              func: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          RecipeListPage(title: 'Public Recipes'))),
             ),
             _Button(
               text: 'Private Recipes',
               color: Colors.green[400]!,
               icon: FontAwesomeIcons.userLock,
-              func: () => {},
+              func: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          RecipeListPage(title: 'Private Recipes'))),
             ),
           ],
         ),

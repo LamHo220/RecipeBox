@@ -25,6 +25,7 @@ class RecipeAddView extends StatelessWidget {
         context.select((HomeCubit value) => value.state.userDetails);
 
     final recipe = context.select((RecipeCubit value) => value.state);
+    final flag = context.select((HomeCubit value) => value.state.flag);
 
     return Scaffold(
         extendBodyBehindAppBar: true,
@@ -295,8 +296,11 @@ class RecipeAddView extends StatelessWidget {
                           ),
                           Pad.h24,
                           ElevatedButton(
-                            onPressed: () =>
-                                context.read<RecipeCubit>().submit(user),
+                            onPressed: () {
+                              context.read<RecipeCubit>().submit(user);
+                              context.read<HomeCubit>().setFlag(!flag);
+                              Navigator.pop(context);
+                            },
                             child: Text('Post'),
                             style: ElevatedButton.styleFrom(
                                 backgroundColor: ThemeColors.primaryLight),
@@ -428,10 +432,7 @@ class _IngredientInput extends StatelessWidget {
                   children: [
                     Expanded(
                       child: TextField(
-                        controller: state.ingredients[index]['item'],
-
-                        // onChanged: (value) =>
-                        //     context.read<RecipeCubit>().stepChanged(index, value),
+                        controller: state.ingredients[index]['name'],
                         decoration: InputDecoration(
                           labelText: 'item ${(index + 1)}*',
                           helperText: 'required',
@@ -446,8 +447,6 @@ class _IngredientInput extends StatelessWidget {
                     Expanded(
                         child: TextField(
                       controller: state.ingredients[index]['value'],
-                      // onChanged: (value) =>
-                      //     context.read<RecipeCubit>().stepChanged(index, value),
                       decoration: InputDecoration(
                           labelText: 'serving size ${(index + 1)}*',
                           helperText: 'required',

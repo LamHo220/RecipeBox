@@ -1,4 +1,5 @@
 import 'package:animations/animations.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,6 +25,7 @@ class RecipeDetailsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = context.select((AppBloc bloc) => bloc.state.user);
+    final flag = context.select((HomeCubit value) => value.state.flag);
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
@@ -59,7 +61,10 @@ class RecipeDetailsView extends StatelessWidget {
                     );
                   }).then((value) {
                 if (value) {
-                  // TODO: delete Recipe
+                  context.read<RecipeCubit>().deleteRecipe(recipe);
+                  context.read<HomeCubit>().setFlag(!flag);
+                  context.read<HomeCubit>().removeFromFavorite(recipe);
+                  Navigator.pop(context);
                 }
               });
             } else if (value == 1) {
@@ -186,20 +191,25 @@ class RecipeDetailsView extends StatelessWidget {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          const Text(
-                            'Username',
+                          Text(
+                            user.username ?? user.email!,
                             style: Style.cardTitle,
                           ),
                           Pad.w4,
                           Text(
-                            'lv. 11',
+                            "lv${context.select((HomeCubit value) => value.state.userDetails.level)}",
                             style: Style.cardSubTitle.copyWith(fontSize: 12),
                           )
                         ],
                       ),
-                      const Text(
-                        '999 recipe shared',
-                        style: Style.cardSubTitle,
+                      FutureBuilder<QuerySnapshot<Recipe>>(
+                        future: context.read<HomeCubit>().getUser(user),
+                        builder: (context, snapshot) {
+                          return Text(
+                            '${snapshot.data == null ? 0 : snapshot.data!.size} recipe shared',
+                            style: Style.cardSubTitle,
+                          );
+                        },
                       )
                     ],
                   )
@@ -290,7 +300,7 @@ class RecipeDetailsView extends StatelessWidget {
                               children: [
                                 // TODO rating
                                 Text(
-                                  'rating',
+                                  '0',
                                   style: Style.highlightText,
                                 ),
                                 Text(
@@ -336,7 +346,7 @@ class RecipeDetailsView extends StatelessWidget {
                             'Ingredients',
                             style: Style.heading,
                           ),
-                          Text('6 items',
+                          Text('${recipe.ingredients.length} items',
                               style: Style.label
                                   .copyWith(color: ThemeColors.inactive))
                         ],

@@ -64,6 +64,9 @@ class RecipeListView extends StatelessWidget {
   final String title;
   @override
   Widget build(BuildContext context) {
+    print(title);
+    final user = context.select((AppBloc value) => value.state.user);
+    print(user);
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -74,7 +77,9 @@ class RecipeListView extends StatelessWidget {
         actions: [Searcher()],
       ),
       body: FutureBuilder<QuerySnapshot<Recipe>>(
-        future: context.read<HomeCubit>().getRecipes(title),
+        future: title == 'Public Recipes' || title == 'Private Recipes'
+            ? context.read<HomeCubit>().getUser(user)
+            : context.read<HomeCubit>().getRecipes(title),
         builder: (context, snapshot) {
           final data = snapshot.data;
           if (data == null) {
@@ -83,8 +88,9 @@ class RecipeListView extends StatelessWidget {
           if (data.docs.isEmpty) {
             return Text("There is no recipe in $title");
           }
-          final docs =
-              data.docs.where((element) => !element.data().isPublic).toList();
+          final docs = title == 'Private Recipes'
+              ? data.docs.where((element) => !element.data().isPublic).toList()
+              : data.docs.where((element) => element.data().isPublic).toList();
           return ListView.separated(
               separatorBuilder: (context, index) => const Divider(
                     color: ThemeColors.white,

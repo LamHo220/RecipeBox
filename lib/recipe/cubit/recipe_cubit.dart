@@ -89,8 +89,10 @@ class RecipeCubit extends Cubit<RecipeState> {
         gram: state.gram,
         forked: 0,
         ingredients: state.ingredients
-            .map((e) =>
-                e.map((key, value) => MapEntry(key, value.text as dynamic)))
+            .map((e) => {
+                  'name': e['name']!.text as dynamic,
+                  'value': e['value']!.text as dynamic,
+                })
             .toList(),
         isPublic: state.isPublic,
         note: state.note,
@@ -118,5 +120,8 @@ class RecipeCubit extends Cubit<RecipeState> {
   void onCategoriesChange(S2MultiSelected<Object?> value) {
     emit(state.copyWith(categories: value.value.cast()));
   }
-  
+
+  void deleteRecipe(Recipe recipe){
+    recipeRepo.deleteRecipe(recipe.id);
+  }
 }

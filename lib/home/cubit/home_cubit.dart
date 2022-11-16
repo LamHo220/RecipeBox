@@ -10,8 +10,8 @@ class HomeCubit extends Cubit<HomeState> {
   HomeCubit() : super(const HomeState());
   RecipeRepository recipeRepo = RecipeRepository();
 
-  void setTab(Tabs tab) => emit(HomeState(tab: tab));
-  void setShow(bool flag) => emit(HomeState(isShow: flag));
+  void setTab(Tabs tab) => emit(state.copyWith(tab: tab));
+  void setFlag(bool flag) => emit(state.copyWith(flag: flag));
 
   Future<QuerySnapshot<Recipe>> userFavorite(UserDetails userDetails) async {
     List<String>? favorites = userDetails.favorites;
@@ -36,6 +36,10 @@ class HomeCubit extends Cubit<HomeState> {
       value.docs.removeWhere((e) => !e.data().isPublic);
       return value;
     });
+  }
+
+  Future<QuerySnapshot<Recipe>> getUser(User user) async {
+    return recipeRepo.getRecipe('user', isEqualTo: user.id);
   }
 
   void addToFavorite(Recipe recipe) {
