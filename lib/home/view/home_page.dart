@@ -8,6 +8,7 @@ import 'package:recipe_box/app/app.dart';
 import 'package:recipe_box/common/constants/colors.dart';
 import 'package:recipe_box/common/constants/paddings.dart';
 import 'package:recipe_box/explore/view/explore_page.dart';
+import 'package:recipe_box/recipe/cubit/recipe_cubit.dart';
 import 'package:recipe_box/recipe/view/recipe_add_page.dart';
 import 'package:recipe_box/recipe/view/recipe_list_page.dart';
 import 'package:recipe_box/home/cubit/home_cubit.dart';
@@ -37,7 +38,7 @@ class HomeView extends StatelessWidget {
           child: const Icon(Icons.add),
         ),
         openBuilder: (context, action) => WillPopScope(
-            child: RecipeAddPage(),
+            child: RecipeAddPage(action: RAction.add,),
             onWillPop: () async {
               return showDialog(
                   context: context,

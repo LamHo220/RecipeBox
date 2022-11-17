@@ -34,7 +34,7 @@ class RecipeItem extends StatelessWidget {
                         Avatar(),
                         Pad.w4,
                         Text(
-                          'username',
+                          recipe.user,
                           style: Style.search
                               .copyWith(fontWeight: FontWeight.w400),
                         )

@@ -123,7 +123,7 @@ class ProfileView extends StatelessWidget {
                                 ],
                               )
                             : const Text(
-                                'You currently haven\'t add any recipe to favorites.');
+                                'You currently don\'t have any recipe.');
                       },
                     ),
                   ),

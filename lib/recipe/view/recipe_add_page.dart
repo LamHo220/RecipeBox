@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:animations/animations.dart';
 import 'package:awesome_select/awesome_select.dart';
 import 'package:flutter/material.dart';
@@ -12,11 +14,15 @@ import 'package:recipe_box/common/constants/style.dart';
 import 'package:recipe_box/explore/view/explore_page.dart';
 import 'package:recipe_box/home/cubit/home_cubit.dart';
 import 'package:recipe_box/recipe/cubit/recipe_cubit.dart';
+import 'package:recipe_repository/recipe_repository.dart';
 
 class RecipeAddView extends StatelessWidget {
   const RecipeAddView({
     Key? key,
+    required this.action,
   }) : super(key: key);
+
+  final RAction action;
 
   @override
   Widget build(BuildContext context) {
@@ -39,55 +45,64 @@ class RecipeAddView extends StatelessWidget {
           bottom: true,
           child: SingleChildScrollView(
             child: Column(children: [
-              Container(
-                alignment: Alignment.bottomLeft,
-                width: double.infinity,
-                height: MediaQuery.of(context).size.height * 0.3,
-                decoration: BoxDecoration(
-                    image: DecorationImage(
-                        // TODO: iamge picker
-                        image:
-                            Image.network('https://picsum.photos/1024').image,
-                        fit: BoxFit.cover)),
+              GestureDetector(
+                onTap: () {
+                  // if (state == ImageState.free)
+                  // else if (state == ImageState.picked)
+                  //   context.read<RecipeCubit>().cropImage();
+                  // else if (state == ImageState.cropped)
+                  //   context.read<RecipeCubit>().clearImage();
+                },
                 child: Container(
-                  color: ThemeColors.halfGray,
-                  padding: const EdgeInsets.only(
-                      left: 24, right: 24, top: 8, bottom: 8),
-                  child: Row(
-                    children: [
-                      const Icon(
-                        Icons.account_circle,
-                        color: ThemeColors.white,
+                  alignment: Alignment.bottomLeft,
+                  width: double.infinity,
+                  height: MediaQuery.of(context).size.height * 0.3,
+                  decoration: BoxDecoration(
+                      // image: imageFile != null
+                      //     ? DecorationImage(
+                      //         image: Image.file(File(imageFile.path)).image,
+                      //         fit: BoxFit.cover)
+                      //     : null
                       ),
-                      Pad.w8,
-                      Wrap(
-                        crossAxisAlignment: WrapCrossAlignment.start,
-                        direction: Axis.vertical,
-                        children: [
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.baseline,
-                            textBaseline: TextBaseline.ideographic,
-                            children: [
-                              Text(
-                                user.username ?? user.email ?? '',
-                                style: Style.cardTitle,
-                              ),
-                              Pad.w4,
-                              Text(
-                                'lv${userDetails.level}',
-                                style:
-                                    Style.cardSubTitle.copyWith(fontSize: 12),
-                              )
-                            ],
-                          ),
-                          // TODO
-                          // Text(
-                          //   "${userDetails.publicRecipes.length} recipes shared",
-                          //   style: Style.cardSubTitle,
-                          // )
-                        ],
-                      )
-                    ],
+                  child: Container(
+                    color: ThemeColors.halfGray,
+                    padding: const EdgeInsets.only(
+                        left: 24, right: 24, top: 8, bottom: 8),
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.account_circle,
+                          color: ThemeColors.white,
+                        ),
+                        Pad.w8,
+                        Wrap(
+                          crossAxisAlignment: WrapCrossAlignment.start,
+                          direction: Axis.vertical,
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.baseline,
+                              textBaseline: TextBaseline.ideographic,
+                              children: [
+                                Text(
+                                  user.username ?? user.email ?? '',
+                                  style: Style.cardTitle,
+                                ),
+                                Pad.w4,
+                                Text(
+                                  'lv${userDetails.level}',
+                                  style:
+                                      Style.cardSubTitle.copyWith(fontSize: 12),
+                                )
+                              ],
+                            ),
+                            Text(
+                              "0 recipes shared",
+                              style: Style.cardSubTitle,
+                            )
+                          ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -297,7 +312,7 @@ class RecipeAddView extends StatelessWidget {
                           Pad.h24,
                           ElevatedButton(
                             onPressed: () {
-                              context.read<RecipeCubit>().submit(user);
+                              context.read<RecipeCubit>().submit(user,action);
                               context.read<HomeCubit>().setFlag(!flag);
                               Navigator.pop(context);
                             },
@@ -318,13 +333,17 @@ class RecipeAddView extends StatelessWidget {
 }
 
 class RecipeAddPage extends StatelessWidget {
-  RecipeAddPage({super.key});
+  RecipeAddPage({super.key, this.recipe, required this.action});
+
+  final Recipe? recipe;
+
+  final RAction action;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => RecipeCubit(),
-      child: RecipeAddView(),
+      create: (_) => RecipeCubit(recipe: recipe),
+      child: RecipeAddView(action: action,),
     );
   }
 }
@@ -337,6 +356,7 @@ class _NameInput extends StatelessWidget {
       builder: (context, state) {
         return TextFormField(
           key: const Key('name_input_textField'),
+          controller: TextEditingController(text: state.name.value),
           keyboardType: TextInputType.text,
           onChanged: (value) => context.read<RecipeCubit>().nameChanged(value),
           style: Style.heading,
@@ -361,6 +381,7 @@ class _DescriptionInput extends StatelessWidget {
       builder: (context, state) {
         return TextFormField(
           key: const Key('description_input_textField'),
+          controller: TextEditingController(text: state.description.value),
           minLines: 2,
           maxLines: 100,
           keyboardType: TextInputType.text,
@@ -577,6 +598,7 @@ class _NoteInput extends StatelessWidget {
       builder: (context, state) {
         return TextFormField(
           key: const Key('note_input_textField'),
+          controller: TextEditingController(text: state.note),
           minLines: 1,
           maxLines: 100,
           keyboardType: TextInputType.text,
@@ -586,7 +608,6 @@ class _NoteInput extends StatelessWidget {
             contentPadding: EdgeInsets.all(0),
             border: UnderlineInputBorder(),
             labelText: 'note',
-            // errorText: state.note ? 'required' : null,
           ),
         );
       },

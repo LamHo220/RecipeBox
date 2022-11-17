@@ -38,21 +38,22 @@ class RecipeRepository {
         );
   }
 
-  Future<void> updateRecipe(String id, Recipe recipe) async {
+  Future<void> updateRecipe(String id, Recipe recipe, bool history) async {
     final ref = firestore.collection('recipes').doc(id);
-
-    ref.update(recipe.toFirestore()).then(
-        (value) => print("Recipe updated, now update the timestamp"),
-        onError: (e) => print("Error updating document $e"));
 
     ref.update({'timestamp': FieldValue.serverTimestamp()}).then(
         (value) => print("timestamp updated!"),
         onError: (e) => print("Error updating document $e"));
-
-    ref
-        .collection('histories')
-        .add(recipe.toFirestore())
-        .then((value) => print('history added'));
+        
+    if (history) {
+      ref.update(recipe.toFirestore()).then(
+          (value) => print("Recipe updated, now update the timestamp"),
+          onError: (e) => print("Error updating document $e"));
+      ref
+          .collection('histories')
+          .add(recipe.toFirestore())
+          .then((value) => print('history added'));
+    }
   }
 
   Future<QuerySnapshot<Recipe>> getRecipe(

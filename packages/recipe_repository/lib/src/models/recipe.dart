@@ -135,4 +135,38 @@ class Recipe extends Equatable {
         original ?? '',
         time,
       ];
+
+  Recipe copyWith(
+    id,
+      {String? name,
+      String? imgPath,
+      String? description,
+      int? bookmarked,
+      int? cal,
+      int? gram,
+      int? forked,
+      List<Map<String, dynamic>>? ingredients,
+      bool? isPublic,
+      String? note,
+      List<String>? steps,
+      List<String>? categories,
+      String? user,
+      Map<String, dynamic>? time}) {
+    return Recipe(
+      id:id,
+        name: name ?? this.name,
+        description: description ?? this.description,
+        bookmarked: bookmarked ?? this.bookmarked,
+        cal: cal ?? this.cal,
+        gram: gram ?? this.gram,
+        forked: forked ?? this.forked,
+        ingredients: ingredients ?? this.ingredients,
+        isPublic: isPublic ?? this.isPublic,
+        note: note ?? this.note,
+        steps: steps ?? this.steps,
+        categories: categories ?? this.categories,
+        timestamp: this.timestamp,
+        user: user ?? this.user,
+        time: time ?? this.time);
+  }
 }

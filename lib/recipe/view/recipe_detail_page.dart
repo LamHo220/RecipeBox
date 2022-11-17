@@ -9,6 +9,7 @@ import 'package:recipe_box/common/constants/colors.dart';
 import 'package:recipe_box/common/constants/paddings.dart';
 import 'package:recipe_box/common/constants/style.dart';
 import 'package:recipe_box/recipe/cubit/recipe_cubit.dart';
+import 'package:recipe_box/recipe/view/recipe_add_page.dart';
 import 'package:recipe_box/recipe/view/recipe_steps.dart';
 import 'package:recipe_repository/recipe_repository.dart';
 
@@ -26,6 +27,7 @@ class RecipeDetailsView extends StatelessWidget {
   Widget build(BuildContext context) {
     final user = context.select((AppBloc bloc) => bloc.state.user);
     final flag = context.select((HomeCubit value) => value.state.flag);
+    final state = context.select((RecipeCubit value) => value.state);
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
@@ -73,10 +75,25 @@ class RecipeDetailsView extends StatelessWidget {
                   builder: (context) {
                     return Dialog(
                       child: Card(
-                        child: Text(recipe.note),
+                        child: Container(
+                            padding: Pad.pa8,
+                            width: MediaQuery.of(context).size.width * 0.9,
+                            height: MediaQuery.of(context).size.height * 0.5,
+                            child: Text(
+                              recipe.note,
+                              style: Style.question,
+                            )),
                       ),
                     );
                   });
+            } else if (value == 2) {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => RecipeAddPage(
+                            recipe: recipe,
+                            action: RAction.modify,
+                          ))).then((value) => Navigator.pop(context));
             }
           }, itemBuilder: (context) {
             return [
@@ -85,7 +102,8 @@ class RecipeDetailsView extends StatelessWidget {
                 value: 0,
                 child: Text("Delete Recipe"),
               ),
-              PopupMenuItem(value: 1, child: Text('Notes from creater'))
+              PopupMenuItem(value: 1, child: Text('Notes from creater')),
+              PopupMenuItem(value: 2, child: Text('Edit'))
             ];
           })
         ],
@@ -120,7 +138,13 @@ class RecipeDetailsView extends StatelessWidget {
                       ))),
               Pad.w8,
               GestureDetector(
-                  onTap: () => {},
+                  onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => RecipeAddPage(
+                                recipe: recipe,
+                                action: RAction.fork,
+                              ))),
                   child: Container(
                     padding: Pad.pa12,
                     decoration: BoxDecoration(
@@ -414,7 +438,7 @@ class RecipeDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => RecipeCubit(),
+      create: (context) => RecipeCubit(recipe: null),
       child: RecipeDetailsView(
         recipe: recipe,
         closedContainer: closedContainer,

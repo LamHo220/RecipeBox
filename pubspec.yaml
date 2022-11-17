@@ -65,6 +65,7 @@ dependencies:
   infinite_scroll_pagination: ^3.2.0
   numberpicker: ^2.1.1
   flutter_switch: ^0.3.2
+  image_cropper: ^3.0.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -90,6 +91,7 @@ flutter:
   assets:
     - logo.png
     - 95531-chef.json
+    - R.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
