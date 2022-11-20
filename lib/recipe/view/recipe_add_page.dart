@@ -11,6 +11,7 @@ import 'package:recipe_box/common/constants/paddings.dart';
 import 'package:recipe_box/common/constants/style.dart';
 import 'package:recipe_box/explore/view/explore_page.dart';
 import 'package:recipe_box/recipe/cubit/recipe_cubit.dart';
+import 'package:recipe_box/recipe/widgets/camera.dart';
 
 class RecipeAddView extends StatelessWidget {
   const RecipeAddView({
@@ -37,16 +38,7 @@ class RecipeAddView extends StatelessWidget {
           bottom: true,
           child: SingleChildScrollView(
             child: Column(children: [
-              Container(
-                alignment: Alignment.bottomLeft,
-                width: double.infinity,
-                height: MediaQuery.of(context).size.height * 0.3,
-                decoration: BoxDecoration(
-                    image: DecorationImage(
-                        // TODO: iamge picker
-                        image:
-                            Image.network('https://picsum.photos/1024').image,
-                        fit: BoxFit.cover)),
+              Camera(
                 child: Container(
                   color: ThemeColors.halfGray,
                   padding: const EdgeInsets.only(
