@@ -9,6 +9,7 @@ import 'package:recipe_box/app/app.dart';
 import 'package:recipe_box/common/constants/colors.dart';
 import 'package:recipe_box/common/constants/paddings.dart';
 import 'package:recipe_box/common/constants/style.dart';
+import 'package:recipe_box/recipe/bloc/recipe_bloc.dart';
 import 'package:recipe_box/recipe/cubit/recipe_cubit.dart';
 import 'package:recipe_box/recipe/view/recipe_add_page.dart';
 import 'package:recipe_box/recipe/view/recipe_steps.dart';
@@ -30,7 +31,6 @@ class RecipeDetailsView extends StatelessWidget {
   Widget build(BuildContext context) {
     final user = context.select((AppBloc bloc) => bloc.state.user);
     final flag = context.select((HomeCubit value) => value.state.flag);
-    final state = context.select((RecipeCubit value) => value.state);
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
@@ -66,7 +66,7 @@ class RecipeDetailsView extends StatelessWidget {
                     );
                   }).then((value) {
                 if (value) {
-                  context.read<RecipeCubit>().deleteRecipe(recipe);
+                  context.read<RecipeBloc>().deleteRecipe(recipe);
                   context.read<HomeCubit>().setFlag(!flag);
                   context.read<HomeCubit>().removeFromFavorite(recipe);
                   Navigator.pop(context);
@@ -459,7 +459,7 @@ class RecipeDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => RecipeCubit(recipe: null),
+      create: (context) => RecipeBloc(recipe: null),
       child: RecipeDetailsView(
         recipe: recipe,
         closedContainer: closedContainer,

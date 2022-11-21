@@ -91,6 +91,8 @@ flutter:
   assets:
     - logo.png
     - 95531-chef.json
+    - camera.png
+    - assets/camera.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

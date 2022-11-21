@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:recipe_box/app/app.dart';
 import 'package:recipe_box/common/constants/colors.dart';
@@ -13,8 +15,8 @@ import 'package:recipe_box/common/constants/paddings.dart';
 import 'package:recipe_box/common/constants/style.dart';
 import 'package:recipe_box/explore/view/explore_page.dart';
 import 'package:recipe_box/home/cubit/home_cubit.dart';
-import 'package:recipe_box/recipe/cubit/recipe_cubit.dart';
-import 'package:recipe_box/recipe/widgets/camera.dart';
+import 'package:recipe_box/recipe/bloc/recipe_bloc.dart';
+import 'package:recipe_repository/recipe_repository.dart';
 
 class RecipeAddView extends StatelessWidget {
   const RecipeAddView({
@@ -30,8 +32,8 @@ class RecipeAddView extends StatelessWidget {
     final userDetails =
         context.select((HomeCubit value) => value.state.userDetails);
 
-    final recipe = context.select((RecipeCubit value) => value.state);
     final flag = context.select((HomeCubit value) => value.state.flag);
+    final recipeBloc = BlocProvider.of<RecipeBloc>(context);
 
     return Scaffold(
         extendBodyBehindAppBar: true,
@@ -45,58 +47,75 @@ class RecipeAddView extends StatelessWidget {
           bottom: true,
           child: SingleChildScrollView(
             child: Column(children: [
-              Container(
-                alignment: Alignment.bottomLeft,
-                width: double.infinity,
-                height: MediaQuery.of(context).size.height * 0.3,
-                decoration: BoxDecoration(
-                    image: DecorationImage(
-                        // TODO: iamge picker
-                        image:
-                            Image.network('https://picsum.photos/1024').image,
-                        fit: BoxFit.cover)),
-                child: Container(
-                  color: ThemeColors.halfGray,
-                  padding: const EdgeInsets.only(
-                      left: 24, right: 24, top: 8, bottom: 8),
-                  child: Row(
-                    children: [
-                      const Icon(
-                        Icons.account_circle,
-                        color: ThemeColors.white,
+              InkWell(
+                  onTap: () async {
+                    final ImagePicker _picker = ImagePicker();
+                    final XFile? file =
+                        await _picker.pickImage(source: ImageSource.gallery);
+                    if (file != null) {
+                      recipeBloc.add(PickingImage(file));
+                      final ImageCropper _cropper = ImageCropper();
+                      // final CroppedFile? croppedFile =
+                      //     await _cropper.cropImage(sourcePath: file.path);
+                      // if (croppedFile != null) {
+                      //   recipeBloc.add(CroppingImage(croppedFile));
+                      // }
+                    }
+                  },
+                  child: BlocBuilder<RecipeBloc, RecipeState>(
+                    builder: (context, state) => Container(
+                      alignment: Alignment.bottomLeft,
+                      width: double.infinity,
+                      height: MediaQuery.of(context).size.height * 0.3,
+                      decoration: BoxDecoration(
+                          color: ThemeColors.card,
+                          image: DecorationImage(
+                              image: state.file != null
+                                  ? FileImage(File(state.file.path))
+                                  : Image.asset('assets/camera.png').image)),
+                      child: Container(
+                        color: ThemeColors.halfGray,
+                        padding: const EdgeInsets.only(
+                            left: 24, right: 24, top: 8, bottom: 8),
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.account_circle,
+                              color: ThemeColors.white,
+                            ),
+                            Pad.w8,
+                            Wrap(
+                              crossAxisAlignment: WrapCrossAlignment.start,
+                              direction: Axis.vertical,
+                              children: [
+                                Row(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.baseline,
+                                  textBaseline: TextBaseline.ideographic,
+                                  children: [
+                                    Text(
+                                      user.username ?? user.email ?? '',
+                                      style: Style.cardTitle,
+                                    ),
+                                    Pad.w4,
+                                    Text(
+                                      'lv${userDetails.level}',
+                                      style: Style.cardSubTitle
+                                          .copyWith(fontSize: 12),
+                                    )
+                                  ],
+                                ),
+                                Text(
+                                  "${0} recipes shared",
+                                  style: Style.cardSubTitle,
+                                )
+                              ],
+                            )
+                          ],
+                        ),
                       ),
-                      Pad.w8,
-                      Wrap(
-                        crossAxisAlignment: WrapCrossAlignment.start,
-                        direction: Axis.vertical,
-                        children: [
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.baseline,
-                            textBaseline: TextBaseline.ideographic,
-                            children: [
-                              Text(
-                                user.username ?? user.email ?? '',
-                                style: Style.cardTitle,
-                              ),
-                              Pad.w4,
-                              Text(
-                                'lv${userDetails.level}',
-                                style:
-                                    Style.cardSubTitle.copyWith(fontSize: 12),
-                              )
-                            ],
-                          ),
-                          // TODO
-                          // Text(
-                          //   "${userDetails.publicRecipes.length} recipes shared",
-                          //   style: Style.cardSubTitle,
-                          // )
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-              ),
+                    ),
+                  )),
               Container(
                 padding: EdgeInsetsDirectional.only(start: 12, end: 12),
                 child: Column(
@@ -200,7 +219,7 @@ class RecipeAddView extends StatelessWidget {
                                 Column(
                                   children: [
                                     Text(
-                                      recipe.steps.length.toString(),
+                                      recipeBloc.state.steps.length.toString(),
                                       style: Style.highlightText,
                                     ),
                                     Text(
@@ -222,7 +241,7 @@ class RecipeAddView extends StatelessWidget {
                                 'Ingredients',
                                 style: Style.heading,
                               ),
-                              Text('${recipe.ingredients.length} items',
+                              Text('${recipeBloc.state.ingredients.length} items',
                                   style: Style.label
                                       .copyWith(color: ThemeColors.inactive))
                             ],
@@ -234,7 +253,7 @@ class RecipeAddView extends StatelessWidget {
                             children: [
                               IconButton(
                                   onPressed: () {
-                                    context.read<RecipeCubit>().addIngredient();
+                                    context.read<RecipeBloc>().addIngredient();
                                   },
                                   icon: Icon(Icons.add_circle_outline_outlined))
                             ],
@@ -248,7 +267,7 @@ class RecipeAddView extends StatelessWidget {
                                 'Steps',
                                 style: Style.heading,
                               ),
-                              Text('${recipe.ingredients.length} steps',
+                              Text('${recipeBloc.state.ingredients.length} steps',
                                   style: Style.label
                                       .copyWith(color: ThemeColors.inactive))
                             ],
@@ -260,7 +279,7 @@ class RecipeAddView extends StatelessWidget {
                             children: [
                               IconButton(
                                   onPressed: () {
-                                    context.read<RecipeCubit>().addSteps();
+                                    context.read<RecipeBloc>().addSteps();
                                   },
                                   icon: Icon(Icons.add_circle_outline_outlined))
                             ],
@@ -303,7 +322,7 @@ class RecipeAddView extends StatelessWidget {
                           Pad.h24,
                           ElevatedButton(
                             onPressed: () {
-                              context.read<RecipeCubit>().submit(user, action);
+                              context.read<RecipeBloc>().submit(user, action);
                               context.read<HomeCubit>().setFlag(!flag);
                               Navigator.pop(context);
                             },
@@ -333,7 +352,7 @@ class RecipeAddPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-        create: (_) => RecipeCubit(recipe: recipe),
+        create: (_) => RecipeBloc(recipe: recipe),
         child: WillPopScope(
             child: RecipeAddView(
               action: action,
@@ -368,14 +387,15 @@ class RecipeAddPage extends StatelessWidget {
 class _NameInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<RecipeCubit, RecipeState>(
+    return BlocBuilder<RecipeBloc, RecipeState>(
       buildWhen: (previous, current) => previous.name != current.name,
       builder: (context, state) {
         return TextFormField(
           key: const Key('name_input_textField'),
           // controller: TextEditingController(text: state.name.value),
           keyboardType: TextInputType.text,
-          onChanged: (value) => context.read<RecipeCubit>().nameChanged(value),
+          initialValue: state.name.value,
+          onChanged: (value) => context.read<RecipeBloc>().nameChanged(value),
           style: Style.heading,
           decoration: InputDecoration(
             contentPadding: EdgeInsets.all(0),
@@ -392,18 +412,19 @@ class _NameInput extends StatelessWidget {
 class _DescriptionInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<RecipeCubit, RecipeState>(
+    return BlocBuilder<RecipeBloc, RecipeState>(
       buildWhen: (previous, current) =>
           previous.description != current.description,
       builder: (context, state) {
         return TextFormField(
           key: const Key('description_input_textField'),
-          controller: TextEditingController(text: state.description.value),
+          // controller: TextEditingController(text: state.description.value),
           minLines: 2,
           maxLines: 100,
           keyboardType: TextInputType.text,
+          initialValue: state.description.value,
           onChanged: (value) =>
-              context.read<RecipeCubit>().descriptionChanged(value),
+              context.read<RecipeBloc>().descriptionChanged(value),
           decoration: const InputDecoration(
             labelText: 'description',
             contentPadding: EdgeInsets.all(0),
@@ -419,7 +440,7 @@ class _DescriptionInput extends StatelessWidget {
 class _StepInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<RecipeCubit, RecipeState>(
+    return BlocBuilder<RecipeBloc, RecipeState>(
         buildWhen: (previous, current) =>
             previous.steps.length != current.steps.length,
         builder: (context, state) => state.steps.isNotEmpty
@@ -435,14 +456,14 @@ class _StepInput extends StatelessWidget {
                 itemBuilder: (context, index) => TextField(
                   controller: state.steps[index],
                   // onChanged: (value) =>
-                  //     context.read<RecipeCubit>().stepChanged(index, value),
+                  //     context.read<RecipeBloc>().stepChanged(index, value),
                   decoration: InputDecoration(
                       labelText: 'step ${(index + 1)}*',
                       errorText:
                           state.steps[index].text.isEmpty ? 'required' : null,
                       suffixIcon: IconButton(
                           onPressed: () =>
-                              context.read<RecipeCubit>().deleteStep(index),
+                              context.read<RecipeBloc>().deleteStep(index),
                           icon: Icon(Icons.close))),
                 ),
               )
@@ -453,7 +474,7 @@ class _StepInput extends StatelessWidget {
 class _IngredientInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<RecipeCubit, RecipeState>(
+    return BlocBuilder<RecipeBloc, RecipeState>(
         buildWhen: (previous, current) =>
             previous.ingredients != current.ingredients,
         builder: (context, state) => state.ingredients.isNotEmpty
@@ -494,7 +515,7 @@ class _IngredientInput extends StatelessWidget {
                                   : null,
                           suffixIcon: IconButton(
                               onPressed: () => context
-                                  .read<RecipeCubit>()
+                                  .read<RecipeBloc>()
                                   .deleteIngredient(index),
                               icon: Icon(Icons.close))),
                     ))
@@ -508,7 +529,7 @@ class _IngredientInput extends StatelessWidget {
 class _CalInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<RecipeCubit, RecipeState>(
+    return BlocBuilder<RecipeBloc, RecipeState>(
       buildWhen: (previous, current) => previous.cal != current.cal,
       builder: (context, state) {
         return NumberPicker(
@@ -521,8 +542,7 @@ class _CalInput extends StatelessWidget {
             itemHeight: 35,
             maxValue: 100000,
             value: state.cal,
-            onChanged: (value) =>
-                context.read<RecipeCubit>().calChanged(value));
+            onChanged: (value) => context.read<RecipeBloc>().calChanged(value));
       },
     );
   }
@@ -531,7 +551,7 @@ class _CalInput extends StatelessWidget {
 class _GramInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<RecipeCubit, RecipeState>(
+    return BlocBuilder<RecipeBloc, RecipeState>(
       buildWhen: (previous, current) => previous.gram != current.gram,
       builder: (context, state) {
         return NumberPicker(
@@ -545,7 +565,7 @@ class _GramInput extends StatelessWidget {
             maxValue: 100000,
             value: state.gram,
             onChanged: (value) =>
-                context.read<RecipeCubit>().gramChanged(value));
+                context.read<RecipeBloc>().gramChanged(value));
       },
     );
   }
@@ -554,17 +574,17 @@ class _GramInput extends StatelessWidget {
 class _TimeInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final hour = context.select((RecipeCubit value) => value.state.time)['hr'];
+    final hour = context.select((RecipeBloc value) => value.state.time)['hr'];
 
     final minute =
-        context.select((RecipeCubit value) => value.state.time)['min'];
+        context.select((RecipeBloc value) => value.state.time)['min'];
 
     void updateHour(int value) {
-      context.read<RecipeCubit>().setHour(value);
+      context.read<RecipeBloc>().setHour(value);
     }
 
     void updateMinute(int value) {
-      context.read<RecipeCubit>().setMinute(value);
+      context.read<RecipeBloc>().setMinute(value);
     }
 
     return Row(
@@ -610,16 +630,17 @@ class _TimeInput extends StatelessWidget {
 class _NoteInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<RecipeCubit, RecipeState>(
+    return BlocBuilder<RecipeBloc, RecipeState>(
       buildWhen: (previous, current) => previous.note != current.note,
       builder: (context, state) {
         return TextFormField(
           key: const Key('note_input_textField'),
-          controller: TextEditingController(text: state.note),
+          // controller: TextEditingController(text: state.note),
           minLines: 1,
           maxLines: 100,
+          initialValue: state.note,
           keyboardType: TextInputType.text,
-          onChanged: (value) => context.read<RecipeCubit>().noteChanged(value),
+          onChanged: (value) => context.read<RecipeBloc>().noteChanged(value),
           style: Style.heading,
           decoration: InputDecoration(
             contentPadding: EdgeInsets.all(0),
@@ -635,14 +656,14 @@ class _NoteInput extends StatelessWidget {
 class _SetIsPublic extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<RecipeCubit, RecipeState>(
+    return BlocBuilder<RecipeBloc, RecipeState>(
         buildWhen: (previous, current) => previous.isPublic != current.isPublic,
         builder: (context, state) {
           return Switch(
               value: state.isPublic,
               activeColor: ThemeColors.primaryLight,
               onChanged: (val) =>
-                  context.read<RecipeCubit>().changeIsPublic(val));
+                  context.read<RecipeBloc>().changeIsPublic(val));
         });
   }
 }
@@ -650,7 +671,7 @@ class _SetIsPublic extends StatelessWidget {
 class _CategoriesChoice extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<RecipeCubit, RecipeState>(
+    return BlocBuilder<RecipeBloc, RecipeState>(
       buildWhen: (previous, current) =>
           previous.categories != current.categories,
       builder: (context, state) => SmartSelect.multiple(
@@ -669,13 +690,13 @@ class _CategoriesChoice extends StatelessWidget {
                 //   );
                 // },
                 chipOnDelete: (i) =>
-                    context.read<RecipeCubit>().removeCategory(i),
+                    context.read<RecipeBloc>().removeCategory(i),
                 chipColor: ThemeColors.primaryLight,
               ),
             );
           },
           onChange: (value) =>
-              context.read<RecipeCubit>().onCategoriesChange(value),
+              context.read<RecipeBloc>().onCategoriesChange(value),
           title: 'Categories',
           choiceActiveStyle: S2ChoiceStyle(
             color: ThemeColors.primaryLight,

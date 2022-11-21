@@ -1,6 +1,5 @@
 import 'package:animations/animations.dart';
 import 'package:authentication_repository/authentication_repository.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -8,7 +7,7 @@ import 'package:recipe_box/app/app.dart';
 import 'package:recipe_box/common/constants/colors.dart';
 import 'package:recipe_box/common/constants/paddings.dart';
 import 'package:recipe_box/explore/view/explore_page.dart';
-import 'package:recipe_box/recipe/cubit/recipe_cubit.dart';
+import 'package:recipe_box/recipe/bloc/recipe_bloc.dart';
 import 'package:recipe_box/recipe/view/recipe_add_page.dart';
 import 'package:recipe_box/recipe/view/recipe_list_page.dart';
 import 'package:recipe_box/home/cubit/home_cubit.dart';
