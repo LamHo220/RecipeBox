@@ -44,7 +44,7 @@ class RecipeRepository {
     ref.update({'timestamp': FieldValue.serverTimestamp()}).then(
         (value) => print("timestamp updated!"),
         onError: (e) => print("Error updating document $e"));
-        
+
     if (history) {
       ref.update(recipe.toFirestore()).then(
           (value) => print("Recipe updated, now update the timestamp"),
@@ -96,6 +96,8 @@ class RecipeRepository {
     ref.update({
       "favorites": FieldValue.arrayUnion([recipe.id]),
     });
+    final ref2 = firestore.collection('recipe').doc(recipe.id);
+    ref.update({'bookmarked': FieldValue.increment(1)});
   }
 
   void removeFromFavorite(UserDetails userDetails, Recipe recipe) {
@@ -103,5 +105,7 @@ class RecipeRepository {
     ref.update({
       "favorites": FieldValue.arrayRemove([recipe.id]),
     });
+    final ref2 = firestore.collection('recipe').doc(recipe.id);
+    ref.update({'bookmarked': FieldValue.increment(-1)});
   }
 }

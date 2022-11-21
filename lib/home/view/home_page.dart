@@ -37,32 +37,9 @@ class HomeView extends StatelessWidget {
           onPressed: () => action(),
           child: const Icon(Icons.add),
         ),
-        openBuilder: (context, action) => WillPopScope(
-            child: RecipeAddPage(action: RAction.add,),
-            onWillPop: () async {
-              return showDialog(
-                  context: context,
-                  builder: (context) {
-                    return AlertDialog(
-                      title: Text('Do you really want to leave?'),
-                      content: Text('Your draft will not be saved.'),
-                      actions: [
-                        TextButton(
-                          style: TextButton.styleFrom(
-                              foregroundColor: ThemeColors.primaryDark),
-                          child: Text("Cancel"),
-                          onPressed: () => Navigator.pop(context, false),
-                        ),
-                        TextButton(
-                          style: TextButton.styleFrom(
-                              foregroundColor: ThemeColors.primaryDark),
-                          child: Text("Confirm"),
-                          onPressed: () => Navigator.pop(context, true),
-                        )
-                      ],
-                    );
-                  }).then((x) => x ?? false);
-            }),
+        openBuilder: (context, action) => RecipeAddPage(
+          action: RAction.add,
+        ),
       );
     }
 

@@ -312,7 +312,7 @@ class RecipeAddView extends StatelessWidget {
                           Pad.h24,
                           ElevatedButton(
                             onPressed: () {
-                              context.read<RecipeCubit>().submit(user,action);
+                              context.read<RecipeCubit>().submit(user, action);
                               context.read<HomeCubit>().setFlag(!flag);
                               Navigator.pop(context);
                             },
@@ -342,9 +342,35 @@ class RecipeAddPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => RecipeCubit(recipe: recipe),
-      child: RecipeAddView(action: action,),
-    );
+        create: (_) => RecipeCubit(recipe: recipe),
+        child: WillPopScope(
+            child: RecipeAddView(
+              action: action,
+            ),
+            onWillPop: () async {
+              return showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: Text('Do you really want to leave?'),
+                      content: Text('Your draft will not be saved.'),
+                      actions: [
+                        TextButton(
+                          style: TextButton.styleFrom(
+                              foregroundColor: ThemeColors.primaryDark),
+                          child: Text("Cancel"),
+                          onPressed: () => Navigator.pop(context, false),
+                        ),
+                        TextButton(
+                          style: TextButton.styleFrom(
+                              foregroundColor: ThemeColors.primaryDark),
+                          child: Text("Confirm"),
+                          onPressed: () => Navigator.pop(context, true),
+                        )
+                      ],
+                    );
+                  }).then((x) => x ?? false);
+            }));
   }
 }
 
@@ -356,7 +382,7 @@ class _NameInput extends StatelessWidget {
       builder: (context, state) {
         return TextFormField(
           key: const Key('name_input_textField'),
-          controller: TextEditingController(text: state.name.value),
+          // controller: TextEditingController(text: state.name.value),
           keyboardType: TextInputType.text,
           onChanged: (value) => context.read<RecipeCubit>().nameChanged(value),
           style: Style.heading,

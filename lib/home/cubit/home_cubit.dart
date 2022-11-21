@@ -9,6 +9,7 @@ part 'home_state.dart';
 class HomeCubit extends Cubit<HomeState> {
   HomeCubit() : super(const HomeState());
   RecipeRepository recipeRepo = RecipeRepository();
+  AuthenticationRepository _repo = AuthenticationRepository();
 
   void setTab(Tabs tab) => emit(state.copyWith(tab: tab));
   void setFlag(bool flag) => emit(state.copyWith(flag: flag));
@@ -38,8 +39,8 @@ class HomeCubit extends Cubit<HomeState> {
     });
   }
 
-  Future<QuerySnapshot<Recipe>> getUser(User user) async {
-    return recipeRepo.getRecipe('user', isEqualTo: user.id);
+  Future<QuerySnapshot<Recipe>> getUser(String id) async {
+    return recipeRepo.getRecipe('user', isEqualTo: id);
   }
 
   void addToFavorite(Recipe recipe) {
@@ -48,6 +49,7 @@ class HomeCubit extends Cubit<HomeState> {
     x.add(recipe.id);
     emit(state.copyWith(
         userDetails: UserDetails(
+            username: state.userDetails.username,
             id: state.userDetails.id,
             description: state.userDetails.description,
             level: state.userDetails.level,
@@ -64,6 +66,7 @@ class HomeCubit extends Cubit<HomeState> {
     emit(state.copyWith(
         userDetails: UserDetails(
             id: state.userDetails.id,
+            username: state.userDetails.username,
             description: state.userDetails.description,
             level: state.userDetails.level,
             points: state.userDetails.points,
@@ -74,5 +77,9 @@ class HomeCubit extends Cubit<HomeState> {
 
   void updateUserDetails(UserDetails userDetails) {
     emit(state.copyWith(userDetails: userDetails));
+  }
+
+  Future<QuerySnapshot<UserDetails>> getUserDetails(String id) {
+    return _repo.getUserDetails(id);
   }
 }

@@ -101,6 +101,7 @@ class SignUpCubit extends Cubit<SignUpState> {
     }
     try {
       await _authenticationRepository.createUserDetails(UserDetails(
+          username: state.username.value,
           id: _authenticationRepository.currentUser.id,
           description: '',
           level: 0,

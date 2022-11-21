@@ -274,6 +274,7 @@ class AuthenticationRepository {
         );
     return ref.where('id', isEqualTo: id).get();
   }
+
 }
 
 extension on firebase_auth.User {

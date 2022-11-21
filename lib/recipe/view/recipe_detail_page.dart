@@ -1,4 +1,5 @@
 import 'package:animations/animations.dart';
+import 'package:authentication_repository/authentication_repository.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -16,9 +17,11 @@ import 'package:recipe_repository/recipe_repository.dart';
 import '../../home/cubit/home_cubit.dart';
 
 class RecipeDetailsView extends StatelessWidget {
-  const RecipeDetailsView(
-      {Key? key, required this.recipe, required this.closedContainer})
-      : super(key: key);
+  const RecipeDetailsView({
+    Key? key,
+    required this.recipe,
+    required this.closedContainer,
+  }) : super(key: key);
 
   final Recipe recipe;
   final Function closedContainer;
@@ -93,7 +96,7 @@ class RecipeDetailsView extends StatelessWidget {
                       builder: (context) => RecipeAddPage(
                             recipe: recipe,
                             action: RAction.modify,
-                          ))).then((value) => Navigator.pop(context));
+                          )));
             }
           }, itemBuilder: (context) {
             return [
@@ -208,35 +211,50 @@ class RecipeDetailsView extends StatelessWidget {
                     color: ThemeColors.white,
                   ),
                   Pad.w8,
-                  Wrap(
-                    crossAxisAlignment: WrapCrossAlignment.start,
-                    direction: Axis.vertical,
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(
-                            user.username ?? user.email!,
-                            style: Style.cardTitle,
-                          ),
-                          Pad.w4,
-                          Text(
-                            "lv${context.select((HomeCubit value) => value.state.userDetails.level)}",
-                            style: Style.cardSubTitle.copyWith(fontSize: 12),
-                          )
-                        ],
-                      ),
-                      FutureBuilder<QuerySnapshot<Recipe>>(
-                        future: context.read<HomeCubit>().getUser(user),
-                        builder: (context, snapshot) {
-                          return Text(
-                            '${snapshot.data == null ? 0 : snapshot.data!.size} recipe shared',
-                            style: Style.cardSubTitle,
-                          );
-                        },
-                      )
-                    ],
-                  )
+                  FutureBuilder<QuerySnapshot<UserDetails>>(
+                      future:
+                          context.read<HomeCubit>().getUserDetails(recipe.user),
+                      builder: (context, snapshot) {
+                        final data = snapshot.data;
+                        if (data == null) {
+                          return Container();
+                        }
+                        if (data.docs.isEmpty) {
+                          return Container();
+                        }
+                        return Wrap(
+                          crossAxisAlignment: WrapCrossAlignment.start,
+                          direction: Axis.vertical,
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                  data.docs.first.data().username,
+                                  style: Style.cardTitle,
+                                ),
+                                Pad.w4,
+                                Text(
+                                  "lv${data.docs.first.data().level}",
+                                  style:
+                                      Style.cardSubTitle.copyWith(fontSize: 12),
+                                )
+                              ],
+                            ),
+                            FutureBuilder<QuerySnapshot<Recipe>>(
+                              future: context
+                                  .read<HomeCubit>()
+                                  .getUser(recipe.user),
+                              builder: (context, snapshot) {
+                                return Text(
+                                  '${snapshot.data == null ? 0 : snapshot.data!.size} recipe shared',
+                                  style: Style.cardSubTitle,
+                                );
+                              },
+                            )
+                          ],
+                        );
+                      })
                 ],
               ),
             ),
@@ -428,8 +446,11 @@ ButtonStyle _viewStepsStyle() {
 }
 
 class RecipeDetails extends StatelessWidget {
-  const RecipeDetails(
-      {super.key, required this.recipe, required this.closedContainer});
+  const RecipeDetails({
+    super.key,
+    required this.recipe,
+    required this.closedContainer,
+  });
 
   final Recipe recipe;
 

@@ -81,19 +81,19 @@ class ProfileView extends StatelessWidget {
                   //       : userDetails.description,
                   //   style: Style.search,
                   // ),
-                  Row(
-                    children: [
-                      Container(
-                        padding: Pad.pa8,
-                        child: Icon(
-                          FontAwesomeIcons.user,
-                          size: 16,
-                          color: ThemeColors.gray,
-                        ),
-                      ),
-                      Text('n followers')
-                    ],
-                  ),
+                  // Row(
+                  //   children: [
+                  //     Container(
+                  //       padding: Pad.pa8,
+                  //       child: Icon(
+                  //         FontAwesomeIcons.user,
+                  //         size: 16,
+                  //         color: ThemeColors.gray,
+                  //       ),
+                  //     ),
+                  //     Text('n followers')
+                  //   ],
+                  // ),
                   const Divider(),
                   Row(
                     children: const [

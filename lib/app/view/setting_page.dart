@@ -121,8 +121,10 @@ class SettingPage extends StatelessWidget {
               ),
             ),
             TextButton(
-              onPressed: () =>
-                  context.read<AppBloc>().add(AppLogoutRequested()),
+              onPressed: () {
+                context.read<AppBloc>().add(AppLogoutRequested());
+                Navigator.pop(context);
+              },
               style: TextButton.styleFrom(
                 shadowColor: ThemeColors.primaryDark,
                 padding: EdgeInsets.only(left: 16, top: 16, bottom: 16),

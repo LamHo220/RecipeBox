@@ -9,7 +9,8 @@ class UserDetails extends Equatable {
       required this.points,
       required this.exp,
       required this.follows,
-      required this.favorites});
+      required this.favorites,
+      required this.username});
 
   final String id;
 
@@ -25,6 +26,8 @@ class UserDetails extends Equatable {
 
   final List<String> favorites;
 
+  final String username;
+
   static const empty = UserDetails(
       id: '',
       description: '',
@@ -32,7 +35,7 @@ class UserDetails extends Equatable {
       points: 0,
       exp: 0,
       follows: [],
-      favorites: []);
+      favorites: [],username:'');
 
   factory UserDetails.fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> snapshot,
@@ -51,6 +54,7 @@ class UserDetails extends Equatable {
       favorites: data?['favorites'] is Iterable
           ? List<String>.from(data?['favorites'])
           : [],
+          username: data?['username'] as String,
     );
   }
 
@@ -61,10 +65,11 @@ class UserDetails extends Equatable {
       "exp": exp,
       "level": level,
       "points": points,
+      "username": username,
     };
   }
 
   @override
   List<Object> get props =>
-      [id, description, exp, level, points, favorites, follows];
+      [id, description, exp, level, points, favorites, follows, username];
 }

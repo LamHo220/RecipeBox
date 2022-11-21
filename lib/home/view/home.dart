@@ -36,7 +36,7 @@ class Home extends StatelessWidget {
         actions: [Searcher()],
       ),
       body: FutureBuilder<QuerySnapshot<UserDetails>>(
-          future: _repo.getUserDetails(user.id),
+          future: context.read<HomeCubit>().getUserDetails(user.id),
           builder: (context, snapshot) {
             if (snapshot.data != null && snapshot.data!.docs.isNotEmpty)
               context
