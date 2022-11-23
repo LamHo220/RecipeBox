@@ -36,6 +36,7 @@ class AppView extends StatelessWidget {
     return BlocProvider(
         create: (_) => HomeCubit(),
         child: MaterialApp(
+          title: 'Recipe Box',
           themeMode: ThemeMode.light,
           theme: theme,
           home: FlowBuilder<AppStatus>(
