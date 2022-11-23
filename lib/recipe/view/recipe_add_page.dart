@@ -36,6 +36,16 @@ class RecipeAddView extends StatelessWidget {
     final flag = context.select((HomeCubit value) => value.state.flag);
     final recipeBloc = context.read<RecipeBloc>();
 
+    Widget XContainer(Widget child) {
+      return Card(
+        elevation: 5,
+        child: Container(
+            margin: EdgeInsetsDirectional.all(0),
+            padding: EdgeInsetsDirectional.all(12),
+            child: child),
+      );
+    }
+
     return Scaffold(
         extendBodyBehindAppBar: true,
         appBar: AppBar(
@@ -76,278 +86,203 @@ class RecipeAddView extends StatelessWidget {
                                 image: state.file == null
                                     ? Image.asset('assets/camera.png').image
                                     : FileImage(File(state.file!.path)))),
-                        child: Container(
-                          color: ThemeColors.halfGray,
-                          padding: const EdgeInsets.only(
-                              left: 24, right: 24, top: 8, bottom: 8),
-                          child: Row(
-                            children: [
-                              const Icon(
-                                Icons.account_circle,
-                                color: ThemeColors.white,
-                              ),
-                              Pad.w8,
-                              Wrap(
-                                crossAxisAlignment: WrapCrossAlignment.start,
-                                direction: Axis.vertical,
-                                children: [
-                                  Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.baseline,
-                                    textBaseline: TextBaseline.ideographic,
-                                    children: [
-                                      Text(
-                                        user.username ?? user.email ?? '',
-                                        style: Style.cardTitle,
-                                      ),
-                                      Pad.w4,
-                                      Text(
-                                        'lv${userDetails.level}',
-                                        style: Style.cardSubTitle
-                                            .copyWith(fontSize: 12),
-                                      )
-                                    ],
-                                  ),
-                                  Text(
-                                    "${0} recipes shared",
-                                    style: Style.cardSubTitle,
-                                  )
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
                       ),
                     ),
                   )),
-              Container(
-                padding: EdgeInsetsDirectional.only(start: 12, end: 12),
-                child: Column(
-                  children: [
-                    Container(
-                      padding: Pad.pa12,
-                      child: Column(
-                        children: [
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.baseline,
-                            textBaseline: TextBaseline.ideographic,
-                            children: [
-                              Expanded(child: _NameInput()),
-                              Pad.w8,
-                              Expanded(
-                                flex: 2,
-                                child: Row(children: [
-                                  Wrap(
-                                    alignment: WrapAlignment.center,
-                                    crossAxisAlignment:
-                                        WrapCrossAlignment.center,
-                                    children: [
-                                      Icon(
-                                        Icons.favorite,
-                                        color: Colors.red[600],
-                                        size: 16,
-                                      ),
-                                      Text('0')
-                                    ],
-                                  ),
-                                  Pad.w8,
-                                  Wrap(
-                                    alignment: WrapAlignment.center,
-                                    crossAxisAlignment:
-                                        WrapCrossAlignment.center,
-                                    children: const [
-                                      Icon(
-                                        FontAwesomeIcons.codeFork,
-                                        color: ThemeColors.gray,
-                                        size: 16,
-                                      ),
-                                      Text('0')
-                                    ],
-                                  )
-                                ]),
-                              )
-                            ],
-                          ),
-                          Pad.h8,
-                          Container(
-                            padding: Pad.pa12,
-                            decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadiusDirectional.circular(12),
-                                border: Border.all(
-                                  color: ThemeColors.inactive,
-                                )),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              Column(
+                children: [
+                  Container(
+                    padding: Pad.pa12,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        XContainer(
+                          Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                Column(
+                                Text('Basic Info', style: Style.heading),
+                                Pad.h8,
+                                Text('Recipe Name', style: Style.label),
+                                _NameInput(),
+                                Pad.h8,
+                                Row(
                                   children: [
-                                    // TODO
+                                    Text('Calories', style: Style.label),
                                     _CalInput(),
-                                    Text(
-                                      'cal',
-                                      style: Style.label.copyWith(fontSize: 12),
-                                    )
                                   ],
                                 ),
-                                Column(
+                                Pad.h8,
+                                Row(
                                   children: [
-                                    _GramInput(),
-                                    Text(
-                                      'gram',
-                                      style: Style.label.copyWith(fontSize: 12),
-                                    )
+                                    Text('Gram', style: Style.label),
+                                    _GramInput()
                                   ],
                                 ),
-                                Column(
+                                Pad.h8,
+                                Row(
                                   children: [
-                                    Text(
-                                      '0',
-                                      style: Style.highlightText,
-                                    ),
-                                    Text(
-                                      'rating',
-                                      style: Style.label.copyWith(fontSize: 12),
-                                    )
-                                  ],
-                                ),
-                                Column(
-                                  children: [
+                                    Text('Time Needed', style: Style.label),
                                     _TimeInput(),
-                                    Text(
-                                      'is needed',
-                                      style: Style.label.copyWith(fontSize: 12),
-                                    )
                                   ],
-                                ),
-                                Column(
-                                  children: [
-                                    Text(
-                                      recipeBloc.state.steps.length.toString(),
-                                      style: Style.highlightText,
-                                    ),
-                                    Text(
-                                      'steps',
-                                      style: Style.label.copyWith(fontSize: 12),
-                                    )
-                                  ],
+                                )
+                              ]),
+                        ),
+                        Pad.h12,
+                        XContainer(
+                          Column(children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.baseline,
+                              textBaseline: TextBaseline.ideographic,
+                              children: const [
+                                Text(
+                                  'Ingredients',
+                                  style: Style.heading,
                                 ),
                               ],
                             ),
-                          ),
-                          Pad.h12,
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.baseline,
-                            textBaseline: TextBaseline.ideographic,
+                            Pad.h24,
+                            _IngredientInput(),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                IconButton(
+                                    onPressed: () {
+                                      context
+                                          .read<RecipeBloc>()
+                                          .addIngredient();
+                                    },
+                                    icon:
+                                        Icon(Icons.add_circle_outline_outlined))
+                              ],
+                            ),
+                          ]),
+                        ),
+                        Pad.h12,
+                        XContainer(
+                          Column(
                             children: [
-                              const Text(
-                                'Ingredients',
-                                style: Style.heading,
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.baseline,
+                                textBaseline: TextBaseline.ideographic,
+                                children: const [
+                                  Text(
+                                    'Steps',
+                                    style: Style.heading,
+                                  ),
+                                ],
                               ),
-                              Text(
-                                  '${recipeBloc.state.ingredients.length} items',
-                                  style: Style.label
-                                      .copyWith(color: ThemeColors.inactive))
-                            ],
-                          ),
-                          Pad.h24,
-                          _IngredientInput(),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              IconButton(
-                                  onPressed: () {
-                                    context.read<RecipeBloc>().addIngredient();
-                                  },
-                                  icon: Icon(Icons.add_circle_outline_outlined))
-                            ],
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.baseline,
-                            textBaseline: TextBaseline.ideographic,
-                            children: [
-                              const Text(
-                                'Steps',
-                                style: Style.heading,
-                              ),
-                              Text(
-                                  '${recipeBloc.state.ingredients.length} steps',
-                                  style: Style.label
-                                      .copyWith(color: ThemeColors.inactive))
-                            ],
-                          ),
-                          Pad.h24,
-                          _StepInput(),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              IconButton(
-                                  onPressed: () {
-                                    context.read<RecipeBloc>().addSteps();
-                                  },
-                                  icon: Icon(Icons.add_circle_outline_outlined))
-                            ],
-                          ),
-                          _CategoriesChoice(),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.baseline,
-                            textBaseline: TextBaseline.ideographic,
-                            children: const [
-                              Text(
-                                'Description',
-                                style: Style.heading,
+                              Pad.h24,
+                              _StepInput(),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  IconButton(
+                                      onPressed: () {
+                                        context.read<RecipeBloc>().addSteps();
+                                      },
+                                      icon: Icon(
+                                          Icons.add_circle_outline_outlined))
+                                ],
                               ),
                             ],
                           ),
-                          _DescriptionInput(),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.baseline,
-                            textBaseline: TextBaseline.ideographic,
-                            children: const [
-                              Text(
-                                'Notes from you',
-                                style: Style.heading,
-                              ),
-                            ],
-                          ),
-                          _NoteInput(),
-                          Pad.h24,
-                          Row(
+                        ),
+                        Pad.h12,
+                        XContainer(
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Is Public?',
+                                'Categories',
                                 style: Style.heading,
                               ),
-                              _SetIsPublic()
+                              _CategoriesChoice(),
                             ],
                           ),
-                          Pad.h24,
-                          ElevatedButton(
-                            onPressed: () {
-                              context.read<RecipeBloc>().submit(user, action);
-                              if (action != RAction.Modify
-                                  // &&
-                                  // context.select((RecipeBloc value) =>
-                                  //     value.state.isPublic)
-                                  ) {
-                                context.read<HomeCubit>().addExp(user, 10);
-                              }
-                              context.read<HomeCubit>().setFlag(!flag);
-                              Navigator.pop(context);
-                            },
-                            child: Text('Post'),
-                            style: ElevatedButton.styleFrom(
-                                backgroundColor: ThemeColors.primaryLight),
-                          )
-                        ],
-                      ),
+                        ),
+                        Pad.h12,
+                        XContainer(
+                          Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.baseline,
+                                textBaseline: TextBaseline.ideographic,
+                                children: const [
+                                  Text(
+                                    'Description',
+                                    style: Style.heading,
+                                  ),
+                                ],
+                              ),
+                              _DescriptionInput(),
+                            ],
+                          ),
+                        ),
+                        Pad.h12,
+                        XContainer(
+                          Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.baseline,
+                                textBaseline: TextBaseline.ideographic,
+                                children: const [
+                                  Text(
+                                    'Notes from you',
+                                    style: Style.heading,
+                                  ),
+                                ],
+                              ),
+                              _NoteInput(),
+                            ],
+                          ),
+                        ),
+                        Pad.h12,
+                        XContainer(
+                          Column(
+                            children: [
+                              Row(
+                                children: [
+                                  Text(
+                                    'Is Public?',
+                                    style: Style.heading,
+                                  ),
+                                  _SetIsPublic()
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        Pad.h24,
+                        ElevatedButton(
+                          onPressed: () {
+                            context.read<RecipeBloc>().submit(user, action);
+                            if (action != RAction.Modify
+                                // &&
+                                // context.select((RecipeBloc value) =>
+                                //     value.state.isPublic)
+                                ) {
+                              context.read<HomeCubit>().addExp(user, 10);
+                            }
+                            context.read<HomeCubit>().setFlag(!flag);
+                            Navigator.pop(context);
+                          },
+                          child: Text('Post'),
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: ThemeColors.primaryLight),
+                        )
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ]),
           ),
@@ -409,7 +344,6 @@ class _NameInput extends StatelessWidget {
           keyboardType: TextInputType.text,
           initialValue: state.name.value,
           onChanged: (value) => context.read<RecipeBloc>().nameChanged(value),
-          style: Style.heading,
           decoration: InputDecoration(
             contentPadding: EdgeInsets.all(0),
             border: UnderlineInputBorder(),
@@ -432,7 +366,7 @@ class _DescriptionInput extends StatelessWidget {
         return TextFormField(
           key: const Key('description_input_textField'),
           // controller: TextEditingController(text: state.description.value),
-          minLines: 2,
+          minLines: 1,
           maxLines: 100,
           keyboardType: TextInputType.text,
           initialValue: state.description.value,
@@ -547,8 +481,8 @@ class _CalInput extends StatelessWidget {
       builder: (context, state) {
         return NumberPicker(
             minValue: 0,
-            itemCount: 1,
-            itemWidth: 48 * state.cal.toString().length.toDouble() / 3,
+            itemCount: 3,
+            // itemWidth: 48 * state.cal.toString().length.toDouble() / 3 + 48,
             selectedTextStyle: Style.highlightText,
             step: 50,
             textStyle: Style.label,
@@ -569,8 +503,8 @@ class _GramInput extends StatelessWidget {
       builder: (context, state) {
         return NumberPicker(
             minValue: 0,
-            itemCount: 1,
-            itemWidth: 48 * state.cal.toString().length.toDouble() / 3,
+            itemCount: 3,
+            // itemWidth: 48 * state.cal.toString().length.toDouble() / 3,
             selectedTextStyle: Style.highlightText,
             step: 50,
             textStyle: Style.label,
@@ -601,13 +535,12 @@ class _TimeInput extends StatelessWidget {
     }
 
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         NumberPicker(
           value: hour!,
           minValue: 0,
-          itemCount: 1,
-          itemWidth: 48 * hour.toString().length.toDouble() / 3,
+          itemCount: 3,
           selectedTextStyle: Style.highlightText,
           step: 1,
           textStyle: Style.label,
@@ -615,15 +548,14 @@ class _TimeInput extends StatelessWidget {
           maxValue: 23,
           onChanged: (value) => updateHour(value),
         ),
-        const Text(
+        Text(
           ' hr',
-          style: Style.search,
+          style: Style.search.copyWith(fontSize: 12),
         ),
         NumberPicker(
           value: minute!,
           minValue: 0,
-          itemCount: 1,
-          itemWidth: 48 * minute.toString().length.toDouble() / 3,
+          itemCount: 3,
           selectedTextStyle: Style.highlightText,
           step: 1,
           textStyle: Style.label,
@@ -631,9 +563,9 @@ class _TimeInput extends StatelessWidget {
           maxValue: 59,
           onChanged: (value) => updateMinute(value),
         ),
-        const Text(
+        Text(
           ' min',
-          style: Style.search,
+          style: Style.search.copyWith(fontSize: 12),
         ),
       ],
     );
@@ -654,7 +586,6 @@ class _NoteInput extends StatelessWidget {
           initialValue: state.note,
           keyboardType: TextInputType.text,
           onChanged: (value) => context.read<RecipeBloc>().noteChanged(value),
-          style: Style.heading,
           decoration: InputDecoration(
             contentPadding: EdgeInsets.all(0),
             border: UnderlineInputBorder(),

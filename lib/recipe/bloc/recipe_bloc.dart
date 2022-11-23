@@ -34,7 +34,7 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
             time: recipe != null
                 ? recipe.time.map((key, value) => MapEntry(key, value as int))
                 : {'hr': 0, 'min': 0},
-            isPublic: true,
+            isPublic: recipe != null ? recipe.isPublic : true,
             steps: recipe != null
                 ? recipe.steps
                     .map((e) => TextEditingController(text: e))

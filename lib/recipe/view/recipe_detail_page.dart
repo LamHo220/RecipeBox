@@ -107,13 +107,17 @@ class RecipeDetailsView extends StatelessWidget {
           }
         }, itemBuilder: (context) {
           return [
+            PopupMenuItem(value: 1, child: Text('Notes from creater')),
+            PopupMenuItem(
+              enabled: user.id == recipe.user,
+              value: 2,
+              child: Text('Edit'),
+            ),
             PopupMenuItem<int>(
               enabled: user.id == recipe.user,
               value: 0,
               child: Text("Delete Recipe"),
             ),
-            PopupMenuItem(value: 1, child: Text('Notes from creater')),
-            PopupMenuItem(value: 2, child: Text('Edit'))
           ];
         })
       ],
@@ -329,6 +333,12 @@ class RecipeDetailsView extends StatelessWidget {
                         .read<HomeCubit>()
                         .gerRecipeById(recipe.original),
                     builder: (context, snapshot) {
+                      if (!recipe.isPublic) {
+                        return const Text(
+                          'Private Recipe',
+                          style: TextStyle(color: Colors.white60),
+                        );
+                      }
                       final data = snapshot.data;
                       if (data == null) {
                         return const SizedBox();
