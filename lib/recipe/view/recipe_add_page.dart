@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:animations/animations.dart';
 import 'package:awesome_select/awesome_select.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_switch/flutter_switch.dart';
@@ -33,12 +34,12 @@ class RecipeAddView extends StatelessWidget {
         context.select((HomeCubit value) => value.state.userDetails);
 
     final flag = context.select((HomeCubit value) => value.state.flag);
-    final recipeBloc = BlocProvider.of<RecipeBloc>(context);
+    final recipeBloc = context.read<RecipeBloc>();
 
     return Scaffold(
         extendBodyBehindAppBar: true,
         appBar: AppBar(
-          title: const Text('Add Recipe'),
+          title: Text('${action.name} Recipe'),
           backgroundColor: Colors.transparent,
           elevation: 0,
           foregroundColor: ThemeColors.text,
@@ -52,66 +53,69 @@ class RecipeAddView extends StatelessWidget {
                     final ImagePicker _picker = ImagePicker();
                     final XFile? file =
                         await _picker.pickImage(source: ImageSource.gallery);
+
                     if (file != null) {
                       recipeBloc.add(PickingImage(file));
                       final ImageCropper _cropper = ImageCropper();
-                      // final CroppedFile? croppedFile =
-                      //     await _cropper.cropImage(sourcePath: file.path);
-                      // if (croppedFile != null) {
-                      //   recipeBloc.add(CroppingImage(croppedFile));
-                      // }
+                      final CroppedFile? croppedFile =
+                          await _cropper.cropImage(sourcePath: file.path);
+                      if (croppedFile != null) {
+                        recipeBloc.add(CroppingImage(croppedFile));
+                      }
                     }
                   },
                   child: BlocBuilder<RecipeBloc, RecipeState>(
-                    builder: (context, state) => Container(
-                      alignment: Alignment.bottomLeft,
-                      width: double.infinity,
-                      height: MediaQuery.of(context).size.height * 0.3,
-                      decoration: BoxDecoration(
-                          color: ThemeColors.card,
-                          image: DecorationImage(
-                              image: state.file != null
-                                  ? FileImage(File(state.file.path))
-                                  : Image.asset('assets/camera.png').image)),
-                      child: Container(
-                        color: ThemeColors.halfGray,
-                        padding: const EdgeInsets.only(
-                            left: 24, right: 24, top: 8, bottom: 8),
-                        child: Row(
-                          children: [
-                            const Icon(
-                              Icons.account_circle,
-                              color: ThemeColors.white,
-                            ),
-                            Pad.w8,
-                            Wrap(
-                              crossAxisAlignment: WrapCrossAlignment.start,
-                              direction: Axis.vertical,
-                              children: [
-                                Row(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.baseline,
-                                  textBaseline: TextBaseline.ideographic,
-                                  children: [
-                                    Text(
-                                      user.username ?? user.email ?? '',
-                                      style: Style.cardTitle,
-                                    ),
-                                    Pad.w4,
-                                    Text(
-                                      'lv${userDetails.level}',
-                                      style: Style.cardSubTitle
-                                          .copyWith(fontSize: 12),
-                                    )
-                                  ],
-                                ),
-                                Text(
-                                  "${0} recipes shared",
-                                  style: Style.cardSubTitle,
-                                )
-                              ],
-                            )
-                          ],
+                    builder: (context, state) => FutureBuilder(
+                      builder: (context, snapshot) => Container(
+                        alignment: Alignment.bottomLeft,
+                        width: double.infinity,
+                        height: MediaQuery.of(context).size.height * 0.3,
+                        decoration: BoxDecoration(
+                            color: ThemeColors.card,
+                            image: DecorationImage(
+                                image: state.file == null
+                                    ? Image.asset('assets/camera.png').image
+                                    : FileImage(File(state.file!.path)))),
+                        child: Container(
+                          color: ThemeColors.halfGray,
+                          padding: const EdgeInsets.only(
+                              left: 24, right: 24, top: 8, bottom: 8),
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.account_circle,
+                                color: ThemeColors.white,
+                              ),
+                              Pad.w8,
+                              Wrap(
+                                crossAxisAlignment: WrapCrossAlignment.start,
+                                direction: Axis.vertical,
+                                children: [
+                                  Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.baseline,
+                                    textBaseline: TextBaseline.ideographic,
+                                    children: [
+                                      Text(
+                                        user.username ?? user.email ?? '',
+                                        style: Style.cardTitle,
+                                      ),
+                                      Pad.w4,
+                                      Text(
+                                        'lv${userDetails.level}',
+                                        style: Style.cardSubTitle
+                                            .copyWith(fontSize: 12),
+                                      )
+                                    ],
+                                  ),
+                                  Text(
+                                    "${0} recipes shared",
+                                    style: Style.cardSubTitle,
+                                  )
+                                ],
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -241,7 +245,8 @@ class RecipeAddView extends StatelessWidget {
                                 'Ingredients',
                                 style: Style.heading,
                               ),
-                              Text('${recipeBloc.state.ingredients.length} items',
+                              Text(
+                                  '${recipeBloc.state.ingredients.length} items',
                                   style: Style.label
                                       .copyWith(color: ThemeColors.inactive))
                             ],
@@ -267,7 +272,8 @@ class RecipeAddView extends StatelessWidget {
                                 'Steps',
                                 style: Style.heading,
                               ),
-                              Text('${recipeBloc.state.ingredients.length} steps',
+                              Text(
+                                  '${recipeBloc.state.ingredients.length} steps',
                                   style: Style.label
                                       .copyWith(color: ThemeColors.inactive))
                             ],
@@ -323,6 +329,13 @@ class RecipeAddView extends StatelessWidget {
                           ElevatedButton(
                             onPressed: () {
                               context.read<RecipeBloc>().submit(user, action);
+                              if (action != RAction.Modify
+                                  // &&
+                                  // context.select((RecipeBloc value) =>
+                                  //     value.state.isPublic)
+                                  ) {
+                                context.read<HomeCubit>().addExp(user, 10);
+                              }
                               context.read<HomeCubit>().setFlag(!flag);
                               Navigator.pop(context);
                             },

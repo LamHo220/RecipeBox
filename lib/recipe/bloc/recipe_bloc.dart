@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:awesome_select/awesome_select.dart';
@@ -16,7 +17,7 @@ import 'package:recipe_repository/recipe_repository.dart';
 part 'recipe_event.dart';
 part 'recipe_state.dart';
 
-enum RAction { fork, add, modify }
+enum RAction { Fork, Add, Modify }
 
 class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
   RecipeBloc({this.recipe})
@@ -27,6 +28,7 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
                 value: recipe != null ? recipe.description : ''),
             note: recipe != null ? recipe.note : '',
             original: recipe?.original,
+            // file: recipe != null ? XFile(recipe.imgPath) : null,
             cal: recipe != null ? recipe.cal : 0,
             gram: recipe != null ? recipe.gram : 0,
             time: recipe != null
@@ -46,34 +48,34 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
                         })
                     .toList()
                 : [],
-            file: recipe != null
-                ? XFile(recipe.imgPath)
-                : XFile('assets/camera.png'),
+            imgPath: recipe != null ? recipe.imgPath : "",
             categories: recipe != null
                 ? recipe.categories.map((e) => _getCategory(e)).toList()
                 : [])) {
-    on<PickingImage>((event, emit) => (_pickingImage));
-    on<UnPickingImage>((event, emit) => (_unpickingImage));
-    on<CroppingImage>((event, emit) => (_croppingImage));
+    on<PickingImage>((_pickingImage));
+    on<UnPickingImage>((_unpickingImage));
+    on<CroppingImage>((_croppingImage));
   }
 
   final Recipe? recipe;
   RecipeRepository recipeRepo = RecipeRepository();
 
-  Future _pickingImage(PickingImage event, Emitter<RecipeState> emit) async {
+  Future<void> _pickingImage(
+      PickingImage event, Emitter<RecipeState> emit) async {
     emit(state.copyWith(file: event.file));
   }
 
-  Future _unpickingImage(
+  Future<void> _unpickingImage(
       UnPickingImage event, Emitter<RecipeState> emit) async {
     emit(state.copyWith(file: null));
   }
 
-  Future _croppingImage(CroppingImage event, Emitter<RecipeState> emit) async {
+  Future<void> _croppingImage(
+      CroppingImage event, Emitter<RecipeState> emit) async {
     emit(state.copyWith(file: XFile(event.file.path)));
   }
 
-  Future _unCroppingImage(
+  Future<void> _unCroppingImage(
       UnCroppingImage event, Emitter<RecipeState> emit) async {
     emit(state.copyWith(file: null));
   }
@@ -136,17 +138,21 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
   }
 
   void submit(User user, RAction action) {
-    if (action == RAction.fork) {
+    if (action == RAction.Fork) {
+      // recipeRepo.addImage(state.file, recipe!.id);
+      print(123);
       recipeRepo.updateRecipe(recipe!.id,
           recipe!.copyWith(recipe!.id, forked: recipe!.forked + 1), false);
     }
-    if (action == RAction.modify) {
+    if (action == RAction.Modify) {
+      // recipeRepo.addImage(state.file, recipe!.id);
       recipeRepo.updateRecipe(
           recipe!.id,
           recipe!.copyWith(
             recipe!.id,
             name: state.name.value,
-//  imgPath:state.imgPath,
+            // imgPath:
+            //     "gs://recipe-sum.appspot.com/${recipe!.id}.${state.file!.name.split('.').last}",
             description: state.description.value,
             cal: state.cal,
             gram: state.gram,
@@ -163,8 +169,9 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
           true);
     }
 
-    if (action == RAction.fork || action == RAction.add) {
-      recipeRepo.createRecipe(Recipe(
+    if (action == RAction.Fork || action == RAction.Add) {
+      Recipe _recipe = Recipe(
+          imgPath: 'gs://recipe-sum.appspot.com/R.png',
           name: state.name.value,
           description: state.description.value,
           bookmarked: 0,
@@ -184,7 +191,17 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
           timestamp: Timestamp.now(),
           user: user.id,
           original: recipe?.id,
-          time: state.time));
+          time: state.time);
+      if (state.file != null) {
+        recipeRepo.createRecipe(_recipe.copyWith(
+          _recipe.id,
+          imgPath:
+              "gs://recipe-sum.appspot.com/${_recipe.id}.${state.file!.name.split('.').last}",
+        ));
+        // recipeRepo.addImage(state.file, _recipe.id);
+      } else {
+        recipeRepo.createRecipe(_recipe);
+      }
     }
   }
 
@@ -202,6 +219,18 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
       emit(state.copyWith(categories: value.value.cast()));
 
   void deleteRecipe(Recipe recipe) => recipeRepo.deleteRecipe(recipe.id);
+
+  Future<Uint8List?> getImage(String file) async {
+    final number = Random(3330).nextInt(10) + 1;
+    return (await NetworkAssetBundle(Uri.parse(
+                'https://foodish-api.herokuapp.com/images/dessert/dessert${number}.jpg'))
+            .load(
+                'https://foodish-api.herokuapp.com/images/dessert/dessert${number}.jpg'))
+        .buffer
+        .asUint8List();
+    // Limited exceed, I use fixed image instead;
+    // return recipeRepo.getImage(file);
+  }
 }
 
 Categories _getCategory(String e) {

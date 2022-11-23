@@ -12,7 +12,8 @@ class RecipeState extends Equatable {
     this.note = '',
     this.original,
     this.flag = false,
-    required this.file,
+    this.file = null,
+    this.imgPath = null,
     required this.steps,
     required this.ingredients,
     required this.categories,
@@ -39,10 +40,12 @@ class RecipeState extends Equatable {
 
   bool flag;
 
-  XFile file;
+  XFile? file;
+
+  String? imgPath;
 
   @override
-  List<Object> get props => [
+  List<Object?> get props => [
         id,
         name,
         description,
@@ -55,8 +58,9 @@ class RecipeState extends Equatable {
         isPublic,
         note,
         flag,
-        // original??,
+        original,
         file,
+        imgPath
       ];
 
   RecipeState copyWith(
@@ -73,6 +77,7 @@ class RecipeState extends Equatable {
       XFile? imageFile,
       bool? flag,
       String? original,
+      String? imgPath,
       XFile? file}) {
     return RecipeState(
       id: id,
@@ -89,6 +94,7 @@ class RecipeState extends Equatable {
       flag: flag ?? this.flag,
       file: file ?? this.file,
       original: original ?? this.original,
+      imgPath: imgPath ?? this.imgPath,
     );
   }
 }

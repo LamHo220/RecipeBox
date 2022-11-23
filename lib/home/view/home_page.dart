@@ -27,17 +27,20 @@ class HomeView extends StatelessWidget {
     final user = context.select((AppBloc bloc) => bloc.state.user);
 
     Widget fab() {
-      return OpenContainer(
-        openElevation: 0,
-        closedShape: CircleBorder(),
-        closedElevation: 6,
-        closedBuilder: (context, action) => FloatingActionButton(
-          backgroundColor: ThemeColors.primaryLight,
-          onPressed: () => action(),
-          child: const Icon(Icons.add),
-        ),
-        openBuilder: (context, action) => RecipeAddPage(
-          action: RAction.add,
+      return BlocProvider(
+        create: (context) => RecipeBloc(),
+        child: OpenContainer(
+          openElevation: 0,
+          closedShape: CircleBorder(),
+          closedElevation: 6,
+          closedBuilder: (context, action) => FloatingActionButton(
+            backgroundColor: ThemeColors.primaryLight,
+            onPressed: () => action(),
+            child: const Icon(Icons.add),
+          ),
+          openBuilder: (context, action) => RecipeAddPage(
+            action: RAction.Add,
+          ),
         ),
       );
     }
@@ -72,7 +75,7 @@ class HomeView extends StatelessWidget {
             BlocBuilder<HomeCubit, HomeState>(
                 buildWhen: (previous, current) => previous != current,
                 builder: (context, state) => Home()),
-            FavoriteRecipePage(
+            RecipeListPage(
               title: 'Favorite',
             ),
             Container(),

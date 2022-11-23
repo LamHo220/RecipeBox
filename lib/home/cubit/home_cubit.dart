@@ -27,10 +27,10 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   Future<QuerySnapshot<Recipe>> popularRecipes() async {
-    return recipeRepo.getRecipe('user', isNotEqualTo: '');
+    return recipeRepo.getRecipe('isPublic', isEqualTo: true);
   }
 
-  Future<QuerySnapshot<Recipe>> getRecipes(String category) async {
+  Future<QuerySnapshot<Recipe>> getRecipesByCategory(String category) async {
     return recipeRepo
         .getRecipe('categories', arrayContains: category)
         .then((value) {
@@ -59,8 +59,8 @@ class HomeCubit extends Cubit<HomeState> {
             favorites: x)));
   }
 
-  void removeFromFavorite(Recipe recipe) {
-    recipeRepo.removeFromFavorite(state.userDetails, recipe);
+  void removeFromFavorite(Recipe recipe, bool isDelete) {
+    recipeRepo.removeFromFavorite(state.userDetails, recipe, isDelete);
     final x = [...state.userDetails.favorites];
     x.remove(recipe.id);
     emit(state.copyWith(
@@ -81,5 +81,31 @@ class HomeCubit extends Cubit<HomeState> {
 
   Future<QuerySnapshot<UserDetails>> getUserDetails(String id) {
     return _repo.getUserDetails(id);
+  }
+
+  void rate(Recipe recipe, double rating, String comment, User user) {
+    recipeRepo.rate(recipe, rating, comment, user);
+  }
+
+  Future<QuerySnapshot<Map<String, dynamic>>> getRate(
+      Recipe recipe, User user) {
+    return recipeRepo.getRate(recipe, user);
+  }
+
+  Future<void> updateRate(
+      Recipe recipe, double rating, String comment, User user) async {
+    await recipeRepo.updateRate(recipe, rating, comment, user);
+  }
+
+  Future<QuerySnapshot<Map<String, dynamic>>> getRateByRecipe(Recipe recipe) {
+    return recipeRepo.getRateByRecipe(recipe);
+  }
+
+  Future<QuerySnapshot<Recipe>> gerRecipeById(String? id) {
+    return recipeRepo.getRecipe('id', isEqualTo: id);
+  }
+
+  void addExp(User user, int exp) {
+    _repo.addExp(user, exp);
   }
 }

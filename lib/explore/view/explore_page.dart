@@ -41,6 +41,10 @@ class ExploreView extends StatelessWidget {
           ),
           Container(
             padding: Pad.pa12,
+            child: Text('Will be available soon!.'),
+          ),
+          Container(
+            padding: Pad.pa12,
             child: Text(
               'Categories',
               style: Style.heading,

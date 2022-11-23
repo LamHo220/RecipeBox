@@ -6,7 +6,7 @@ class Recipe extends Equatable {
   Recipe({
     String? id = null,
     String? original = null,
-    String? imgPath = null,
+    required this.imgPath,
     required this.name,
     required this.description,
     required this.bookmarked,
@@ -26,10 +26,11 @@ class Recipe extends Equatable {
           'id can not be null and should be empty',
         ),
         id = id ?? const Uuid().v4(),
-        original = original ?? '',
-        imgPath = imgPath ?? '';
+        original = original ?? '';
+  // ,
+  // imgPath = imgPath ?? '';
 
-  String id;
+  final String id;
 
   String? original;
 
@@ -63,8 +64,6 @@ class Recipe extends Equatable {
 
   final Map<String, dynamic> time;
 
-  // TODO: rating and comments
-
   factory Recipe.fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> snapshot,
     SnapshotOptions? options,
@@ -89,7 +88,9 @@ class Recipe extends Equatable {
         categories: data?['categories'] is Iterable
             ? List<String>.from(data?['categories'])
             : [],
-        timestamp: data?['timestamp'] as Timestamp,
+        timestamp: data?['timestamp'] != null
+            ? data!['timestamp'] as Timestamp
+            : Timestamp.now(),
         user: data?['user'] as String,
         original: data?['original'] as String?,
         time: Map<String, dynamic>.from(data?['time']));
@@ -114,6 +115,7 @@ class Recipe extends Equatable {
       "user": this.user,
       "original": original,
       "time": this.time,
+      "imgPath": this.imgPath
     };
   }
 
@@ -134,10 +136,10 @@ class Recipe extends Equatable {
         timestamp,
         original ?? '',
         time,
+        imgPath
       ];
 
-  Recipe copyWith(
-    id,
+  Recipe copyWith(id,
       {String? name,
       String? imgPath,
       String? description,
@@ -151,9 +153,10 @@ class Recipe extends Equatable {
       List<String>? steps,
       List<String>? categories,
       String? user,
-      Map<String, dynamic>? time}) {
+      Map<String, dynamic>? time,
+      String? original}) {
     return Recipe(
-      id:id,
+        id: id,
         name: name ?? this.name,
         description: description ?? this.description,
         bookmarked: bookmarked ?? this.bookmarked,
@@ -167,6 +170,8 @@ class Recipe extends Equatable {
         categories: categories ?? this.categories,
         timestamp: this.timestamp,
         user: user ?? this.user,
-        time: time ?? this.time);
+        imgPath: imgPath ?? this.imgPath,
+        time: time ?? this.time,
+        original: original ?? this.original);
   }
 }

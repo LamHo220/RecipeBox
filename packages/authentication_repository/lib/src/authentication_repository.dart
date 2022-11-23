@@ -176,6 +176,11 @@ class AuthenticationRepository {
     return _cache.read<UserDetails>(key: userCacheKey) ?? UserDetails.empty;
   }
 
+  void addExp(User user, int exp) {
+    firestore.collection('users').doc(user.id).update(
+        {'exp': FieldValue.increment(exp)}).then((value) => print('done'));
+  }
+
   Future<void> signUp(
       {required String email,
       required String password,
@@ -274,7 +279,6 @@ class AuthenticationRepository {
         );
     return ref.where('id', isEqualTo: id).get();
   }
-
 }
 
 extension on firebase_auth.User {
