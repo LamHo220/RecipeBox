@@ -25,6 +25,7 @@ class SignUpForm extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            const SizedBox(height: 8),
             _UsernameInput(),
             const SizedBox(height: 8),
             _EmailInput(),
