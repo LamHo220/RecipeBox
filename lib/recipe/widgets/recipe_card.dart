@@ -26,82 +26,77 @@ class RecipeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
         create: (context) => RecipeBloc(),
-        child: BlocBuilder<RecipeBloc, RecipeState>(
-          builder: (context, state) {
-            return FutureBuilder<Uint8List?>(
-              future: context.read<RecipeBloc>().getImage(recipe.imgPath),
-              builder: (context, snapshot) {
-                final decoratedImage = DecorationImage(
-                    image: snapshot.data == null
-                        ? Image.asset('assets/camera.png').image
-                        : MemoryImage(snapshot.data!),
-                    fit: BoxFit.cover);
+        child: FutureBuilder<Uint8List?>(
+          future: context.read<HomeCubit>().getImage(recipe.imgPath),
+          builder: (context, snapshot) {
+            final decoratedImage = DecorationImage(
+                image: snapshot.data == null
+                    ? Image.asset('assets/logo.png').image
+                    : MemoryImage(snapshot.data!),
+                fit: BoxFit.cover);
 
-                Widget _closedBuild(context, openContainer) {
-                  return Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12.0),
-                    ),
-                    clipBehavior: Clip.antiAlias,
-                    child: InkWell(
-                      onTap: () => openContainer(),
-                      child: Container(
-                        height: MediaQuery.of(context).size.width * 0.35,
-                        width: MediaQuery.of(context).size.width * 0.5,
-                        decoration: BoxDecoration(image: decoratedImage),
-                        child: Column(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                padding: Pad.pa8,
-                                width: double.infinity,
-                                color: ThemeColors.halfGray,
-                                child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+            Widget _closedBuild(context, openContainer) {
+              return Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12.0),
+                ),
+                clipBehavior: Clip.antiAlias,
+                child: InkWell(
+                  onTap: () => openContainer(),
+                  child: Container(
+                    height: MediaQuery.of(context).size.width * 0.35,
+                    width: MediaQuery.of(context).size.width * 0.5,
+                    decoration: BoxDecoration(image: decoratedImage),
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            padding: Pad.pa8,
+                            width: double.infinity,
+                            color: ThemeColors.halfGray,
+                            child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
                                     children: [
-                                      Row(
-                                        children: [
-                                          Text(
-                                            recipe.name,
-                                            style: Style.cardTitle,
-                                          ),
-                                        ],
+                                      Text(
+                                        recipe.name,
+                                        style: Style.cardTitle,
                                       ),
-                                      Row(
-                                        children: [
-                                          Icon(
-                                            Icons.access_time,
-                                            color: ThemeColors.white,
-                                            size: 16,
-                                          ),
-                                          Text(
-                                            ' ${recipe.time['hr'] != '0' ? ('${recipe.time['hr']!}hr') : ''} ${recipe.time['min'] != '0' ? ('${recipe.time['min']!}mins') : ''}',
-                                            style: Style.cardSubTitle,
-                                          )
-                                        ],
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        Icons.access_time,
+                                        color: ThemeColors.white,
+                                        size: 16,
                                       ),
-                                    ]),
-                              )
-                            ]),
-                      ),
-                    ),
-                  );
-                }
+                                      Text(
+                                        ' ${recipe.time['hr'] != '0' ? ('${recipe.time['hr']!}hr') : ''} ${recipe.time['min'] != '0' ? ('${recipe.time['min']!}mins') : ''}',
+                                        style: Style.cardSubTitle,
+                                      )
+                                    ],
+                                  ),
+                                ]),
+                          )
+                        ]),
+                  ),
+                ),
+              );
+            }
 
-                return OpenContainer(
-                    transitionDuration: const Duration(milliseconds: 500),
-                    transitionType: ContainerTransitionType.fadeThrough,
-                    closedElevation: 0,
-                    closedBuilder: (context, openContainer) =>
-                        _closedBuild(context, openContainer),
-                    openBuilder: (context, closedContainer) => RecipeDetails(
-                        recipe: recipe,
-                        closedContainer: closedContainer,
-                        decoratedImage: decoratedImage));
-              },
-            );
+            return OpenContainer(
+                transitionDuration: const Duration(milliseconds: 500),
+                transitionType: ContainerTransitionType.fadeThrough,
+                closedElevation: 0,
+                closedBuilder: (context, openContainer) =>
+                    _closedBuild(context, openContainer),
+                openBuilder: (context, closedContainer) => RecipeDetails(
+                    recipe: recipe,
+                    closedContainer: closedContainer,
+                    decoratedImage: decoratedImage));
           },
         ));
   }

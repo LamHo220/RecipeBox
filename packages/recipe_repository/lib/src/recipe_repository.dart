@@ -127,7 +127,7 @@ class RecipeRepository {
   //     return FirebaseStorage.instance.refFromURL(imgPath).getData();
   //   } catch (e) {
   //     return FirebaseStorage.instance
-  //         .refFromURL('gs://recipe-sum.appspot.com/R.png')
+  //         .refFromURL('gs://recipe-sum.appspot.com/logo.png')
   //         .getData();
   //   }
   // }

@@ -219,37 +219,35 @@ class Home extends StatelessWidget {
       ]),
     );
 
-    return Scaffold(
-      appBar: _appBar,
-      body: FutureBuilder<QuerySnapshot<UserDetails>>(
-          future: _userDetails,
-          builder: (context, snapshot) {
-            if (snapshot.data != null && snapshot.data!.docs.isNotEmpty)
-              context
-                  .read<HomeCubit>()
-                  .updateUserDetails(snapshot.data!.docs.first.data());
-            return SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ..._header,
-                  _categories,
-                  _favHeader,
-                  _favList,
-                  _urRecipeHeader,
-                  _urReicipeList,
-                  _popularHeader,
-                  _popularList,
-                  Pad.h24,
-                  Pad.h24,
-                  Pad.h24,
-                  Pad.h24,
-                ],
-              ),
-            );
-          }),
-    );
+    return SafeArea(
+        bottom: true,
+        child: Scaffold(
+          appBar: _appBar,
+          body: FutureBuilder<QuerySnapshot<UserDetails>>(
+              future: _userDetails,
+              builder: (context, snapshot) {
+                if (snapshot.data != null && snapshot.data!.docs.isNotEmpty)
+                  context
+                      .read<HomeCubit>()
+                      .updateUserDetails(snapshot.data!.docs.first.data());
+                return SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ..._header,
+                      _categories,
+                      _favHeader,
+                      _favList,
+                      _urRecipeHeader,
+                      _urReicipeList,
+                      _popularHeader,
+                      _popularList,
+                    ],
+                  ),
+                );
+              }),
+        ));
   }
 
   final Widget _question = Container(

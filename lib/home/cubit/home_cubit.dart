@@ -1,7 +1,11 @@
+import 'dart:math';
+
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:recipe_repository/recipe_repository.dart';
 
 part 'home_state.dart';
@@ -107,5 +111,17 @@ class HomeCubit extends Cubit<HomeState> {
 
   void addExp(User user, int exp) {
     _repo.addExp(user, exp);
+  }
+
+  Future<Uint8List?> getImage(String file) async {
+    final number = Random(3330).nextInt(10) + 1;
+    return (await NetworkAssetBundle(Uri.parse(
+                'https://foodish-api.herokuapp.com/images/dessert/dessert${number}.jpg'))
+            .load(
+                'https://foodish-api.herokuapp.com/images/dessert/dessert${number}.jpg'))
+        .buffer
+        .asUint8List();
+    // Limited exceed, I use fixed image instead;
+    // return recipeRepo.getImage(file);
   }
 }

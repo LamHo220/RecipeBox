@@ -61,10 +61,16 @@ class RecipeListView extends StatelessWidget {
         builder: (context, snapshot) {
           final data = snapshot.data;
           if (data == null || data.size == 0) {
-            return Text("There is no recipe in $title");
+            return Container(
+              padding: Pad.pa12,
+              child: Text("There is no recipe in $title"),
+            );
           }
           if (data.docs.isEmpty) {
-            return Text("There is no recipe in $title");
+            return Container(
+              padding: Pad.pa12,
+              child: Text("There is no recipe in $title"),
+            );
           }
           return ListView.separated(
               separatorBuilder: (context, index) => const Divider(

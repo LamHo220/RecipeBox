@@ -194,7 +194,6 @@ class RecipeDetailsView extends StatelessWidget {
                             ),
                             submitButtonText: 'Submit',
                             commentHint: 'Any comment on this recipe?',
-                            enableComment: false,
                             onCancelled: () {},
                             onSubmitted: (response) {
                               if (snapshot.data == null) {
@@ -357,13 +356,12 @@ class RecipeDetailsView extends StatelessWidget {
                       }
                       final _recipe = data.docs.first.data();
                       return FutureBuilder<Uint8List?>(
-                        future: context
-                            .read<RecipeBloc>()
-                            .getImage(_recipe.imgPath),
+                        future:
+                            context.read<HomeCubit>().getImage(_recipe.imgPath),
                         builder: (context, snapshot2) {
                           final _decoratedImage = DecorationImage(
                               image: snapshot2.data == null
-                                  ? Image.asset('assets/camera.png').image
+                                  ? Image.asset('assets/logo.png').image
                                   : MemoryImage(snapshot2.data!),
                               fit: BoxFit.cover);
                           return OpenContainer(
@@ -639,13 +637,10 @@ class RecipeDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => RecipeBloc(recipe: null),
-      child: RecipeDetailsView(
-        recipe: recipe,
-        closedContainer: closedContainer,
-        decoratedImage: decoratedImage,
-      ),
+    return RecipeDetailsView(
+      recipe: recipe,
+      closedContainer: closedContainer,
+      decoratedImage: decoratedImage,
     );
   }
 }

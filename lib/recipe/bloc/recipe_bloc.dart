@@ -171,7 +171,7 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
 
     if (action == RAction.Fork || action == RAction.Add) {
       Recipe _recipe = Recipe(
-          imgPath: 'gs://recipe-sum.appspot.com/R.png',
+          imgPath: 'gs://recipe-sum.appspot.com/logo.png',
           name: state.name.value,
           description: state.description.value,
           bookmarked: 0,
@@ -219,18 +219,6 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
       emit(state.copyWith(categories: value.value.cast()));
 
   void deleteRecipe(Recipe recipe) => recipeRepo.deleteRecipe(recipe.id);
-
-  Future<Uint8List?> getImage(String file) async {
-    final number = Random(3330).nextInt(10) + 1;
-    return (await NetworkAssetBundle(Uri.parse(
-                'https://foodish-api.herokuapp.com/images/dessert/dessert${number}.jpg'))
-            .load(
-                'https://foodish-api.herokuapp.com/images/dessert/dessert${number}.jpg'))
-        .buffer
-        .asUint8List();
-    // Limited exceed, I use fixed image instead;
-    // return recipeRepo.getImage(file);
-  }
 }
 
 Categories _getCategory(String e) {
