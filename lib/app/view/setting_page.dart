@@ -123,7 +123,7 @@ class SettingPage extends StatelessWidget {
             TextButton(
               onPressed: () {
                 context.read<AppBloc>().add(AppLogoutRequested());
-                Navigator.pop(context);
+                action();
               },
               style: TextButton.styleFrom(
                 shadowColor: ThemeColors.primaryDark,
