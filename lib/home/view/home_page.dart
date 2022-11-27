@@ -76,7 +76,7 @@ class HomeView extends StatelessWidget {
                 buildWhen: (previous, current) => previous != current,
                 builder: (context, state) => Home()),
             RecipeListPage(
-              title: 'Favorite',
+              title: 'Favorites',
             ),
             Container(),
             ExplorePage(),

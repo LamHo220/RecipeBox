@@ -28,7 +28,7 @@ class RecipeItem extends StatelessWidget {
           builder: (context, snapshot) {
             final decoratedImage = DecorationImage(
                 image: snapshot.data == null
-                    ? Image.asset('assets/logo.png').image
+                    ? Image.asset('assets/loading.gif').image
                     : MemoryImage(snapshot.data!),
                 fit: BoxFit.cover);
             return OpenContainer(
@@ -37,6 +37,7 @@ class RecipeItem extends StatelessWidget {
                 closedElevation: 0,
                 closedBuilder: (context, openContainer) => ElevatedButton(
                       style: ElevatedButton.styleFrom(
+                          elevation: 3,
                           backgroundColor: ThemeColors.white,
                           foregroundColor: ThemeColors.card,
                           padding: EdgeInsets.all(16)),

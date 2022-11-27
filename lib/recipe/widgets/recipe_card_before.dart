@@ -35,7 +35,7 @@ class Before extends StatelessWidget {
               decoration: BoxDecoration(
                   image: DecorationImage(
                       image: snapshot.data == null
-                          ? Image.asset('assets/logo.png').image
+                          ? Image.asset('assets/loading.gif').image
                           : MemoryImage(snapshot.data!),
                       fit: BoxFit.cover)),
               child: Column(

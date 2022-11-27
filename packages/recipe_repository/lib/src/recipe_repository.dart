@@ -117,7 +117,15 @@ class RecipeRepository {
           whereIn: whereIn,
           whereNotIn: whereNotIn,
         )
+        .limit(20)
         .get();
+  }
+
+  CollectionReference<Recipe> getRecipeRef() {
+    return firestore.collection('recipes').withConverter(
+          fromFirestore: Recipe.fromFirestore,
+          toFirestore: (Recipe recipe, _) => recipe.toFirestore(),
+        );
   }
 
   // Limit Exceeded in firestore, here I use fixed image instead for demonstration;

@@ -84,7 +84,8 @@ class RecipeAddView extends StatelessWidget {
                             color: ThemeColors.card,
                             image: DecorationImage(
                                 image: state.file == null
-                                    ? Image.asset('assets/logo.png').image
+                                    ? Image.asset('assets/placeholder.png')
+                                        .image
                                     : FileImage(File(state.file!.path)))),
                       ),
                     ),

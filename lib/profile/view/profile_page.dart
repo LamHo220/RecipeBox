@@ -156,6 +156,127 @@ class ProfileView extends StatelessWidget {
                       builder: (context) =>
                           RecipeListPage(title: 'Private Recipes'))),
             ),
+            _Button(
+              text: 'Claim Rewards',
+              color: Colors.orange[400]!,
+              icon: FontAwesomeIcons.gifts,
+              func: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => Scaffold(
+                            appBar: AppBar(
+                              title: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Claim Rewards',
+                                    style: Style.welcome,
+                                  ),
+                                  Wrap(
+                                    children: [
+                                      Icon(
+                                        FontAwesomeIcons.coins,
+                                        color: Colors.yellow[800],
+                                      ),
+                                      Pad.w12,
+                                      Text(
+                                        userDetails.points.toString(),
+                                        style: TextStyle(color: Colors.black),
+                                      )
+                                    ],
+                                  )
+                                ],
+                              ),
+                              backgroundColor: ThemeColors.white,
+                              foregroundColor: ThemeColors.primaryLight,
+                              elevation: 0,
+                            ),
+                            body: ListView.builder(
+                              itemCount: 100,
+                              itemBuilder: (context, index) => Row(
+                                children: [
+                                  for (int i = 0; i < 2; ++i)
+                                    Expanded(
+                                        child: GestureDetector(
+                                            onTap: () async {
+                                              final bool? confirm =
+                                                  await showDialog(
+                                                context: context,
+                                                builder: (context) =>
+                                                    AlertDialog(
+                                                  title: Text('Warning'),
+                                                  content: Text(
+                                                      'Do you really want to claim this?'),
+                                                  actions: [
+                                                    TextButton(
+                                                        onPressed: () =>
+                                                            Navigator.pop(
+                                                                context, false),
+                                                        child: Text('No')),
+                                                    TextButton(
+                                                        onPressed: () =>
+                                                            Navigator.pop(
+                                                                context, true),
+                                                        child: Text('Yes'))
+                                                  ],
+                                                ),
+                                              );
+                                              if (confirm == null) {
+                                                return;
+                                              }
+                                              if (confirm) {
+                                                if (userDetails.points < 100) {
+                                                  showDialog(
+                                                    context: context,
+                                                    builder: (context) =>
+                                                        AlertDialog(
+                                                            title:
+                                                                Text('Error!'),
+                                                            content: Text(
+                                                                'You don\'t have enough points to claim.')),
+                                                  );
+                                                } else {
+                                                  showDialog(
+                                                    context: context,
+                                                    builder: (context) =>
+                                                        AlertDialog(
+                                                            title: Text(
+                                                                'Success!'),
+                                                            content: Text(
+                                                                'You have claimed the voucher.')),
+                                                  );
+                                                }
+                                              }
+                                            },
+                                            child: Card(
+                                                child: Container(
+                                                    padding: Pad.pa12,
+                                                    height:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .height *
+                                                            0.3,
+                                                    decoration: BoxDecoration(
+                                                        image: DecorationImage(
+                                                            image: NetworkImage(
+                                                                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS7lro1atlyYBgJ-azEDjIfk4uPXLz1YHZDog&usqp=CAU'))),
+                                                    child: Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment.end,
+                                                      children: [
+                                                        Container(
+                                                            color: ThemeColors
+                                                                .white,
+                                                            child: Text(
+                                                                '\$100 voucher in Welcome'))
+                                                      ],
+                                                    ))))),
+                                ],
+                              ),
+                            ),
+                          ))),
+            ),
           ],
         ),
       ),

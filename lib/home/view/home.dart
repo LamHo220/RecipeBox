@@ -1,11 +1,8 @@
-import 'package:animations/animations.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:recipe_box/app/app.dart';
 import 'package:recipe_box/common/components/searcher/widget/searcher.dart';
 import 'package:recipe_box/common/components/texts.dart';
@@ -14,13 +11,8 @@ import 'package:recipe_box/common/constants/paddings.dart';
 import 'package:recipe_box/common/constants/style.dart';
 import 'package:recipe_box/explore/view/explore_page.dart';
 import 'package:recipe_box/home/cubit/home_cubit.dart';
-import 'package:recipe_box/recipe/bloc/recipe_bloc.dart';
-import 'package:recipe_box/recipe/view/recipe_add_page.dart';
-import 'package:recipe_box/recipe/view/recipe_detail_page.dart';
 import 'package:recipe_box/recipe/view/recipe_list_page.dart';
-import 'package:recipe_box/recipe/view/recipe_steps.dart';
 import 'package:recipe_box/recipe/widgets/recipe_card.dart';
-import 'package:recipe_box/recipe/widgets/recipe_card_before.dart';
 import 'package:recipe_repository/recipe_repository.dart';
 
 class Home extends StatelessWidget {
@@ -159,8 +151,7 @@ class Home extends StatelessWidget {
             final data = snapshot.data;
 
             if (data == null || data.docs.isEmpty) {
-              return const Text(
-                  'You currently haven\'t add any recipe to favorites.');
+              return const Text('You currently haven\'t add any recipe.');
             }
 
             final _recipes = data.docs.map((e) {
@@ -202,8 +193,7 @@ class Home extends StatelessWidget {
             final data = snapshot.data;
 
             if (data == null || data.docs.isEmpty) {
-              return const Text(
-                  'You currently haven\'t add any recipe to favorites.');
+              return const Text('Error: we can\'t find any recipe');
             }
 
             final _recipes = data.docs.map((e) {

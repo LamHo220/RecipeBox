@@ -31,7 +31,7 @@ class RecipeCard extends StatelessWidget {
           builder: (context, snapshot) {
             final decoratedImage = DecorationImage(
                 image: snapshot.data == null
-                    ? Image.asset('assets/logo.png').image
+                    ? Image.asset('assets/loading.gif').image
                     : MemoryImage(snapshot.data!),
                 fit: BoxFit.cover);
 

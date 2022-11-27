@@ -12,7 +12,7 @@ part 'home_state.dart';
 
 class HomeCubit extends Cubit<HomeState> {
   HomeCubit() : super(const HomeState());
-  RecipeRepository recipeRepo = RecipeRepository();
+  RecipeRepository _recipeRepo = RecipeRepository();
   AuthenticationRepository _repo = AuthenticationRepository();
 
   void setTab(Tabs tab) => emit(state.copyWith(tab: tab));
@@ -21,21 +21,21 @@ class HomeCubit extends Cubit<HomeState> {
   Future<QuerySnapshot<Recipe>> userFavorite(UserDetails userDetails) async {
     List<String>? favorites = userDetails.favorites;
     if (favorites.isEmpty) {
-      return recipeRepo.getRecipe('id', isEqualTo: '');
+      return _recipeRepo.getRecipe('id', isEqualTo: '');
     }
-    return recipeRepo.getRecipe('id', whereIn: favorites);
+    return _recipeRepo.getRecipe('id', whereIn: favorites);
   }
 
   Future<QuerySnapshot<Recipe>> userRecipes(User user) async {
-    return recipeRepo.getRecipe('user', isEqualTo: user.id);
+    return _recipeRepo.getRecipe('user', isEqualTo: user.id);
   }
 
   Future<QuerySnapshot<Recipe>> popularRecipes() async {
-    return recipeRepo.getRecipe('isPublic', isEqualTo: true);
+    return _recipeRepo.getRecipe('isPublic', isEqualTo: true);
   }
 
   Future<QuerySnapshot<Recipe>> getRecipesByCategory(String category) async {
-    return recipeRepo
+    return _recipeRepo
         .getRecipe('categories', arrayContains: category)
         .then((value) {
       value.docs.removeWhere((e) => !e.data().isPublic);
@@ -44,11 +44,11 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   Future<QuerySnapshot<Recipe>> getUser(String id) async {
-    return recipeRepo.getRecipe('user', isEqualTo: id);
+    return _recipeRepo.getRecipe('user', isEqualTo: id);
   }
 
   void addToFavorite(Recipe recipe) {
-    recipeRepo.addToFavorite(state.userDetails, recipe);
+    _recipeRepo.addToFavorite(state.userDetails, recipe);
     final x = [...state.userDetails.favorites];
     x.add(recipe.id);
     emit(state.copyWith(
@@ -64,7 +64,7 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   void removeFromFavorite(Recipe recipe, bool isDelete) {
-    recipeRepo.removeFromFavorite(state.userDetails, recipe, isDelete);
+    _recipeRepo.removeFromFavorite(state.userDetails, recipe, isDelete);
     final x = [...state.userDetails.favorites];
     x.remove(recipe.id);
     emit(state.copyWith(
@@ -88,25 +88,25 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   void rate(Recipe recipe, double rating, String comment, User user) {
-    recipeRepo.rate(recipe, rating, comment, user);
+    _recipeRepo.rate(recipe, rating, comment, user);
   }
 
   Future<QuerySnapshot<Map<String, dynamic>>> getRate(
       Recipe recipe, User user) {
-    return recipeRepo.getRate(recipe, user);
+    return _recipeRepo.getRate(recipe, user);
   }
 
   Future<void> updateRate(
       Recipe recipe, double rating, String comment, User user) async {
-    await recipeRepo.updateRate(recipe, rating, comment, user);
+    await _recipeRepo.updateRate(recipe, rating, comment, user);
   }
 
   Future<QuerySnapshot<Map<String, dynamic>>> getRateByRecipe(Recipe recipe) {
-    return recipeRepo.getRateByRecipe(recipe);
+    return _recipeRepo.getRateByRecipe(recipe);
   }
 
   Future<QuerySnapshot<Recipe>> gerRecipeById(String? id) {
-    return recipeRepo.getRecipe('id', isEqualTo: id);
+    return _recipeRepo.getRecipe('id', isEqualTo: id);
   }
 
   void addExp(User user, int exp) {
@@ -115,6 +115,7 @@ class HomeCubit extends Cubit<HomeState> {
 
   Future<Uint8List?> getImage(String file) async {
     final number = Random(3330).nextInt(10) + 1;
+    print(number);
     return (await NetworkAssetBundle(Uri.parse(
                 'https://foodish-api.herokuapp.com/images/dessert/dessert${number}.jpg'))
             .load(
@@ -123,5 +124,9 @@ class HomeCubit extends Cubit<HomeState> {
         .asUint8List();
     // Limited exceed, I use fixed image instead;
     // return recipeRepo.getImage(file);
+  }
+
+  RecipeRepository getRecipeRepo() {
+    return _recipeRepo;
   }
 }

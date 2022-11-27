@@ -10,6 +10,7 @@ import 'package:recipe_box/app/app.dart';
 import 'package:recipe_box/common/constants/colors.dart';
 import 'package:recipe_box/common/constants/paddings.dart';
 import 'package:recipe_box/common/constants/style.dart';
+import 'package:recipe_box/common/level_parser.dart';
 import 'package:recipe_box/recipe/bloc/recipe_bloc.dart';
 import 'package:recipe_box/recipe/view/recipe_add_page.dart';
 import 'package:recipe_box/recipe/view/recipe_steps.dart';
@@ -67,7 +68,6 @@ class RecipeDetailsView extends StatelessWidget {
                   );
                 }).then((value) {
               if (value) {
-                // print(context);
                 try {
                   context.read<RecipeBloc>().deleteRecipe(recipe);
                   context.read<HomeCubit>().addExp(user, -10);
@@ -254,354 +254,368 @@ class RecipeDetailsView extends StatelessWidget {
       ),
     );
 
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: appBar,
-      bottomNavigationBar: bottomAppBar,
-      body: SingleChildScrollView(
-        child: Column(children: [
-          Container(
-            alignment: Alignment.bottomLeft,
-            width: double.infinity,
-            height: MediaQuery.of(context).size.height * 0.3,
-            decoration: BoxDecoration(image: decoratedImage),
-            child: Container(
-              color: ThemeColors.halfGray,
-              padding:
-                  const EdgeInsets.only(left: 24, right: 24, top: 8, bottom: 8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Wrap(
-                    crossAxisAlignment: WrapCrossAlignment.center,
+    return BlocBuilder<RecipeBloc, RecipeState>(
+      builder: (context, state) {
+        return Scaffold(
+          extendBodyBehindAppBar: true,
+          appBar: appBar,
+          bottomNavigationBar: bottomAppBar,
+          body: SingleChildScrollView(
+            child: Column(children: [
+              Container(
+                alignment: Alignment.bottomLeft,
+                width: double.infinity,
+                height: MediaQuery.of(context).size.height * 0.3,
+                decoration: BoxDecoration(image: decoratedImage),
+                child: Container(
+                  color: ThemeColors.halfGray,
+                  padding: const EdgeInsets.only(
+                      left: 24, right: 24, top: 8, bottom: 8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Icon(
-                        Icons.account_circle,
-                        color: ThemeColors.white,
+                      Wrap(
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
+                          const Icon(
+                            Icons.account_circle,
+                            color: ThemeColors.white,
+                          ),
+                          Pad.w8,
+                          FutureBuilder<QuerySnapshot<UserDetails>>(
+                              future: context
+                                  .read<HomeCubit>()
+                                  .getUserDetails(recipe.user),
+                              builder: (context, snapshot) {
+                                final data = snapshot.data;
+                                if (data == null) {
+                                  return Container();
+                                }
+                                if (data.docs.isEmpty) {
+                                  return Container();
+                                }
+                                return Wrap(
+                                  crossAxisAlignment: WrapCrossAlignment.start,
+                                  direction: Axis.vertical,
+                                  children: [
+                                    Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      children: [
+                                        Text(
+                                          data.docs.first.data().username,
+                                          style: Style.cardTitle,
+                                        ),
+                                        Pad.w4,
+                                        Text(
+                                          "lv ${getLevel(data.docs.first.data().exp)}",
+                                          style: Style.cardSubTitle
+                                              .copyWith(fontSize: 12),
+                                        )
+                                      ],
+                                    ),
+                                    FutureBuilder<QuerySnapshot<Recipe>>(
+                                      future: context
+                                          .read<HomeCubit>()
+                                          .getUser(recipe.user),
+                                      builder: (context, snapshot) {
+                                        return Text(
+                                          '${snapshot.data == null ? 0 : snapshot.data!.size} recipe shared',
+                                          style: Style.cardSubTitle,
+                                        );
+                                      },
+                                    )
+                                  ],
+                                );
+                              }),
+                        ],
                       ),
-                      Pad.w8,
-                      FutureBuilder<QuerySnapshot<UserDetails>>(
-                          future: context
-                              .read<HomeCubit>()
-                              .getUserDetails(recipe.user),
-                          builder: (context, snapshot) {
-                            final data = snapshot.data;
-                            if (data == null) {
-                              return Container();
-                            }
-                            if (data.docs.isEmpty) {
-                              return Container();
-                            }
-                            return Wrap(
-                              crossAxisAlignment: WrapCrossAlignment.start,
-                              direction: Axis.vertical,
+                      FutureBuilder<QuerySnapshot<Recipe>>(
+                        future: context
+                            .read<HomeCubit>()
+                            .gerRecipeById(recipe.original),
+                        builder: (context, snapshot) {
+                          if (!recipe.isPublic) {
+                            return const Text(
+                              'Private Recipe',
+                              style: TextStyle(color: Colors.white60),
+                            );
+                          }
+                          final data = snapshot.data;
+                          if (data == null) {
+                            return const SizedBox();
+                          }
+                          if (recipe.original == null) {
+                            return const SizedBox();
+                          }
+                          if (data.docs.isEmpty) {
+                            return const SizedBox();
+                          }
+                          if (!data.docs.first.data().isPublic) {
+                            return const Text(
+                              'Original is a Private Recipe',
+                              style: TextStyle(color: Colors.white60),
+                            );
+                          }
+                          final _recipe = data.docs.first.data();
+                          return FutureBuilder<Uint8List?>(
+                            future: context
+                                .read<HomeCubit>()
+                                .getImage(_recipe.imgPath),
+                            builder: (context, snapshot2) {
+                              final _decoratedImage = DecorationImage(
+                                  image: snapshot2.data == null
+                                      ? Image.asset('assets/placeholder.png')
+                                          .image
+                                      : MemoryImage(snapshot2.data!),
+                                  fit: BoxFit.cover);
+                              return OpenContainer(
+                                  closedElevation: 0,
+                                  openElevation: 0,
+                                  openColor: Colors.transparent,
+                                  closedColor: Colors.transparent,
+                                  closedBuilder: (context, open) =>
+                                      ElevatedButton(
+                                          style: _viewStepsStyle(),
+                                          child: Text(snapshot2.data == null
+                                              ? 'Finding Original...'
+                                              : snapshot2.data!.isEmpty
+                                                  ? 'Finding Original...'
+                                                  : 'Find Original'),
+                                          onPressed: () =>
+                                              snapshot2.data == null
+                                                  ? null
+                                                  : snapshot2.data!.isEmpty
+                                                      ? null
+                                                      : open()),
+                                  openBuilder: (context, close) =>
+                                      RecipeDetails(
+                                          recipe: _recipe,
+                                          closedContainer: () => close(),
+                                          decoratedImage: _decoratedImage));
+                            },
+                          );
+                        },
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              Container(
+                padding: EdgeInsetsDirectional.only(start: 12, end: 12),
+                child: Column(
+                  children: [
+                    Container(
+                      padding: Pad.pa12,
+                      child: Column(
+                        children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.baseline,
+                            textBaseline: TextBaseline.ideographic,
+                            children: [
+                              Text(
+                                recipe.name,
+                                style: Style.heading,
+                              ),
+                              Pad.w8,
+                              Wrap(
+                                alignment: WrapAlignment.center,
+                                crossAxisAlignment: WrapCrossAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.favorite,
+                                    color: Colors.red[600],
+                                    size: 16,
+                                  ),
+                                  Text(recipe.bookmarked.toString())
+                                ],
+                              ),
+                              Pad.w8,
+                              Wrap(
+                                alignment: WrapAlignment.center,
+                                crossAxisAlignment: WrapCrossAlignment.center,
+                                children: [
+                                  const Icon(
+                                    FontAwesomeIcons.codeFork,
+                                    color: ThemeColors.gray,
+                                    size: 16,
+                                  ),
+                                  Text(recipe.forked.toString())
+                                ],
+                              )
+                            ],
+                          ),
+                          Pad.h8,
+                          Container(
+                            padding: Pad.pa12,
+                            decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadiusDirectional.circular(12),
+                                border: Border.all(
+                                  color: ThemeColors.inactive,
+                                )),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                Column(
                                   children: [
                                     Text(
-                                      data.docs.first.data().username,
-                                      style: Style.cardTitle,
+                                      recipe.cal.toString(),
+                                      style: Style.highlightText,
                                     ),
-                                    Pad.w4,
                                     Text(
-                                      "lv${data.docs.first.data().level}",
-                                      style: Style.cardSubTitle
-                                          .copyWith(fontSize: 12),
+                                      'cal',
+                                      style: Style.label.copyWith(fontSize: 12),
                                     )
                                   ],
                                 ),
-                                FutureBuilder<QuerySnapshot<Recipe>>(
-                                  future: context
-                                      .read<HomeCubit>()
-                                      .getUser(recipe.user),
-                                  builder: (context, snapshot) {
-                                    return Text(
-                                      '${snapshot.data == null ? 0 : snapshot.data!.size} recipe shared',
-                                      style: Style.cardSubTitle,
-                                    );
-                                  },
-                                )
+                                Column(
+                                  children: [
+                                    Text(
+                                      recipe.gram.toString(),
+                                      style: Style.highlightText,
+                                    ),
+                                    Text(
+                                      'gram',
+                                      style: Style.label.copyWith(fontSize: 12),
+                                    )
+                                  ],
+                                ),
+                                Column(
+                                  children: [
+                                    FutureBuilder<
+                                            QuerySnapshot<
+                                                Map<String, dynamic>>>(
+                                        future: context
+                                            .read<HomeCubit>()
+                                            .getRateByRecipe(recipe),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.data == null ||
+                                              snapshot.data!.docs.isEmpty) {
+                                            return Text(
+                                              '0',
+                                              style: Style.highlightText,
+                                            );
+                                          }
+                                          final ratings = snapshot.data!.docs
+                                              .map((e) => e['rating']);
+                                          final s = ratings.reduce(
+                                              (value, element) =>
+                                                  value + element);
+                                          return Text(
+                                            '${(s / ratings.length).toStringAsFixed(1)}',
+                                            style: Style.highlightText,
+                                          );
+                                        }),
+                                    Text(
+                                      'rating',
+                                      style: Style.label.copyWith(fontSize: 12),
+                                    )
+                                  ],
+                                ),
+                                Column(
+                                  children: [
+                                    Text(
+                                      '${recipe.time['hr']}',
+                                      style: Style.highlightText,
+                                    ),
+                                    Text(
+                                      'hour',
+                                      style: Style.label.copyWith(fontSize: 12),
+                                    )
+                                  ],
+                                ),
+                                Column(
+                                  children: [
+                                    Text(
+                                      '${recipe.time['min']}',
+                                      style: Style.highlightText,
+                                    ),
+                                    Text(
+                                      'minutes',
+                                      style: Style.label.copyWith(fontSize: 12),
+                                    )
+                                  ],
+                                ),
+                                Column(
+                                  children: [
+                                    Text(
+                                      recipe.steps.length.toString(),
+                                      style: Style.highlightText,
+                                    ),
+                                    Text(
+                                      'steps',
+                                      style: Style.label.copyWith(fontSize: 12),
+                                    )
+                                  ],
+                                ),
                               ],
-                            );
-                          }),
-                    ],
-                  ),
-                  FutureBuilder<QuerySnapshot<Recipe>>(
-                    future: context
-                        .read<HomeCubit>()
-                        .gerRecipeById(recipe.original),
-                    builder: (context, snapshot) {
-                      if (!recipe.isPublic) {
-                        return const Text(
-                          'Private Recipe',
-                          style: TextStyle(color: Colors.white60),
-                        );
-                      }
-                      final data = snapshot.data;
-                      if (data == null) {
-                        return const SizedBox();
-                      }
-                      if (recipe.original == null) {
-                        return const SizedBox();
-                      }
-                      if (data.docs.isEmpty) {
-                        return const SizedBox();
-                      }
-                      if (!data.docs.first.data().isPublic) {
-                        return const Text(
-                          'Original is a Private Recipe',
-                          style: TextStyle(color: Colors.white60),
-                        );
-                      }
-                      final _recipe = data.docs.first.data();
-                      return FutureBuilder<Uint8List?>(
-                        future:
-                            context.read<HomeCubit>().getImage(_recipe.imgPath),
-                        builder: (context, snapshot2) {
-                          final _decoratedImage = DecorationImage(
-                              image: snapshot2.data == null
-                                  ? Image.asset('assets/logo.png').image
-                                  : MemoryImage(snapshot2.data!),
-                              fit: BoxFit.cover);
-                          return OpenContainer(
-                              closedElevation: 0,
-                              openElevation: 0,
-                              openColor: Colors.transparent,
-                              closedColor: Colors.transparent,
-                              closedBuilder: (context, open) => ElevatedButton(
-                                  style: _viewStepsStyle(),
-                                  child: Text(snapshot2.data == null
-                                      ? 'Finding Original...'
-                                      : snapshot2.data!.isEmpty
-                                          ? 'Finding Original...'
-                                          : 'Find Original'),
-                                  onPressed: () => snapshot2.data == null
-                                      ? null
-                                      : snapshot2.data!.isEmpty
-                                          ? null
-                                          : open()),
-                              openBuilder: (context, close) => RecipeDetails(
-                                  recipe: _recipe,
-                                  closedContainer: () => close(),
-                                  decoratedImage: _decoratedImage));
-                        },
-                      );
-                    },
-                  )
-                ],
-              ),
-            ),
-          ),
-          Container(
-            padding: EdgeInsetsDirectional.only(start: 12, end: 12),
-            child: Column(
-              children: [
-                Container(
-                  padding: Pad.pa12,
-                  child: Column(
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.baseline,
-                        textBaseline: TextBaseline.ideographic,
-                        children: [
-                          Text(
-                            recipe.name,
-                            style: Style.heading,
+                            ),
                           ),
-                          Pad.w8,
-                          Wrap(
-                            alignment: WrapAlignment.center,
-                            crossAxisAlignment: WrapCrossAlignment.center,
+                          Pad.h12,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              Icon(
-                                Icons.favorite,
-                                color: Colors.red[600],
-                                size: 16,
+                              Text(
+                                'Descriptions',
+                                style: Style.heading,
                               ),
-                              Text(recipe.bookmarked.toString())
                             ],
                           ),
-                          Pad.w8,
-                          Wrap(
-                            alignment: WrapAlignment.center,
-                            crossAxisAlignment: WrapCrossAlignment.center,
-                            children: [
-                              const Icon(
-                                FontAwesomeIcons.codeFork,
-                                color: ThemeColors.gray,
-                                size: 16,
-                              ),
-                              Text(recipe.forked.toString())
-                            ],
-                          )
-                        ],
-                      ),
-                      Pad.h8,
-                      Container(
-                        padding: Pad.pa12,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadiusDirectional.circular(12),
-                            border: Border.all(
-                              color: ThemeColors.inactive,
-                            )),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              children: [
-                                Text(
-                                  recipe.cal.toString(),
-                                  style: Style.highlightText,
-                                ),
-                                Text(
-                                  'cal',
-                                  style: Style.label.copyWith(fontSize: 12),
-                                )
-                              ],
-                            ),
-                            Column(
-                              children: [
-                                Text(
-                                  recipe.gram.toString(),
-                                  style: Style.highlightText,
-                                ),
-                                Text(
-                                  'gram',
-                                  style: Style.label.copyWith(fontSize: 12),
-                                )
-                              ],
-                            ),
-                            Column(
-                              children: [
-                                FutureBuilder<
-                                        QuerySnapshot<Map<String, dynamic>>>(
-                                    future: context
-                                        .read<HomeCubit>()
-                                        .getRateByRecipe(recipe),
-                                    builder: (context, snapshot) {
-                                      if (snapshot.data == null ||
-                                          snapshot.data!.docs.isEmpty) {
-                                        return Text(
-                                          '0',
-                                          style: Style.highlightText,
-                                        );
-                                      }
-                                      final ratings = snapshot.data!.docs
-                                          .map((e) => e['rating']);
-                                      final s = ratings.reduce(
-                                          (value, element) => value + element);
-                                      return Text(
-                                        '${(s / ratings.length).toStringAsFixed(1)}',
-                                        style: Style.highlightText,
-                                      );
-                                    }),
-                                Text(
-                                  'rating',
-                                  style: Style.label.copyWith(fontSize: 12),
-                                )
-                              ],
-                            ),
-                            Column(
-                              children: [
-                                Text(
-                                  '${recipe.time['hr']}',
-                                  style: Style.highlightText,
-                                ),
-                                Text(
-                                  'hour',
-                                  style: Style.label.copyWith(fontSize: 12),
-                                )
-                              ],
-                            ),
-                            Column(
-                              children: [
-                                Text(
-                                  '${recipe.time['min']}',
-                                  style: Style.highlightText,
-                                ),
-                                Text(
-                                  'minutes',
-                                  style: Style.label.copyWith(fontSize: 12),
-                                )
-                              ],
-                            ),
-                            Column(
-                              children: [
-                                Text(
-                                  recipe.steps.length.toString(),
-                                  style: Style.highlightText,
-                                ),
-                                Text(
-                                  'steps',
-                                  style: Style.label.copyWith(fontSize: 12),
-                                )
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      Pad.h12,
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Descriptions',
-                            style: Style.heading,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [Text(recipe.description)],
                           ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [Text(recipe.description)],
-                      ),
-                      Pad.h12,
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.baseline,
-                        textBaseline: TextBaseline.ideographic,
-                        children: [
-                          const Text(
-                            'Ingredients',
-                            style: Style.heading,
-                          ),
-                          Text('${recipe.ingredients.length} items',
-                              style: Style.label
-                                  .copyWith(color: ThemeColors.inactive))
-                        ],
-                      ),
-                      Pad.h24,
-                      for (int i = 0; i < recipe.ingredients.length; ++i)
-                        Container(
-                          padding: EdgeInsetsDirectional.only(bottom: 24),
-                          child: Row(
+                          Pad.h12,
+                          Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.baseline,
                             textBaseline: TextBaseline.ideographic,
                             children: [
-                              Text("${(i + 1)}.", style: Style.label),
-                              Pad.w8,
-                              Expanded(
-                                child: Text(recipe.ingredients[i]['name']!,
-                                    style: Style.label),
+                              const Text(
+                                'Ingredients',
+                                style: Style.heading,
                               ),
-                              Text(
-                                recipe.ingredients[i]['value']!,
-                                style: Style.label.copyWith(
-                                  color: ThemeColors.gray,
-                                ),
-                              )
+                              Text('${recipe.ingredients.length} items',
+                                  style: Style.label
+                                      .copyWith(color: ThemeColors.inactive))
                             ],
                           ),
-                        )
-                    ],
-                  ),
+                          Pad.h24,
+                          for (int i = 0; i < recipe.ingredients.length; ++i)
+                            Container(
+                              padding: EdgeInsetsDirectional.only(bottom: 24),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.baseline,
+                                textBaseline: TextBaseline.ideographic,
+                                children: [
+                                  Text("${(i + 1)}.", style: Style.label),
+                                  Pad.w8,
+                                  Expanded(
+                                    child: Text(recipe.ingredients[i]['name']!,
+                                        style: Style.label),
+                                  ),
+                                  Text(
+                                    recipe.ingredients[i]['value']!,
+                                    style: Style.label.copyWith(
+                                      color: ThemeColors.gray,
+                                    ),
+                                  )
+                                ],
+                              ),
+                            )
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ]),
           ),
-        ]),
-      ),
+        );
+      },
     );
   }
 }
@@ -637,10 +651,13 @@ class RecipeDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RecipeDetailsView(
-      recipe: recipe,
-      closedContainer: closedContainer,
-      decoratedImage: decoratedImage,
+    return BlocProvider(
+      create: (context) => RecipeBloc(),
+      child: RecipeDetailsView(
+        recipe: recipe,
+        closedContainer: closedContainer,
+        decoratedImage: decoratedImage,
+      ),
     );
   }
 }
