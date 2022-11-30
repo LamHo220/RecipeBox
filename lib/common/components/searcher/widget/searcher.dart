@@ -112,7 +112,6 @@ class _RecipeResultViewState extends State<RecipeResultView> {
             newRecipes.docs.map((e) => e.data()!).toList(), nextPageKey);
       }
     } catch (e) {
-      print(e);
       _pagingController.error = e;
     }
   }

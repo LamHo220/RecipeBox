@@ -104,10 +104,102 @@ class RecipeDetailsView extends StatelessWidget {
                           recipe: recipe,
                           action: RAction.Modify,
                         )));
+          } else if (value == 3) {
+            showDialog(
+              context: context,
+              builder: (context2) => AlertDialog(
+                content: Card(
+                  elevation: 0,
+                  child: FutureBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                    builder: (context, snapshot) {
+                      if (snapshot.data == null ||
+                          snapshot.data!.docs.isEmpty) {
+                        return Text(
+                          'No Reviews from others currently.',
+                          style: Style.highlightText,
+                        );
+                      }
+                      // final ratings =
+                      //     snapshot.data!.docs.map((e) => e['rating']);
+                      // final s =
+                      //     ratings.reduce((value, element) => value + element);
+                      return Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          for (int i = 0; i < snapshot.data!.docs.length; ++i)
+                            Wrap(
+                              children: [
+                                Row(
+                                  children: [
+                                    FutureBuilder<QuerySnapshot<UserDetails>>(
+                                      future: context
+                                          .read<HomeCubit>()
+                                          .getUserDetails(snapshot.data!.docs[i]
+                                              .data()['user_id']
+                                              .toString()),
+                                      builder: (context, snapshot2) {
+                                        if (snapshot2.data == null) {
+                                          return Text(
+                                            snapshot.data!.docs[i]
+                                                .data()['user_id']
+                                                .toString(),
+                                            style: Style.label,
+                                          );
+                                        }
+                                        return Text(
+                                          snapshot2.data!.docs.first
+                                              .data()
+                                              .username
+                                              .toString(),
+                                          style: Style.label,
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.star,
+                                      color: Colors.yellow[800],
+                                    ),
+                                    Pad.w12,
+                                    Text(snapshot.data!.docs[i]
+                                        .data()['rating']
+                                        .toString()),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.comment,
+                                      color: Colors.blue,
+                                    ),
+                                    Pad.w12,
+                                    Text(snapshot.data!.docs[i]
+                                        .data()['comment']
+                                        .toString())
+                                  ],
+                                )
+                              ],
+                            )
+                        ],
+                      );
+                    },
+                    future: context.read<HomeCubit>().getRateByRecipe(recipe),
+                  ),
+                ),
+              ),
+            );
           }
         }, itemBuilder: (context) {
           return [
             PopupMenuItem(value: 1, child: Text('Notes from creater')),
+            PopupMenuItem<int>(
+              value: 3,
+              child: Text("Reviews"),
+            ),
             PopupMenuItem(
               enabled: user.id == recipe.user,
               value: 2,
