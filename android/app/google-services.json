@@ -29,6 +29,13 @@
             {
               "client_id": "317620086799-3f5jcpahu3su1t36173v3jd3u3ja0lh7.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "317620086799-9ac00597cbsp3tj8vhqmbd8e0g8u13os.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.recipeBox"
+              }
             }
           ]
         }
